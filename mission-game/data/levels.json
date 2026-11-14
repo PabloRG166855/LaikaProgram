@@ -1,0 +1,129 @@
+[
+  {
+    "id": "easy",
+    "name": "Fácil",
+    "title": "Laboratorio en órbita terrestre",
+    "destination": "LEO",
+    "destinationName": "órbita baja terrestre",
+    "bodyName": "Tierra",
+    "planetLocation": "Sobre la Tierra",
+    "bodyColor": "#3b82f6",
+    "bodyColor2": "#1e3a8a",
+    "description": "Una misión corta a 400 km de altura. Tienes buen presupuesto y la Tierra está cerca: ideal para aprender.",
+    "budget": 1000,
+    "crewSlots": [
+      { "roles": ["commander"] },
+      { "roles": ["flight_engineer"] }
+    ],
+    "durationSec": 150,
+    "crewMassPerPersonKg": 300,
+    "minPropulsion": 1,
+    "minShielding": 0,
+    "commsFactor": 1,
+    "lifeSupportDrain": 0.4,
+    "scienceGoal": 450,
+    "difficultyBonus": 0,
+    "script": [
+      { "at": 6, "event": "leo_orbit" },
+      { "at": 40, "event": "leo_docking" },
+      { "at": 78, "event": "leo_experiment" },
+      { "at": 118, "event": "leo_reentry" }
+    ],
+    "eventInterval": [13, 19],
+    "firstEventAt": 18,
+    "eventTimeoutMult": 1.4,
+    "maxActiveEvents": 2,
+    "pauseOnDecision": true,
+    "realMission": {
+      "name": "Estación Espacial Internacional (ISS)",
+      "text": "La ISS orbita a unos 400 km de altura. Sus tripulaciones hacen experimentos científicos y reparan sistemas a bordo, igual que en tu misión."
+    }
+  },
+  {
+    "id": "medium",
+    "name": "Medio",
+    "title": "Expedición a la Luna",
+    "destination": "MOON",
+    "destinationName": "la Luna",
+    "bodyName": "Luna",
+    "planetLocation": "En la superficie de la Luna",
+    "bodyColor": "#cbd5e1",
+    "bodyColor2": "#475569",
+    "description": "Viajar a la Luna exige más propulsión, blindaje y soporte vital. El dinero alcanza justo: cada componente cuenta.",
+    "budget": 1200,
+    "crewSlots": [
+      { "roles": ["commander"] },
+      { "roles": ["pilot"] },
+      { "label": "Científico(a)", "roles": ["geologist", "mission_specialist", "payload_specialist"] }
+    ],
+    "durationSec": 210,
+    "crewMassPerPersonKg": 800,
+    "minPropulsion": 2,
+    "minShielding": 1,
+    "commsFactor": 1.5,
+    "lifeSupportDrain": 0.45,
+    "scienceGoal": 750,
+    "difficultyBonus": 1,
+    "script": [
+      { "at": 6, "event": "moon_tli" },
+      { "at": 45, "event": "moon_loi" },
+      { "at": 88, "event": "landing_alarm" },
+      { "at": 128, "event": "moon_eva" },
+      { "at": 175, "event": "moon_ascent" }
+    ],
+    "eventInterval": [11, 15],
+    "firstEventAt": 16,
+    "eventTimeoutMult": 1.1,
+    "maxActiveEvents": 3,
+    "pauseOnDecision": false,
+    "realMission": {
+      "name": "Programa Artemis",
+      "text": "Artemis busca regresar astronautas a la Luna y estudiar su polo sur. Igual que tú, debe equilibrar masa, energía y seguridad de la tripulación."
+    }
+  },
+  {
+    "id": "hard",
+    "name": "Difícil",
+    "title": "Misión tripulada a Marte",
+    "destination": "MARS",
+    "destinationName": "Marte",
+    "bodyName": "Marte",
+    "planetLocation": "En la superficie de Marte",
+    "bodyColor": "#f97316",
+    "bodyColor2": "#7c2d12",
+    "description": "La misión más exigente: tripulación grande, radiación intensa y la Tierra a minutos-luz de distancia. Necesitas el mejor equipo.",
+    "budget": 2300,
+    "crewSlots": [
+      { "roles": ["commander"] },
+      { "roles": ["pilot"] },
+      { "roles": ["medical_officer"] },
+      { "label": "Ingeniero(a)", "roles": ["flight_engineer", "life_support_engineer"] },
+      { "label": "Científico(a)", "roles": ["geologist", "mission_specialist", "payload_specialist"] }
+    ],
+    "durationSec": 270,
+    "crewMassPerPersonKg": 2200,
+    "minPropulsion": 3,
+    "minShielding": 2,
+    "commsFactor": 3,
+    "lifeSupportDrain": 0.5,
+    "scienceGoal": 1000,
+    "difficultyBonus": 2,
+    "script": [
+      { "at": 6, "event": "mars_tmi" },
+      { "at": 45, "event": "mars_course" },
+      { "at": 92, "event": "mars_edl" },
+      { "at": 122, "event": "landing_alarm" },
+      { "at": 168, "event": "mars_water" },
+      { "at": 232, "event": "mars_return" }
+    ],
+    "eventInterval": [9, 13],
+    "firstEventAt": 16,
+    "eventTimeoutMult": 1.0,
+    "maxActiveEvents": 4,
+    "pauseOnDecision": false,
+    "realMission": {
+      "name": "Arquitectura de NASA para Marte (Moon to Mars)",
+      "text": "NASA estudia cómo enviar humanos a Marte. Los grandes retos son los mismos de tu misión: radiación, soporte vital por meses y comunicaciones con retraso."
+    }
+  }
+]

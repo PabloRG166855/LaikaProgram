@@ -1,0 +1,470 @@
+[
+  {
+    "id": "solar_storm", "name": "Tormenta solar", "icon": "☀️", "location": "space", "threat": true, "weight": 1, "destWeight": { "LEO": 0.7, "MOON": 1.2, "MARS": 1.5 }, "timeout": 18,
+    "text": "El Sol lanzó una ráfaga de partículas. La radiación llegará en segundos.",
+    "learn": "Cerca de la Tierra, su campo magnético nos protege. Lejos de ella, la radiación es uno de los mayores riesgos para los astronautas.",
+    "options": [
+      { "label": "Refugiar a la tripulación y apagar sistemas no esenciales", "stat": "calm", "difficulty": 5, "duration": 6, "specialties": ["commander", "medical_officer"],
+        "success": { "effects": { "power": -5 }, "text": "La tripulación llegó al refugio a tiempo. Solo se perdió algo de energía." },
+        "fail": { "effects": { "integrity": -15, "life": -10 }, "text": "No todos llegaron al refugio: la radiación afectó a la tripulación y a la electrónica." } },
+      { "label": "Girar la nave para que la estructura sirva de escudo", "stat": "tech", "difficulty": 6, "duration": 5, "specialties": ["pilot", "flight_engineer"],
+        "success": { "effects": { "science": 15 }, "text": "La maniobra funcionó y los sensores registraron datos de la tormenta." },
+        "fail": { "effects": { "integrity": -20 }, "text": "La maniobra llegó tarde y la radiación dañó varios sistemas." } }
+    ],
+    "onIgnore": { "effects": { "integrity": -25, "life": -10 }, "text": "Nadie respondió a la tormenta: la radiación dañó sistemas y afectó a la tripulación." }
+  },
+  {
+    "id": "power_failure", "name": "Falla eléctrica", "icon": "⚡", "location": "ship", "part": "power", "weight": 1.2, "timeout": 16,
+    "text": "Un circuito principal se apagó y la energía está cayendo.",
+    "learn": "Las naves reales tienen circuitos redundantes y baterías para sobrevivir a una falla eléctrica.",
+    "options": [
+      { "label": "Cambiar rápido a las baterías de respaldo", "stat": "speed", "difficulty": 5, "duration": 4, "specialties": ["flight_engineer", "pilot"],
+        "success": { "effects": { "power": -10 }, "text": "Las baterías tomaron el control. Se perdió un poco de energía." },
+        "fail": { "effects": { "power": -30, "integrity": -5 }, "text": "El cambio falló y varios sistemas se reiniciaron sin energía." } },
+      { "label": "Rastrear el cortocircuito y repararlo", "stat": "tech", "difficulty": 6, "duration": 7, "specialties": ["flight_engineer"],
+        "success": { "effects": { "power": 20 }, "text": "Encontraron y repararon el corto: el sistema quedó mejor que antes." },
+        "fail": { "effects": { "power": -35, "integrity": -10 }, "text": "La reparación empeoró el corto y dañó un módulo." } }
+    ],
+    "onIgnore": { "effects": { "power": -40, "integrity": -10 }, "text": "La falla eléctrica nadie la atendió y drenó casi toda la energía." }
+  },
+  {
+    "id": "comms_loss", "name": "Pérdida de señal", "icon": "📡", "location": "ship", "part": "comms", "weight": 1, "destWeight": { "MARS": 1.4 }, "timeout": 18,
+    "text": "Se perdió el enlace con la Tierra. Los datos científicos se están acumulando sin enviarse.",
+    "learn": "Las antenas deben apuntar con precisión a la Tierra. Lejos de casa, la señal es tan débil que un pequeño error la pierde.",
+    "options": [
+      { "label": "Reapuntar la antena manualmente", "stat": "tech", "difficulty": 5, "duration": 5, "specialties": ["flight_engineer", "payload_specialist"],
+        "success": { "effects": { "data": 10 }, "text": "Enlace recuperado: se enviaron los datos acumulados." },
+        "fail": { "effects": { "data": -15 }, "text": "La antena quedó desalineada un buen rato y se perdieron datos." } },
+      { "label": "Reiniciar el transmisor con el protocolo de emergencia", "stat": "analysis", "difficulty": 5, "duration": 6, "specialties": ["commander", "flight_engineer"],
+        "success": { "effects": { "data": 5 }, "text": "El transmisor volvió a funcionar siguiendo el protocolo." },
+        "fail": { "effects": { "data": -15, "integrity": -5 }, "text": "El reinicio falló y hubo que intentarlo de nuevo: se perdieron datos." } }
+    ],
+    "onIgnore": { "effects": { "data": -25, "integrity": -5 }, "text": "Sin enlace por mucho tiempo: se perdió una parte importante de los datos." }
+  },
+  {
+    "id": "debris", "name": "Basura espacial", "icon": "🗑️", "location": "space", "threat": true, "weight": 1, "destWeight": { "LEO": 1.6, "MOON": 0.5, "MARS": 0.3 }, "timeout": 14,
+    "text": "Un fragmento de un satélite viejo viene directo hacia la nave.",
+    "learn": "Hay decenas de miles de fragmentos en órbita terrestre. La ISS ha tenido que esquivar basura espacial muchas veces.",
+    "options": [
+      { "label": "Maniobra evasiva manual", "stat": "speed", "difficulty": 6, "duration": 4, "specialties": ["pilot"],
+        "success": { "effects": { "power": -5 }, "text": "Esquivaron el fragmento por pocos metros." },
+        "fail": { "effects": { "integrity": -20 }, "text": "El fragmento rozó la nave y dañó el casco." } },
+      { "label": "Calcular una maniobra precisa con control de misión", "stat": "analysis", "difficulty": 6, "duration": 6, "specialties": ["pilot", "commander"],
+        "success": { "effects": {}, "text": "Una maniobra calculada y limpia, sin gastar energía extra." },
+        "fail": { "effects": { "integrity": -15 }, "text": "El cálculo tardó demasiado y hubo un impacto menor." } }
+    ],
+    "onIgnore": { "effects": { "integrity": -30 }, "text": "Nadie desvió la nave y el fragmento la golpeó de lleno." }
+  },
+  {
+    "id": "asteroid", "name": "Asteroide cercano", "icon": "☄️", "location": "space", "threat": true, "weight": 0.8, "destWeight": { "LEO": 0.3, "MOON": 1, "MARS": 1.4 }, "timeout": 16,
+    "points": { "success": 4, "fail": -3, "ignored": -5 },
+    "text": "Un asteroide pequeño va a cruzar muy cerca de tu trayectoria.",
+    "learn": "NASA vigila miles de asteroides cercanos a la Tierra. La misión DART demostró en 2022 que se puede desviar uno.",
+    "options": [
+      { "label": "Maniobra evasiva inmediata", "stat": "speed", "difficulty": 6, "duration": 4, "specialties": ["pilot"],
+        "success": { "effects": {}, "text": "El asteroide pasó de largo. ¡Qué susto!" },
+        "fail": { "effects": { "integrity": -20 }, "text": "La maniobra no bastó: fragmentos del asteroide golpearon la nave." } },
+      { "label": "Calcular su órbita y ajustar la ruta", "stat": "analysis", "difficulty": 6, "duration": 6, "specialties": ["mission_specialist", "commander"],
+        "success": { "effects": { "science": 15 }, "text": "Lo esquivaron y además lo estudiaron de cerca: ¡datos valiosos!" },
+        "fail": { "effects": { "integrity": -15 }, "text": "El cálculo tenía un error y el asteroide pasó demasiado cerca." } }
+    ],
+    "onIgnore": { "effects": { "integrity": -30 }, "text": "Nadie desvió la nave y los fragmentos del asteroide la golpearon." }
+  },
+  {
+    "id": "medical", "name": "Emergencia médica", "icon": "🩺", "location": "ship", "part": "structure", "weight": 0.9, "destWeight": { "MARS": 1.5 }, "timeout": 18,
+    "text": "Un tripulante tiene fuertes mareos y fiebre. No puede trabajar así.",
+    "learn": "En el espacio no hay hospital. Por eso las misiones largas llevan entrenamiento y equipo médico a bordo.",
+    "options": [
+      { "label": "Diagnóstico y tratamiento a bordo", "stat": "analysis", "difficulty": 6, "duration": 7, "specialties": ["medical_officer"],
+        "success": { "effects": { "life": 5 }, "text": "Diagnóstico correcto: el tripulante se recuperó rápido." },
+        "fail": { "effects": { "life": -15, "integrity": -10 }, "text": "El tratamiento no funcionó bien y el equipo perdió horas de trabajo." } },
+      { "label": "Consulta guiada con los médicos en la Tierra", "stat": "calm", "difficulty": 5, "duration": 6, "specialties": ["commander", "medical_officer"], "destDifficulty": { "MARS": 2 },
+        "success": { "effects": {}, "text": "Siguiendo las indicaciones de la Tierra, el paciente se estabilizó." },
+        "fail": { "effects": { "life": -15, "integrity": -5 }, "text": "La consulta fue confusa (en Marte la señal tarda minutos en llegar) y el paciente empeoró." } }
+    ],
+    "onIgnore": { "effects": { "life": -20, "integrity": -15 }, "text": "La emergencia médica no se atendió y la salud de la tripulación se deterioró." }
+  },
+  {
+    "id": "co2_scrubber", "name": "Falla en el filtro de CO₂", "icon": "🫁", "location": "ship", "part": "life_support", "weight": 1, "timeout": 18,
+    "text": "El filtro que limpia el aire dejó de funcionar. El CO₂ de la cabina sube.",
+    "learn": "En Apolo 13 los astronautas improvisaron un filtro de CO₂ con cinta, plástico y cartón para sobrevivir.",
+    "options": [
+      { "label": "Reemplazar el cartucho del filtro", "stat": "tech", "difficulty": 5, "duration": 6, "specialties": ["life_support_engineer", "flight_engineer"],
+        "success": { "effects": { "life": 10 }, "text": "Cartucho nuevo instalado: el aire vuelve a estar limpio." },
+        "fail": { "effects": { "life": -20 }, "text": "El cartucho no encajaba y el CO₂ siguió subiendo." } },
+      { "label": "Improvisar un filtro con materiales a bordo", "stat": "analysis", "difficulty": 7, "duration": 8, "specialties": ["life_support_engineer", "commander"],
+        "success": { "effects": { "life": 20 }, "text": "¡Ingenio puro! El filtro improvisado funciona mejor de lo esperado." },
+        "fail": { "effects": { "life": -25 }, "text": "El invento no funcionó y se perdió tiempo valioso." } }
+    ],
+    "onIgnore": { "effects": { "life": -30 }, "text": "Nadie arregló el filtro y el aire de la cabina se volvió peligroso." }
+  },
+  {
+    "id": "software_error", "name": "Error en la computadora", "icon": "💻", "location": "ship", "part": "computer", "weight": 1, "timeout": 16,
+    "text": "La computadora de vuelo muestra errores y algunos sistemas no responden.",
+    "learn": "Las naves usan varias computadoras que se vigilan entre sí: si una falla, otra toma el control.",
+    "options": [
+      { "label": "Reinicio controlado del sistema", "stat": "speed", "difficulty": 5, "duration": 3, "specialties": ["flight_engineer", "pilot"],
+        "success": { "effects": { "power": -5 }, "text": "El reinicio limpió el error." },
+        "fail": { "effects": { "integrity": -10, "power": -10 }, "text": "El reinicio dejó la nave sin control unos minutos." } },
+      { "label": "Analizar el código y aplicar un parche", "stat": "analysis", "difficulty": 6, "duration": 7, "specialties": ["flight_engineer", "payload_specialist"],
+        "success": { "effects": { "science": 5 }, "text": "Encontraron el error y el parche además mejoró un instrumento." },
+        "fail": { "effects": { "integrity": -12 }, "text": "El parche tenía otro error y causó más fallas." } }
+    ],
+    "onIgnore": { "effects": { "integrity": -15, "power": -15 }, "text": "La computadora siguió fallando sin supervisión." }
+  },
+  {
+    "id": "overheating", "name": "Sobrecalentamiento", "icon": "🌡️", "location": "ship", "part": "battery", "weight": 0.9, "timeout": 16,
+    "text": "El módulo de baterías se está calentando demasiado. Los equipos podrían dañarse.",
+    "learn": "En el espacio, el lado que da al Sol puede pasar de 120 °C y el de la sombra bajar de −150 °C.",
+    "options": [
+      { "label": "Ajustar el sistema de control térmico", "stat": "tech", "difficulty": 6, "duration": 6, "specialties": ["life_support_engineer", "flight_engineer"],
+        "success": { "effects": {}, "text": "La temperatura volvió a la normalidad." },
+        "fail": { "effects": { "integrity": -12 }, "text": "El ajuste no bastó y se dañaron componentes." } },
+      { "label": "Apagar instrumentos para que se enfríen", "stat": "calm", "difficulty": 4, "duration": 4, "specialties": ["commander", "payload_specialist"],
+        "success": { "effects": { "science": -10 }, "text": "Se enfrió, pero se perdió algo de ciencia mientras estaban apagados." },
+        "fail": { "effects": { "integrity": -10, "science": -10 }, "text": "Se apagaron tarde: hubo daño y pérdida de ciencia." } }
+    ],
+    "onIgnore": { "effects": { "integrity": -15, "power": -10 }, "text": "El calor dañó equipos que nadie apagó." }
+  },
+  {
+    "id": "fuel_leak", "name": "Fuga de combustible", "icon": "🛢️", "location": "ship", "part": "propulsion", "weight": 0.8, "timeout": 16,
+    "text": "Un sensor detecta que la presión de un tanque de combustible baja poco a poco.",
+    "learn": "Una fuga puede dejarte sin combustible para las maniobras finales. Por eso los tanques tienen válvulas para aislar cada sección.",
+    "options": [
+      { "label": "Cerrar válvulas y aislar el tanque", "stat": "speed", "difficulty": 5, "duration": 4, "specialties": ["flight_engineer", "pilot"],
+        "success": { "effects": { "power": -5 }, "text": "Tanque aislado: perdieron muy poco combustible." },
+        "fail": { "effects": { "integrity": -15 }, "text": "Una válvula se atoró y la fuga siguió un buen rato." } },
+      { "label": "Localizar y sellar la fuga", "stat": "tech", "difficulty": 6, "duration": 6, "specialties": ["flight_engineer", "life_support_engineer"],
+        "success": { "effects": { "integrity": 5 }, "text": "Fuga sellada y tanque reparado." },
+        "fail": { "effects": { "integrity": -15, "life": -5 }, "text": "No encontraron la fuga y los vapores llegaron a la cabina." } }
+    ],
+    "onIgnore": { "effects": { "integrity": -20 }, "text": "La fuga vació parte del tanque y forzó al motor." }
+  },
+  {
+    "id": "observation_window", "name": "Ventana de observación", "icon": "🔭", "location": "planet", "weight": 1.2, "positive": true, "timeout": 16,
+    "text": "La nave está justo sobre una zona de gran interés científico. ¡Oportunidad única!",
+    "learn": "Las misiones planean sus órbitas para pasar sobre los lugares que más interesan a los científicos.",
+    "options": [
+      { "label": "Observación detallada", "stat": "analysis", "difficulty": 6, "duration": 7, "specialties": ["mission_specialist", "payload_specialist"],
+        "success": { "effects": { "science": 40 }, "text": "Observaciones excelentes: ¡mucha ciencia nueva!" },
+        "fail": { "effects": { "science": 5 }, "text": "Las mediciones salieron borrosas; casi no sirvieron." } },
+      { "label": "Captura rápida de datos", "stat": "speed", "difficulty": 4, "duration": 4, "specialties": ["payload_specialist", "pilot"],
+        "success": { "effects": { "science": 20 }, "text": "Captura rápida y útil." },
+        "fail": { "effects": {}, "text": "La nave se movió antes de terminar la captura." } }
+    ],
+    "onIgnore": { "effects": {}, "text": "La oportunidad científica pasó sin que nadie la aprovechara." }
+  },
+  {
+    "id": "cosmic_signal", "name": "Señal desconocida", "icon": "✨", "location": "space", "weight": 0.8, "positive": true, "timeout": 16,
+    "points": { "success": 5, "fail": 0, "ignored": -1 },
+    "text": "Los sensores captan una emisión rara que viene del espacio profundo. ¿Ruido o descubrimiento?",
+    "learn": "Así se descubrieron los púlsares en 1967: una señal tan regular que al principio parecía artificial.",
+    "options": [
+      { "label": "Analizar la señal a fondo", "stat": "analysis", "difficulty": 6, "duration": 7, "specialties": ["mission_specialist", "payload_specialist"],
+        "success": { "effects": { "science": 35 }, "text": "¡Era una estrella de neutrones nunca antes registrada!" },
+        "fail": { "effects": {}, "text": "Resultó ser interferencia de la propia nave." } },
+      { "label": "Grabarla y enviarla a la Tierra", "stat": "speed", "difficulty": 4, "duration": 4, "specialties": ["payload_specialist", "flight_engineer"],
+        "success": { "effects": { "data": 10, "science": 10 }, "text": "La señal llegó a la Tierra y los científicos ya la estudian." },
+        "fail": { "effects": {}, "text": "La grabación salió con demasiado ruido." } }
+    ],
+    "onIgnore": { "effects": {}, "text": "La señal se desvaneció sin que nadie la estudiara." }
+  },
+  {
+    "id": "aurora", "name": "Aurora en los polos", "icon": "🌌", "location": "planet", "destinations": ["LEO"], "weight": 0.9, "positive": true, "timeout": 16,
+    "text": "Una tormenta geomagnética enciende auroras gigantes justo debajo de la nave.",
+    "learn": "Las auroras se forman cuando partículas del Sol chocan con la atmósfera, guiadas por el campo magnético de la Tierra.",
+    "options": [
+      { "label": "Fotografiar y medir la aurora", "stat": "tech", "difficulty": 5, "duration": 5, "specialties": ["payload_specialist", "mission_specialist"],
+        "success": { "effects": { "science": 25 }, "text": "¡Fotos espectaculares y mediciones muy útiles!" },
+        "fail": { "effects": {}, "text": "La cámara estaba mal configurada y las fotos salieron quemadas." } },
+      { "label": "Medir las partículas que la causan", "stat": "analysis", "difficulty": 5, "duration": 6, "specialties": ["mission_specialist", "flight_engineer"],
+        "success": { "effects": { "science": 20, "data": 5 }, "text": "Midieron las partículas solares con mucho detalle." },
+        "fail": { "effects": {}, "text": "Los sensores se saturaron." } }
+    ],
+    "onIgnore": { "effects": {}, "text": "La aurora se apagó sin que nadie la estudiara." }
+  },
+  {
+    "id": "micrometeoroid", "name": "Impacto de micrometeorito", "icon": "💥", "location": "ship", "part": "structure", "weight": 0.8, "timeout": 14,
+    "text": "Una partícula diminuta perforó el casco. Hay una pequeña fuga de aire.",
+    "learn": "Un grano de polvo a 10 km/s golpea con más energía que una bala. Por eso las naves llevan escudos especiales.",
+    "options": [
+      { "label": "Localizar y sellar la fuga", "stat": "speed", "difficulty": 6, "duration": 5, "specialties": ["flight_engineer", "life_support_engineer"],
+        "success": { "effects": { "life": -5 }, "text": "Fuga sellada con un parche. Se perdió muy poco aire." },
+        "fail": { "effects": { "integrity": -15, "life": -15 }, "text": "No encontraron la fuga a tiempo y se perdió mucho aire." } },
+      { "label": "Aislar el módulo dañado", "stat": "calm", "difficulty": 5, "duration": 4, "specialties": ["commander"],
+        "success": { "effects": { "integrity": -5, "science": -10 }, "text": "Módulo cerrado. Están a salvo, pero perdieron acceso a un experimento." },
+        "fail": { "effects": { "integrity": -20 }, "text": "La escotilla tardó en cerrar y la fuga creció." } }
+    ],
+    "onIgnore": { "effects": { "integrity": -25, "life": -20 }, "text": "La fuga siguió abierta y la cabina perdió presión." }
+  },
+  {
+    "id": "sample_collection", "name": "Formación geológica", "icon": "🪨", "location": "planet", "weight": 1.2, "positive": true, "destinations": ["MOON", "MARS"], "timeout": 18,
+    "points": { "success": 5, "fail": 0, "ignored": -1 },
+    "text": "Los sensores detectaron rocas muy antiguas cerca del sitio de exploración.",
+    "learn": "Las rocas que trajo Apolo siguen estudiándose hoy y nos contaron cómo se formó la Luna.",
+    "options": [
+      { "label": "Salir de expedición a recolectar muestras", "stat": "analysis", "difficulty": 6, "duration": 8, "specialties": ["geologist", "mission_specialist"],
+        "success": { "effects": { "science": 50 }, "text": "¡Muestras extraordinarias! Esto cambiará lo que sabemos." },
+        "fail": { "effects": { "science": 5, "life": -5 }, "text": "La expedición fue agotadora y las muestras no eran las correctas." } },
+      { "label": "Analizarlas a distancia con los instrumentos", "stat": "tech", "difficulty": 5, "duration": 5, "specialties": ["payload_specialist", "geologist"],
+        "success": { "effects": { "science": 25 }, "text": "El análisis remoto dio buenos resultados." },
+        "fail": { "effects": {}, "text": "Los instrumentos no lograron enfocar las rocas." } }
+    ],
+    "onIgnore": { "effects": {}, "text": "Nadie estudió las rocas: se perdió un posible gran descubrimiento." }
+  },
+  {
+    "id": "dust_storm", "name": "Tormenta de polvo", "icon": "🌪️", "location": "planet", "weight": 1.3, "destinations": ["MARS"], "timeout": 18,
+    "text": "Una tormenta de polvo cubre el cielo de Marte y bloquea el Sol.",
+    "learn": "Las tormentas de polvo en Marte pueden cubrir el planeta entero durante semanas. Una de ellas apagó al rover Opportunity.",
+    "options": [
+      { "label": "Asegurar la nave y reducir el consumo", "stat": "calm", "difficulty": 6, "duration": 6, "specialties": ["commander", "pilot"],
+        "success": { "effects": { "power": -10 }, "text": "La nave aguantó la tormenta en modo ahorro." },
+        "fail": { "effects": { "power": -30, "integrity": -10 }, "text": "El polvo se metió en los sistemas y la energía cayó mucho." } },
+      { "label": "Limpiar los paneles y redistribuir la energía", "stat": "tech", "difficulty": 6, "duration": 7, "specialties": ["flight_engineer", "life_support_engineer"],
+        "success": { "effects": { "power": 10 }, "text": "Paneles limpios: la energía se mantuvo." },
+        "fail": { "effects": { "power": -30 }, "text": "El polvo volvió a cubrir los paneles enseguida." } }
+    ],
+    "onIgnore": { "effects": { "power": -45, "integrity": -10 }, "text": "La tormenta cubrió los paneles y la nave se quedó casi sin energía." }
+  },
+  {
+    "id": "crew_conflict", "name": "Tensión en la tripulación", "icon": "😤", "location": "ship", "part": "structure", "weight": 0.8, "destinations": ["MOON", "MARS"], "timeout": 20,
+    "text": "Dos tripulantes discuten por las prioridades de la misión. El ambiente está tenso.",
+    "learn": "En misiones largas, la convivencia en espacios pequeños es tan importante como la tecnología.",
+    "options": [
+      { "label": "Mediar en el conflicto", "stat": "calm", "difficulty": 6, "duration": 6, "specialties": ["commander", "medical_officer"],
+        "success": { "effects": { "fatigueAll": -15 }, "text": "Hablaron y llegaron a un acuerdo. El equipo está más unido." },
+        "fail": { "effects": { "fatigueAll": 20, "integrity": -5 }, "text": "La mediación empeoró las cosas; todos están más cansados." } },
+      { "label": "Reorganizar los turnos de descanso", "stat": "analysis", "difficulty": 5, "duration": 5, "specialties": ["commander", "medical_officer"],
+        "success": { "effects": { "fatigueAll": -30 }, "text": "Con mejores turnos, todos descansaron más." },
+        "fail": { "effects": { "fatigueAll": 15 }, "text": "Los nuevos turnos no le gustaron a nadie." } }
+    ],
+    "onIgnore": { "effects": { "fatigueAll": 30, "integrity": -5 }, "text": "El conflicto creció y agotó a todo el equipo." }
+  },
+  {
+    "id": "instrument_jam", "name": "Instrumento atascado", "icon": "🔩", "location": "ship", "part": "instruments", "weight": 0.9, "timeout": 18,
+    "text": "Un instrumento científico se trabó y no puede apuntar.",
+    "learn": "Las caminatas espaciales permiten reparar equipos en el exterior, como se hizo varias veces con el telescopio Hubble.",
+    "options": [
+      { "label": "Repararlo en una caminata espacial", "stat": "tech", "difficulty": 7, "duration": 9, "specialties": ["flight_engineer", "payload_specialist"],
+        "success": { "effects": { "science": 20 }, "text": "Reparado y recalibrado: ahora funciona mejor que antes." },
+        "fail": { "effects": { "integrity": -10, "life": -5 }, "text": "La caminata fue riesgosa y no lograron repararlo." } },
+      { "label": "Recalibrarlo desde dentro de la nave", "stat": "analysis", "difficulty": 5, "duration": 5, "specialties": ["payload_specialist", "mission_specialist"],
+        "success": { "effects": { "science": 10 }, "text": "Recalibrado a distancia con éxito." },
+        "fail": { "effects": { "science": -15 }, "text": "El instrumento quedó fuera de servicio un buen rato." } }
+    ],
+    "onIgnore": { "effects": { "science": -20 }, "text": "El instrumento siguió atascado y se perdió ciencia." }
+  },
+  {
+    "id": "ground_pass", "name": "Ventana de comunicación", "icon": "📶", "location": "earth", "weight": 1, "positive": true, "destWeight": { "LEO": 1.4 }, "timeout": 15,
+    "text": "La nave tiene línea directa con una gran antena en la Tierra. Es momento de enviar datos.",
+    "learn": "NASA usa la Red de Espacio Profundo: tres complejos de antenas gigantes en EUA, España y Australia.",
+    "options": [
+      { "label": "Enviar todos los datos posibles", "stat": "speed", "difficulty": 5, "duration": 5, "specialties": ["payload_specialist", "mission_specialist"],
+        "success": { "effects": { "data": 30 }, "text": "¡Descarga enorme! Se enviaron muchos datos atrasados." },
+        "fail": { "effects": { "data": 5 }, "text": "La conexión fue inestable y solo pasó una parte." } },
+      { "label": "Priorizar los datos científicos clave", "stat": "analysis", "difficulty": 5, "duration": 6, "specialties": ["mission_specialist", "commander"],
+        "success": { "effects": { "data": 20, "science": 10 }, "text": "Se enviaron primero los datos más valiosos." },
+        "fail": { "effects": { "data": 5 }, "text": "Se eligieron mal los datos y llegaron pocos útiles." } }
+    ],
+    "onIgnore": { "effects": {}, "text": "La ventana de comunicación se cerró sin aprovecharse." }
+  },
+
+  {
+    "id": "leo_orbit", "main": true, "name": "Circularizar la órbita", "short": "Órbita", "icon": "🔥", "location": "ship", "part": "propulsion", "timeout": 22,
+    "text": "El cohete te dejó en una órbita alargada. Hay que encender el motor en el punto justo para quedar a 400 km.",
+    "learn": "Para cambiar de órbita, las naves encienden el motor en el punto más alto o más bajo de su órbita. Así se ahorra combustible.",
+    "options": [
+      { "label": "Encendido manual en el punto más alto", "stat": "speed", "difficulty": 5, "duration": 5, "specialties": ["pilot", "commander"],
+        "success": { "effects": { "science": 10 }, "text": "Órbita circular perfecta a 400 km. Los instrumentos ya pueden trabajar." },
+        "fail": { "effects": { "integrity": -10, "power": -10 }, "text": "El encendido duró de más: hubo que corregir y se forzó el motor." } },
+      { "label": "Programar el encendido en la computadora", "stat": "analysis", "difficulty": 5, "duration": 6, "specialties": ["flight_engineer", "commander"],
+        "success": { "effects": { "data": 5 }, "text": "La computadora ejecutó el encendido al segundo exacto." },
+        "fail": { "effects": { "integrity": -8, "data": -5 }, "text": "Un dato mal cargado hizo que el encendido fallara a medias." } }
+    ],
+    "onIgnore": { "effects": { "integrity": -20 }, "text": "Nadie corrigió la órbita: la nave quedó tan baja que la atmósfera la frena y la desgasta." }
+  },
+  {
+    "id": "leo_docking", "main": true, "name": "Acoplamiento con la estación", "short": "Acople", "icon": "🔗", "location": "space", "timeout": 24,
+    "text": "Llegó el momento de acoplarte a la estación espacial para entregar experimentos y recibir provisiones.",
+    "learn": "El acoplamiento se hace a pocos centímetros por segundo. La ISS recibe naves de carga y tripuladas varias veces al año.",
+    "options": [
+      { "label": "Acoplamiento manual", "stat": "speed", "difficulty": 6, "duration": 6, "specialties": ["pilot", "commander"],
+        "success": { "effects": { "science": 30, "life": 10 }, "text": "Acople suave: entregaste experimentos y recibiste provisiones." },
+        "fail": { "effects": { "integrity": -15 }, "text": "Golpeaste el puerto de acople: hay daños en el casco." } },
+      { "label": "Acoplamiento automático supervisado", "stat": "tech", "difficulty": 5, "duration": 7, "specialties": ["flight_engineer"],
+        "success": { "effects": { "science": 20, "life": 10 }, "text": "El sistema automático te acopló sin problemas." },
+        "fail": { "effects": { "integrity": -10 }, "text": "El sistema abortó el acople en el último segundo y se forzaron los propulsores." } }
+    ],
+    "onIgnore": { "effects": { "integrity": -10, "science": -10 }, "text": "Se perdió la ventana de acoplamiento y hubo que alejarse con prisa." }
+  },
+  {
+    "id": "leo_experiment", "main": true, "positive": true, "name": "Experimento principal", "short": "Experimento", "icon": "🧪", "location": "ship", "part": "instruments", "timeout": 24,
+    "text": "Es la hora del experimento más importante de la misión: cristales de proteínas que solo crecen bien sin gravedad.",
+    "learn": "En microgravedad los cristales crecen más grandes y ordenados. Así se han estudiado medicinas a bordo de la ISS.",
+    "options": [
+      { "label": "Ejecutar el protocolo completo", "stat": "analysis", "difficulty": 6, "duration": 8, "specialties": ["mission_specialist", "payload_specialist", "commander"],
+        "success": { "effects": { "science": 70 }, "text": "¡Cristales perfectos! Los científicos en la Tierra están emocionados." },
+        "fail": { "effects": { "science": 10 }, "text": "Los cristales salieron deformes; solo una parte sirve." } },
+      { "label": "Versión corta del experimento", "stat": "tech", "difficulty": 5, "duration": 5, "specialties": ["flight_engineer", "payload_specialist"],
+        "success": { "effects": { "science": 45 }, "text": "Resultados útiles con el protocolo corto." },
+        "fail": { "effects": {}, "text": "El equipo falló a la mitad del experimento." } }
+    ],
+    "onIgnore": { "effects": { "science": -10 }, "text": "Nadie atendió el experimento y las muestras se echaron a perder." }
+  },
+  {
+    "id": "leo_reentry", "main": true, "name": "Reentrada a la Tierra", "short": "Reentrada", "icon": "🪂", "location": "ship", "part": "shielding", "timeout": 22,
+    "text": "La misión termina: hay que frenar y entrar a la atmósfera con el ángulo correcto.",
+    "learn": "Si el ángulo de entrada es muy inclinado la nave se quema; si es muy plano, rebota contra la atmósfera.",
+    "options": [
+      { "label": "Pilotar el ángulo de entrada", "stat": "calm", "difficulty": 6, "duration": 6, "specialties": ["pilot", "commander"],
+        "success": { "effects": { "integrity": 5 }, "text": "Entrada perfecta: los paracaídas se abrieron sobre el punto previsto." },
+        "fail": { "effects": { "integrity": -20 }, "text": "La entrada fue demasiado inclinada y el escudo térmico sufrió." } },
+      { "label": "Revisar los cálculos y dejar al piloto automático", "stat": "analysis", "difficulty": 5, "duration": 7, "specialties": ["flight_engineer", "commander"],
+        "success": { "effects": { "data": 10 }, "text": "La computadora clavó el ángulo y se enviaron los últimos datos." },
+        "fail": { "effects": { "integrity": -15 }, "text": "Un error en los cálculos hizo la reentrada muy brusca." } }
+    ],
+    "onIgnore": { "effects": { "integrity": -30 }, "text": "Nadie controló la reentrada: la nave entró con un ángulo peligroso." }
+  },
+
+  {
+    "id": "moon_tli", "main": true, "name": "Inyección translunar", "short": "Rumbo a la Luna", "icon": "🔥", "location": "ship", "part": "propulsion", "timeout": 22,
+    "text": "Hay que encender el motor varios minutos para salir de la órbita terrestre rumbo a la Luna.",
+    "learn": "Apolo usaba la tercera etapa de su cohete para la inyección translunar: unos 6 minutos de encendido.",
+    "options": [
+      { "label": "Vigilar el encendido y cortarlo a tiempo", "stat": "speed", "difficulty": 6, "duration": 5, "specialties": ["pilot", "commander"],
+        "success": { "effects": { "science": 10 }, "text": "Trayectoria perfecta hacia la Luna." },
+        "fail": { "effects": { "integrity": -10, "power": -10 }, "text": "El corte llegó tarde y hubo que corregir con mucho esfuerzo." } },
+      { "label": "Calcular el encendido con control de misión", "stat": "analysis", "difficulty": 6, "duration": 6, "specialties": ["commander", "mission_specialist"],
+        "success": { "effects": { "data": 5 }, "text": "Encendido calculado al segundo: rumbo perfecto." },
+        "fail": { "effects": { "integrity": -12 }, "text": "El cálculo tenía un error y la trayectoria se desvió." } }
+    ],
+    "onIgnore": { "effects": { "integrity": -25 }, "text": "Sin supervisión, el encendido se pasó y hubo que gastar mucho en correcciones." }
+  },
+  {
+    "id": "moon_loi", "main": true, "name": "Entrada en órbita lunar", "short": "Órbita lunar", "icon": "🌒", "location": "ship", "part": "propulsion", "timeout": 22,
+    "text": "Pasando detrás de la Luna, sin contacto con la Tierra, hay que frenar para quedar en órbita.",
+    "learn": "Detrás de la Luna no hay señal con la Tierra: las tripulaciones de Apolo hacían esta maniobra por su cuenta.",
+    "options": [
+      { "label": "Frenado manual", "stat": "calm", "difficulty": 6, "duration": 6, "specialties": ["commander", "pilot"],
+        "success": { "effects": { "science": 15 }, "text": "Quedaron en una órbita perfecta y tomaron fotos del lado oculto." },
+        "fail": { "effects": { "integrity": -15 }, "text": "Frenaron de más y la órbita quedó peligrosamente baja." } },
+      { "label": "Secuencia automática con verificación", "stat": "tech", "difficulty": 6, "duration": 6, "specialties": ["pilot", "payload_specialist"],
+        "success": { "effects": {}, "text": "La secuencia automática funcionó a la perfección." },
+        "fail": { "effects": { "integrity": -12, "power": -10 }, "text": "La secuencia se detuvo a medias y hubo que improvisar." } }
+    ],
+    "onIgnore": { "effects": { "integrity": -25 }, "text": "Nadie frenó a tiempo y la nave pasó de largo: hubo que gastar combustible de emergencia." }
+  },
+  {
+    "id": "landing_alarm", "main": true, "name": "Alarma en el descenso", "short": "Aterrizaje", "icon": "🚨", "location": "planet", "timeout": 18,
+    "text": "Durante el descenso a la superficie, la computadora lanza una alarma desconocida.",
+    "learn": "En Apolo 11 sonaron las alarmas 1202 y 1201 durante el descenso. El equipo decidió continuar y Armstrong aterrizó a mano.",
+    "options": [
+      { "label": "Tomar el control manual del descenso", "stat": "speed", "difficulty": 7, "duration": 4, "specialties": ["pilot", "commander"],
+        "success": { "effects": { "science": 20 }, "text": "Aterrizaje manual perfecto, ¡y en un sitio mejor que el planeado!" },
+        "fail": { "effects": { "integrity": -25 }, "text": "Aterrizaje brusco: la nave sufrió daños." } },
+      { "label": "Diagnosticar la alarma y seguir en automático", "stat": "analysis", "difficulty": 6, "duration": 5, "specialties": ["flight_engineer", "commander"],
+        "success": { "effects": {}, "text": "Era una sobrecarga sin peligro. Aterrizaje automático exitoso." },
+        "fail": { "effects": { "integrity": -20 }, "text": "El diagnóstico fue erróneo y el aterrizaje salió mal." } }
+    ],
+    "onIgnore": { "effects": { "integrity": -30 }, "text": "Nadie atendió la alarma y el descenso terminó en un aterrizaje forzoso." }
+  },
+  {
+    "id": "moon_eva", "main": true, "positive": true, "name": "Caminata lunar en el polo sur", "short": "Caminata", "icon": "👣", "location": "planet", "timeout": 26,
+    "text": "Ya en la superficie: hay que salir a buscar hielo de agua en los cráteres en sombra del polo sur.",
+    "learn": "En algunos cráteres del polo sur lunar nunca da el Sol y podría haber hielo: agua para futuras bases.",
+    "options": [
+      { "label": "Expedición a un cráter en sombra", "stat": "analysis", "difficulty": 6, "duration": 9, "specialties": ["geologist", "mission_specialist"],
+        "success": { "effects": { "science": 80 }, "text": "¡Encontraron hielo de agua! Un hallazgo histórico." },
+        "fail": { "effects": { "science": 15, "life": -10 }, "text": "La expedición fue agotadora y apenas trajeron muestras." } },
+      { "label": "Muestreo cerca del módulo de aterrizaje", "stat": "tech", "difficulty": 5, "duration": 6, "specialties": ["payload_specialist", "geologist", "pilot"],
+        "success": { "effects": { "science": 45 }, "text": "Muestras seguras y bien documentadas." },
+        "fail": { "effects": { "science": 5 }, "text": "Las herramientas se atascaron con el polvo lunar." } }
+    ],
+    "onIgnore": { "effects": { "science": -10 }, "text": "Nadie salió a explorar: se desperdició el viaje a la Luna." }
+  },
+  {
+    "id": "moon_ascent", "main": true, "name": "Despegue de la Luna", "short": "Regreso", "icon": "🚀", "location": "ship", "part": "propulsion", "timeout": 24,
+    "text": "Hay que despegar de la superficie y reunirse con la nave en órbita para volver a casa.",
+    "learn": "En Apolo, el módulo lunar despegaba usando su propia base como plataforma de lanzamiento.",
+    "options": [
+      { "label": "Despegue y encuentro manual", "stat": "speed", "difficulty": 6, "duration": 6, "specialties": ["pilot", "commander"],
+        "success": { "effects": { "data": 10 }, "text": "Despegue limpio y encuentro perfecto en órbita." },
+        "fail": { "effects": { "integrity": -20 }, "text": "El encuentro fue brusco y dañó el puerto de acople." } },
+      { "label": "Despegue automático y acople calculado", "stat": "analysis", "difficulty": 6, "duration": 7, "specialties": ["commander", "mission_specialist"],
+        "success": { "effects": {}, "text": "Todo salió según el plan." },
+        "fail": { "effects": { "integrity": -15 }, "text": "Un error de cálculo obligó a varias correcciones peligrosas." } }
+    ],
+    "onIgnore": { "effects": { "integrity": -30 }, "text": "El despegue sin supervisión casi termina en desastre." }
+  },
+
+  {
+    "id": "mars_tmi", "main": true, "name": "Inyección trans-marciana", "short": "Rumbo a Marte", "icon": "🔥", "location": "ship", "part": "propulsion", "timeout": 22,
+    "text": "El motor criogénico debe encenderse en la ventana exacta para alcanzar Marte.",
+    "learn": "Las ventanas para viajar a Marte se abren cada 26 meses, cuando la Tierra y Marte quedan bien alineados.",
+    "options": [
+      { "label": "Supervisar el encendido manualmente", "stat": "speed", "difficulty": 6, "duration": 5, "specialties": ["pilot", "commander"],
+        "success": { "effects": { "science": 10 }, "text": "Encendido perfecto: rumbo a Marte." },
+        "fail": { "effects": { "integrity": -12 }, "text": "El motor vibró de más y hubo daños menores." } },
+      { "label": "Verificar el plan de vuelo con la computadora", "stat": "analysis", "difficulty": 6, "duration": 6, "specialties": ["flight_engineer", "commander"],
+        "success": { "effects": { "data": 5 }, "text": "Plan verificado: encendido sin errores." },
+        "fail": { "effects": { "integrity": -12, "power": -10 }, "text": "La verificación tardó y el encendido salió desfasado." } }
+    ],
+    "onIgnore": { "effects": { "integrity": -25 }, "text": "El encendido sin supervisión desvió la nave y forzó el motor." }
+  },
+  {
+    "id": "mars_course", "main": true, "name": "Corrección de trayectoria", "short": "Corrección", "icon": "🧭", "location": "space", "timeout": 22,
+    "text": "Tras meses de viaje la nave se desvió un poco. Si no corriges, pasarás de largo junto a Marte.",
+    "learn": "Las sondas hacen varias correcciones pequeñas durante el viaje: un error mínimo crece con la distancia.",
+    "options": [
+      { "label": "Encendido corto guiado por las estrellas", "stat": "tech", "difficulty": 6, "duration": 5, "specialties": ["pilot", "flight_engineer"],
+        "success": { "effects": {}, "text": "Corrección precisa: Marte está justo enfrente." },
+        "fail": { "effects": { "integrity": -10, "power": -10 }, "text": "La corrección fue imprecisa y hubo que repetirla." } },
+      { "label": "Recalcular la trayectoria con la Tierra", "stat": "analysis", "difficulty": 6, "duration": 7, "specialties": ["commander", "mission_specialist"], "destDifficulty": { "MARS": 1 },
+        "success": { "effects": { "data": 10 }, "text": "Con los datos de la Tierra, la ruta quedó perfecta." },
+        "fail": { "effects": { "integrity": -12 }, "text": "El retraso de la señal hizo que los datos llegaran tarde." } }
+    ],
+    "onIgnore": { "effects": { "integrity": -20, "life": -10 }, "text": "Sin corrección, hubo que hacer una maniobra enorme de emergencia." }
+  },
+  {
+    "id": "mars_edl", "main": true, "name": "Entrada en la atmósfera marciana", "short": "Entrada", "icon": "🛡️", "location": "ship", "part": "shielding", "timeout": 20,
+    "text": "La nave entra a la atmósfera de Marte a 20,000 km/h. El escudo térmico debe aguantar.",
+    "learn": "Le dicen \"los 7 minutos de terror\": la señal tarda más que el descenso, así que todo debe salir bien sin ayuda de la Tierra.",
+    "options": [
+      { "label": "Vigilar el escudo y ajustar el ángulo", "stat": "calm", "difficulty": 6, "duration": 6, "specialties": ["pilot", "commander"],
+        "success": { "effects": {}, "text": "El escudo aguantó y el ángulo fue perfecto." },
+        "fail": { "effects": { "integrity": -20 }, "text": "El ángulo fue muy pronunciado y el escudo se dañó." } },
+      { "label": "Controlar la temperatura de los sistemas", "stat": "tech", "difficulty": 6, "duration": 6, "specialties": ["life_support_engineer", "flight_engineer"],
+        "success": { "effects": { "life": 10 }, "text": "La cabina se mantuvo fresca durante toda la entrada." },
+        "fail": { "effects": { "integrity": -15, "life": -10 }, "text": "El calor llegó a la cabina y dañó equipos." } }
+    ],
+    "onIgnore": { "effects": { "integrity": -30 }, "text": "Nadie controló la entrada y el escudo térmico casi se rompe." }
+  },
+  {
+    "id": "mars_water", "main": true, "positive": true, "name": "Búsqueda de agua subterránea", "short": "Agua", "icon": "💧", "location": "planet", "timeout": 26,
+    "text": "El radar señaló hielo bajo la superficie cerca de tu base. ¡Hay que confirmarlo!",
+    "learn": "Hay mucho hielo bajo la superficie de Marte. Sería clave para beber, respirar y fabricar combustible.",
+    "options": [
+      { "label": "Perforar y analizar el hielo", "stat": "analysis", "difficulty": 7, "duration": 9, "specialties": ["geologist", "mission_specialist"],
+        "success": { "effects": { "science": 90 }, "text": "¡Hielo confirmado! Es el hallazgo más importante de la misión." },
+        "fail": { "effects": { "science": 15, "life": -10 }, "text": "La perforadora se rompió a medio camino." } },
+      { "label": "Escaneo con los instrumentos", "stat": "tech", "difficulty": 6, "duration": 6, "specialties": ["payload_specialist", "geologist"],
+        "success": { "effects": { "science": 50 }, "text": "El escaneo confirmó una capa de hielo a poca profundidad." },
+        "fail": { "effects": { "science": 5 }, "text": "El escaneo salió con demasiado ruido." } }
+    ],
+    "onIgnore": { "effects": { "science": -15 }, "text": "Nadie investigó: el hielo de Marte seguirá siendo un misterio." }
+  },
+  {
+    "id": "mars_return", "main": true, "name": "Despegue de regreso", "short": "Regreso", "icon": "🚀", "location": "ship", "part": "propulsion", "timeout": 24,
+    "text": "La ventana de regreso se abre: hay que despegar de Marte con el combustible justo.",
+    "learn": "Muchos planes proponen fabricar el combustible de regreso en Marte usando el CO₂ de su atmósfera.",
+    "options": [
+      { "label": "Despegue manual", "stat": "speed", "difficulty": 7, "duration": 6, "specialties": ["pilot", "commander"],
+        "success": { "effects": { "data": 10 }, "text": "Despegue perfecto: ¡de regreso a casa!" },
+        "fail": { "effects": { "integrity": -20 }, "text": "El despegue fue inestable y dañó la nave." } },
+      { "label": "Optimizar el combustible y despegar en automático", "stat": "analysis", "difficulty": 6, "duration": 7, "specialties": ["flight_engineer", "commander"],
+        "success": { "effects": {}, "text": "El combustible alcanzó con margen." },
+        "fail": { "effects": { "integrity": -18 }, "text": "El cálculo de combustible falló y hubo que forzar el motor." } }
+    ],
+    "onIgnore": { "effects": { "integrity": -30 }, "text": "Nadie controló el despegue y la nave apenas logró salir." }
+  }
+]

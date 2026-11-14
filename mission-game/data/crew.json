@@ -1,0 +1,45 @@
+{
+  "roles": {
+    "commander": { "name": "Comandante", "icon": "⭐", "desc": "Líder de la tripulación. Toma decisiones bajo presión y coordina con control de misión." },
+    "pilot": { "name": "Piloto", "icon": "🕹️", "desc": "Controla maniobras, acoplamientos y descensos." },
+    "flight_engineer": { "name": "Ingeniero(a) de vuelo", "icon": "🔧", "desc": "Mantiene y repara los sistemas de la nave: energía, computadoras y comunicaciones." },
+    "life_support_engineer": { "name": "Ingeniero(a) de soporte vital", "icon": "🫁", "desc": "Mantiene el aire, el agua y la temperatura de la cabina." },
+    "medical_officer": { "name": "Oficial médico", "icon": "🩺", "desc": "Cuida la salud física y mental de la tripulación." },
+    "mission_specialist": { "name": "Especialista de misión", "icon": "🔬", "desc": "Científico(a) a cargo de los experimentos y observaciones." },
+    "payload_specialist": { "name": "Especialista de carga útil", "icon": "📡", "desc": "Opera y calibra los instrumentos científicos." },
+    "geologist": { "name": "Geólogo(a) planetario(a)", "icon": "🪨", "desc": "Estudia rocas y suelo de otros mundos y elige qué muestras traer." }
+  },
+  "members": [
+    { "id": "cmd_ortega", "name": "Tomás Ortega", "role": "commander", "tier": "rookie", "stats": { "tech": 5, "analysis": 5, "speed": 6, "calm": 7 }, "cost": 35, "bio": "Primera misión como comandante. Tranquilo, pero le falta experiencia." },
+    { "id": "cmd_nwosu", "name": "Amara Nwosu", "role": "commander", "tier": "regular", "stats": { "tech": 6, "analysis": 6, "speed": 6, "calm": 8 }, "cost": 45, "bio": "Excomandante de submarino: nunca pierde la calma." },
+    { "id": "cmd_rios", "name": "Elena Ríos", "role": "commander", "tier": "veteran", "stats": { "tech": 6, "analysis": 7, "speed": 6, "calm": 9 }, "cost": 60, "bio": "Veterana de tres misiones. Su equipo confía ciegamente en ella." },
+
+    { "id": "plt_lee", "name": "Mina Lee", "role": "pilot", "tier": "rookie", "stats": { "tech": 5, "analysis": 5, "speed": 7, "calm": 6 }, "cost": 30, "bio": "Recién graduada del entrenamiento. Reflejos rápidos." },
+    { "id": "plt_ferreira", "name": "Lucas Ferreira", "role": "pilot", "tier": "regular", "stats": { "tech": 6, "analysis": 6, "speed": 8, "calm": 6 }, "cost": 42, "bio": "Piloto de rescate en montaña, acostumbrado a maniobras difíciles." },
+    { "id": "plt_okafor", "name": "Daniel Okafor", "role": "pilot", "tier": "veteran", "stats": { "tech": 7, "analysis": 5, "speed": 9, "calm": 7 }, "cost": 55, "bio": "Expiloto de pruebas. Aterriza donde sea." },
+
+    { "id": "fe_cruz", "name": "Valeria Cruz", "role": "flight_engineer", "tier": "rookie", "stats": { "tech": 7, "analysis": 5, "speed": 5, "calm": 5 }, "cost": 28, "bio": "Brillante con las manos; aún aprende a trabajar bajo presión." },
+    { "id": "fe_benali", "name": "Omar Benali", "role": "flight_engineer", "tier": "regular", "stats": { "tech": 8, "analysis": 6, "speed": 6, "calm": 6 }, "cost": 42, "bio": "Reparó satélites desde el control de misión durante años." },
+    { "id": "fe_kim", "name": "Ji-woo Kim", "role": "flight_engineer", "tier": "veteran", "stats": { "tech": 9, "analysis": 7, "speed": 6, "calm": 6 }, "cost": 55, "bio": "Conoce cada cable de la nave." },
+
+    { "id": "ls_asante", "name": "Kofi Asante", "role": "life_support_engineer", "tier": "rookie", "stats": { "tech": 6, "analysis": 5, "speed": 5, "calm": 6 }, "cost": 28, "bio": "Ingeniero químico en su primera misión espacial." },
+    { "id": "ls_novak", "name": "Petr Novak", "role": "life_support_engineer", "tier": "regular", "stats": { "tech": 8, "analysis": 6, "speed": 6, "calm": 7 }, "cost": 50, "bio": "Diseñó sistemas de reciclaje de agua." },
+    { "id": "ls_sato", "name": "Yuki Sato", "role": "life_support_engineer", "tier": "veteran", "stats": { "tech": 9, "analysis": 7, "speed": 6, "calm": 7 }, "cost": 65, "bio": "Mantuvo vivo un hábitat experimental durante un año entero." },
+
+    { "id": "med_paredes", "name": "Diego Paredes", "role": "medical_officer", "tier": "rookie", "stats": { "tech": 4, "analysis": 6, "speed": 5, "calm": 7 }, "cost": 30, "bio": "Médico rural, acostumbrado a resolver con poco." },
+    { "id": "med_silva", "name": "Ana Silva", "role": "medical_officer", "tier": "regular", "stats": { "tech": 4, "analysis": 8, "speed": 6, "calm": 8 }, "cost": 50, "bio": "Médica de emergencias y psicóloga." },
+    { "id": "med_zahra", "name": "Fátima Zahra", "role": "medical_officer", "tier": "veteran", "stats": { "tech": 5, "analysis": 9, "speed": 6, "calm": 9 }, "cost": 65, "bio": "Cirujana que vivió seis meses en una base antártica." },
+
+    { "id": "ms_nair", "name": "Priya Nair", "role": "mission_specialist", "tier": "rookie", "stats": { "tech": 4, "analysis": 7, "speed": 5, "calm": 5 }, "cost": 25, "bio": "Acaba de terminar su doctorado en astrobiología." },
+    { "id": "ms_moreau", "name": "Luc Moreau", "role": "mission_specialist", "tier": "regular", "stats": { "tech": 5, "analysis": 9, "speed": 5, "calm": 6 }, "cost": 45, "bio": "Astrofísico obsesionado con los datos." },
+    { "id": "ms_larsen", "name": "Ingrid Larsen", "role": "mission_specialist", "tier": "veteran", "stats": { "tech": 6, "analysis": 10, "speed": 6, "calm": 7 }, "cost": 65, "bio": "Ha publicado más de 100 estudios sobre planetas." },
+
+    { "id": "ps_becker", "name": "Noah Becker", "role": "payload_specialist", "tier": "rookie", "stats": { "tech": 6, "analysis": 6, "speed": 5, "calm": 4 }, "cost": 25, "bio": "Técnico de laboratorio muy cuidadoso, pero se pone nervioso." },
+    { "id": "ps_tanaka", "name": "Kenji Tanaka", "role": "payload_specialist", "tier": "regular", "stats": { "tech": 7, "analysis": 8, "speed": 5, "calm": 5 }, "cost": 40, "bio": "Diseñó varios de los instrumentos de a bordo." },
+    { "id": "ps_mensah", "name": "Grace Mensah", "role": "payload_specialist", "tier": "veteran", "stats": { "tech": 8, "analysis": 8, "speed": 6, "calm": 6 }, "cost": 58, "bio": "Calibró los instrumentos de dos sondas espaciales." },
+
+    { "id": "geo_quispe", "name": "Mateo Quispe", "role": "geologist", "tier": "rookie", "stats": { "tech": 4, "analysis": 7, "speed": 5, "calm": 6 }, "cost": 28, "bio": "Creció entre los volcanes de los Andes." },
+    { "id": "geo_haddad", "name": "Sara Haddad", "role": "geologist", "tier": "regular", "stats": { "tech": 5, "analysis": 8, "speed": 6, "calm": 6 }, "cost": 45, "bio": "Experta en volcanes y meteoritos." },
+    { "id": "geo_brooks", "name": "Helen Brooks", "role": "geologist", "tier": "veteran", "stats": { "tech": 5, "analysis": 9, "speed": 6, "calm": 7 }, "cost": 62, "bio": "Estudió meteoritos marcianos durante 20 años." }
+  ]
+}
