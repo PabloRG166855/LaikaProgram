@@ -1,0 +1,113 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: dark;
+  --scrollbar-thumb: #334155;
+  --scrollbar-track: #070d1b;
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+html,
+body {
+  background-color: #050914;
+  color: #e2e8f0;
+  font-family: var(--font-sans);
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-mono-telemetry {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Custom scrollable regions */
+.telemetry-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  scrollbar-gutter: stable;
+}
+
+@supports not (scrollbar-color: auto) {
+  .telemetry-scroll::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .telemetry-scroll::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 9999px;
+  }
+
+  .telemetry-scroll::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+  }
+}
+
+/* Native <dialog> modal discipline per modern-web-guidance */
+@layer base {
+  dialog:modal {
+    overscroll-behavior: contain;
+    margin: auto;
+    max-width: min(94vw, 68rem);
+    max-height: 90dvh;
+    padding: 0;
+  }
+
+  dialog::backdrop {
+    overflow: hidden;
+    overscroll-behavior: contain;
+    background-color: rgba(3, 7, 18, 0.82);
+    backdrop-filter: blur(6px);
+  }
+}
+
+/* Subtle telemetry background grid */
+.bg-telemetry-grid {
+  background-image:
+    linear-gradient(to right, rgba(34, 211, 238, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(34, 211, 238, 0.05) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+@keyframes radar-sweep {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-radar-sweep {
+  animation: radar-sweep 10s linear infinite;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.92);
+    opacity: 0.85;
+  }
+  70% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 1.8s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+}
