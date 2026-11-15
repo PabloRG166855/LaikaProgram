@@ -1,0 +1,117 @@
+# Entrega Final — Textos Listos para la Plataforma NASA Space Apps Challenge
+
+Este documento contiene todos los campos requeridos por el portal del **NASA Space Apps Challenge**, redactados en **Inglés** (recomendado como idioma principal para la evaluación y nominación global) y en **Español** (para presentaciones locales o referencia del equipo).
+
+---
+
+## 1. Project Title & Tagline (Nombre y Eslogan)
+
+- **Project Name:** `Laika Program`
+- **Short Tagline (EN, max ~100 chars):**
+  > `8-bit space mission design game: build your craft, launch through Max Q, and save the Hubble!`
+- **Eslogan corto (ES):**
+  > `Videojuego retro de diseño de misiones espaciales: arma tu nave, supera Max Q y salva el Hubble.`
+
+---
+
+## 2. High-Level Project Summary (Resumen Ejecutivo)
+
+### Versión en Inglés (Para el formulario oficial)
+**LAIKA PROGRAM** is an 8-bit browser-based space mission design and astronaut operations game where you become Flight Director alongside Laika and a crew of 17 historical animal space pioneers. Our goal is to make spacecraft systems engineering and real NASA mission operations accessible to players of all ages without overwhelming spreadsheets. Players visually assemble their spacecraft while balancing payload mass limits against rocket capacity, electrical power generation, propulsion, radiation shielding, communications bandwidth, and science instrumentation; select a balanced crew using skill-matching radar profiles; pilot a multi-stage rocket launch through *Max Q* and orbital insertion; and execute missions inspired by real NASA milestones—including the **STS-125 Hubble Space Telescope Servicing Mission 4** (featuring 5 interactive EVA minigames, authentic NASA imagery, and historical crew briefings) and a **Lunar South Pole expedition inspired by Artemis**.
+
+### Versión en Español
+**LAIKA PROGRAM** es un videojuego educativo de 8 bits para navegador donde te conviertes en director(a) de vuelo junto a Laika y una tripulación de 17 animales pioneros históricos de la exploración espacial. Nuestro objetivo es acercar la ingeniería de sistemas espaciales y las operaciones reales de astronautas a todo público sin abrumar con hojas de cálculo. El jugador diseña visualmente su nave equilibrando masa útil frente a la capacidad del cohete, balance energético, propulsión, blindaje contra radiación, telecomunicaciones e instrumentos científicos; conforma una tripulación mediante perfiles radar de habilidades; pilota el despegue multietapa superando *Max Q* y logrando la inserción orbital; y ejecuta misiones basadas en hitos reales de la NASA, como la **Misión de Servicio 4 al Telescopio Espacial Hubble (STS-125)** (con 5 minijuegos interactivos de caminatas espaciales y fotos reales de la NASA) y una **expedición al polo sur lunar inspirada en Artemis**.
+
+---
+
+## 3. Project Details / How It Works (Descripción Detallada)
+
+### Versión en Inglés (Para el formulario oficial)
+
+#### The Challenge & Our Solution
+Designing a real space mission involves constant engineering trade-offs: adding science instruments increases payload mass and electrical consumption; stronger antennas are needed to transmit collected data back to Earth; heavier ships reduce launch margins. Traditional orbital simulators are often too technical for students and general audiences. **Laika Program** turns these engineering constraints into intuitive visual feedback and exciting real-time gameplay.
+
+#### Five Integrated Gameplay Phases
+1. **Hangar — Visual Spacecraft Design (`hangarView.js`, `ship.js`):**
+   Players tap hotspots on a live pixel-art spacecraft to customize Structure/Cabin, Propulsion, Solar Power, Communications, Radiation Shielding, and Science Instruments (while internal subsystems like batteries, life support, flight computer, and attitude control auto-configure for accessibility). Real-time validation ensures total spacecraft + crew mass stays within the mission rocket's payload capacity (*Cóndor L* at 8,000 kg for LEO, *Jaguar H* at 18,000 kg for Moon, *Titán SH* at 30,000 kg for Mars) and power generation meets consumption.
+2. **Crew Roster — Historical Animal Pioneers (`crewView.js`, `crew.json`):**
+   Players fill mission-specific roles (Commander, Pilot, Specialists, Engineers, Geologist, Medical Officer) from 17 procedurally drawn SVG/pixel characters inspired by real spaceflight animals—including Belka, Strelka, Ham, Enos, Albert II, Héctor, Félicette, Marfusha, Miss Baker, Arabella, Gordo, Veterok, Ugolyok, Able, Chernushka, Zvezdochka, and Zondy (Zond 5 tortoises). A team radar chart summarizes Speed, Analysis, Tech, and Calm.
+3. **Ascent & Orbital Insertion (`flightView.js`):**
+   Your engineering choices directly impact launch physics. A heavier spacecraft narrows the safe throttle window during **Max Q** (maximum dynamic pressure) and slows climb speed; stronger engines widen the orbital insertion target; better shielding mitigates anomaly damage. Stage separation opens the fairing to reveal the exact custom spacecraft you built.
+4. **Mission Operations & Real NASA EVAs (`missionView.js`, `missionEngine.js`, `minigames/sts125/`):**
+   - **Mission 1 — Save the Hubble (STS-125, May 2009):** Features a historical crew briefing of Space Shuttle *Atlantis* and integrates 5 dedicated STS-125 minigames directly inside the mission timeline: grappling Hubble with the Canadarm (`sts125-captura`), replacing WFPC2 with WFC3 (`sts125-camara`), swapping 6 gyroscopes and batteries (`sts125-giroscopios`), removing the stuck handrail and 111 screws to repair the STIS spectrograph (`sts125-espectrografo`), and releasing Hubble before landing at Edwards AFB (`sts125-adios`).
+   - **Mission 2 — Lunar Expedition (Artemis):** Covers Trans-Lunar Injection (TLI), lunar orbit, landing, moonwalk EVA, and lunar ascent. *(Mission 3 — Mars is showcased as upcoming).*
+   - **Real-Time Dispatch & Quick-Fix Minigames (`repairGame.js`):** Random space hazards and hardware failures appear directly on the affected ship part or orbital trajectory. Subsystem breakdowns trigger 4 one-button repair games (`aim`, `charge`, `tap`, `patch`), while operational crises and science opportunities use a *Dispatch*-style radar comparison to assign 1–2 crew members, managing fatigue and temporary states such as `blackout`, `commsDown`, `sensorsDown`, and `crewOut`.
+5. **Post-Mission Telemetry Report (`report.js`, `reportView.js`):**
+   Grades the mission (`A` to `F` across 100 points: 35% Main Objectives, 25% Transmitted Science, 15% Final Integrity, 25% Random Events), identifies engineering root causes, delivers actionable advice from Laika, and compares your run with the real NASA mission.
+
+### Versión en Español
+
+#### El Problema y Nuestra Solución
+Diseñar una misión espacial implica compromisos constantes de ingeniería: más instrumentos científicos aumentan el peso y el consumo eléctrico; se requiere mejor antena para que los datos lleguen a la Tierra; una nave más pesada complica el ascenso. **Laika Program** traduce estas restricciones físicas en retroalimentación visual inmediata y mecánicas jugables accesibles para todo público.
+
+#### Cinco Fases Integradas
+1. **Hangar — Diseño Visual (`hangarView.js`, `ship.js`):** El jugador selecciona cabina, propulsión, paneles solares, antena, blindaje e instrumentos tocando la nave en pantalla. El motor valida en tiempo real el límite de masa del cohete asignado (`Cóndor L`, `Jaguar H`, `Titán SH`) y el balance eléctrico (kW).
+2. **Tripulación — Animales Pioneros (`crewView.js`, `crew.json`):** 17 astronautas animales inspirados en la historia espacial real, con 4 atributos (*Rapidez, Análisis, Técnica y Calma*) reflejados en un gráfico radar del equipo.
+3. **Lanzamiento y Órbita (`flightView.js`):** Tu diseño altera la física del ascenso: el exceso de peso estrecha la zona segura en **Max Q**; un motor más potente facilita la inserción orbital; el escudo atenúa daños de vuelo. Al abrirse la cofia aparece la nave exacta que armaste.
+4. **Operaciones en Misión y EVAs (`missionView.js`, `missionEngine.js`, `minigames/sts125/`):**
+   - **Misión 1 (Salva el Hubble — STS-125):** Incluye 5 minijuegos históricos integrados sobre el rescate real de mayo de 2009 (captura robótica, cámara WFC3, giroscopios y baterías, espectrógrafo STIS y liberación/aterrizaje).
+   - **Misión 2 (Expedición a la Luna — Artemis):** TLI, órbita lunar, alunizaje, caminata lunar y ascenso.
+   - **Emergencias y Reparaciones (`repairGame.js`):** 10 tipos de fallas con minijuegos de un botón (`aim`, `charge`, `tap`, `patch`) y emergencias tácticas estilo *Dispatch* con gestión de fatiga y estados temporales (`blackout`, `commsDown`, `sensorsDown`, `crewOut`).
+5. **Reporte Post-Misión (`report.js`, `reportView.js`):** Calificación `A–F` (Objetivos 35 pts, Ciencia 25 pts, Integridad 15 pts, Eventos 25 pts), diagnóstico de causas, consejo de Laika y ficha histórica con fotografía real de la NASA.
+
+---
+
+## 4. NASA Data & Resources Used (Datos y Recursos de NASA)
+
+### Versión en Inglés (Para el formulario oficial)
+- **NASA STS-125 Mission Overview & Servicing Mission 4 (SM4):** Crew roster, flight timeline (May 11–24, 2009), and EVA task details for WFC3 installation, gyroscope/battery replacement, STIS repair, and Edwards AFB landing ([nasa.gov/mission/sts-125](https://www.nasa.gov/mission/sts-125/) & [science.nasa.gov — Servicing Mission 4](https://science.nasa.gov/mission/hubble/observatory/missions-to-hubble/servicing-mission-4/)).
+- **NASA Goddard Space Flight Center SM4 Archive:** Daily mission logs and robotic capture documentation ([asd.gsfc.nasa.gov/archive/sm4/](https://asd.gsfc.nasa.gov/archive/sm4/multimedia/gallery10_space-day3.html)).
+- **NASA Hubble Overview (35th Anniversary):** Observatory specifications and scientific milestones ([science.nasa.gov — Hubble 35th Anniversary](https://science.nasa.gov/mission/hubble/overview/hubbles-35th-anniversary)).
+- **NASA Image and Video Library (`images.nasa.gov`):** Public-domain historical mission photography (series `S125-E`, `STS125-S`, and `KSC-2009-3264`, including `S125-E-012154` and `STS125-S-036`) plus NASA/ESA Hubble observations embedded in briefings, unlockable albums, and final mission reports.
+- **NASA Artemis & Moon to Mars Architecture:** Mission design trade-offs (payload mass, solar power, deep-space communications latency, radiation shielding, and lunar south pole operations).
+
+### Versión en Español
+- **Archivos Oficiales NASA STS-125 y Servicing Mission 4 (SM4):** Tripulación del *Atlantis*, cronología real (11–24 de mayo de 2009) y procedimientos de las 5 caminatas espaciales (`nasa.gov/mission/sts-125` y `science.nasa.gov/.../servicing-mission-4/`).
+- **NASA Goddard SM4 Multimedia Archive:** Bitácoras diarias de captura robótica e instalación de instrumentos (`asd.gsfc.nasa.gov/archive/sm4/`).
+- **NASA Image and Video Library (`images.nasa.gov`) y NASA/ESA Hubble:** Fotografías históricas de dominio público (`S125-E`, `STS125-S`, `KSC-2009-3264`) usadas en briefings, álbumes desbloqueables y reportes finales.
+- **Programa Artemis y Arquitectura Moon to Mars:** Principios de diseño de misiones tripuladas (masa útil, potencia, comunicaciones, protección contra radiación y operaciones en el polo sur lunar).
+
+---
+
+## 5. Space Agency Partner & Third-Party Resources (Herramientas y Recursos de Terceros)
+
+- **Tech Stack:** Pure HTML5, CSS3, and Vanilla JavaScript (ES Modules) — zero external runtime frameworks or build dependencies.
+- **Automated Balance Testing:** Node.js headless simulation bot (`tools/simulate.mjs`) running hundreds of automated mission runs to calibrate event timing, probabilities, and scoring curves.
+- **Visual & Audio Implementation:**
+  - **PICO-8 Color Palette** & custom 1/3-resolution pixelated HTML5 Canvas rendering (`PX = 3`) for the hangar and orbital map.
+  - **Procedural SVG Animal Sprites** (`js/views/animals.js`) quantized into 40×40 PICO-8 sprites at startup.
+  - **Web Audio API Chiptune Synthesizer** (`js/sfx.js`) generating all retro SFX procedurally without external audio assets.
+  - **Bilingual Engine (`js/i18n.js` & `js/i18n-en.js`):** Live DOM/Canvas EN/ES translation shared across the main app and embedded STS-125 minigames.
+- **Open-Source Assets & Licenses:**
+  - *Press Start 2P* & *VT323* fonts (SIL Open Font License 1.1, bundled in `assets/fonts/`).
+  - *Pixelarticons* by Gerrit Halfmann (MIT License, `assets/LICENSE-pixelarticons.txt`) + 6 custom space-themed pixel icons (`js/icons.js`).
+
+---
+
+## 6. Challenges, Learnings & Future Work (Retos, Aprendizajes y Futuro)
+
+### Challenges Faced & How We Solved Them (EN)
+- **Balancing realism with accessibility:** Pure aerospace numbers can intimidate newcomers. We created an internal simulation engine (`ship.js`, `missionEngine.js`) that computes real mass, kW, data transmission rates, and skill probabilities under the hood, while exposing intuitive bars, radar shapes, and Laika's guided tooltips in the UI.
+- **Merging three separate prototypes cleanly:** Our team built the mission simulator, the ascent flight prototype, and the standalone STS-125 Hubble minigames. By enforcing strict DOM-free simulation modules and communicating with embedded STS-125 iframes via `window.postMessage`, we unified everything without breaking standalone playability.
+- **Game balance across difficulty curves:** We built `tools/simulate.mjs` to run batch simulations with simulated player reaction times (`REACTION=5 node tools/simulate.mjs 300`) so missions remain challenging yet winnable.
+
+### Future Work (EN)
+- **Unlock Mission 3 (Crewed Mars Mission):** Enable the already-modeled Mars architecture (`hard` level in `levels.json` with `Titán SH`, 5 crew roles, and 6 main events including entry, descent, landing, and ISRU ascent).
+- **Local Co-op Mode (1–4 Players):** Because simulation logic (`ship.js`, `missionEngine.js`) is decoupled from DOM views, multiple players can manage different ship subsystems and crew members simultaneously.
+- **Optional 3D Orbital View (Three.js):** Toggle between the 2D 8-bit orbital map and a 3D spacecraft telemetry view.
+
+---
+
+## 7. Checklist Final antes de Pulsar "Submit" en la Plataforma
+
+- [ ] **Código en repositorio público (GitHub):** Verificar que `README.md` esté actualizado sin advertencias obsoletas y que GitHub Pages esté activado (`https://<usuario>.github.io/<repo>/`) para que los jueces puedan probar el juego con un solo clic sin tener que montar un servidor local.
+- [ ] **Video de 30 segundos subido:** Enlace público o *Unlisted* en YouTube/Vimeo (`0:00–0:30` exactos).
+- [ ] **Imágenes / Capturas del proyecto:** Subir 3–5 capturas nítidas: (1) Menú con Laika, (2) Hangar construyendo la nave, (3) Despegue pasando por *Max Q*, (4) Minijuego STS-125 capturando/reparando el Hubble, (5) Ventana de emergencia con radar y Reporte final con calificación.
+- [ ] **Campos del formulario en inglés:** Copiar los bloques en inglés de este documento en *High-Level Summary*, *Project Details*, *NASA Data* y *Tools Used*.
+- [ ] **Etiquetas / Tags sugeridos:** `space-mission-design`, `educational-game`, `sts-125`, `hubble`, `artemis`, `8-bit`, `javascript`, `html5-canvas`.
