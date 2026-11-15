@@ -201,7 +201,7 @@
     },
     "image": "assets/mission-lunar-8bit.png",
     "subtitle": "Polo sur lunar",
-    "playable": true,
+    "playable": false,
     "goTo": "a la Luna",
     "rocketId": "jaguar",
     "minScience": 0.5

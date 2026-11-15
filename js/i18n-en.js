@@ -496,7 +496,7 @@ window.LAIKA_EN = {
 "Fuga sellada y tanque reforzado.": "Leak sealed and tank reinforced.",
 "GIROSCOPIOS": "GYROSCOPES",
 "GIROSCOPIOS DEL HUBBLE": "HUBBLE'S GYROSCOPES",
-"Gana": "Gains",
+"Gana": "Win",
 "Genera la electricidad para todos los sistemas. Si consumes más de lo que generas, la nave no funciona.": "Generates electricity for every system. If you use more than you generate, the ship won't work.",
 "Generador de radioisótopos (RTG)": "Radioisotope generator (RTG)",
 "Gira el teléfono para jugar en grande": "Turn your phone to play full size",

@@ -4,7 +4,8 @@ import { computeShipStats, isAvailable, getSelectedComponents } from '../ship.js
 import { esc, avatar } from '../ui.js';
 import { sfx } from '../sfx.js';
 import { icon, drawIcon } from '../icons.js';
-import { drawShip, shipModel, shipSize } from './shipRenderer.js';
+import { shipModel, shipSize } from './shipRenderer.js';
+import { drawShipPixel } from './pixelShip.js';
 
 const HOTSPOTS = [
   { cat: 'structure', anchor: 'hull' },
@@ -156,7 +157,7 @@ export function renderHangar(root, ctx) {
       if (t >= 1) flash = null;
       else highlight = { anchor: flash.anchor, alpha: 1 - t, color: '#FFEC27' };
     }
-    anchors = drawShip(c2d, model, { x: cx, y: cy, scale, time: now / 1000, crewCount: 0, highlight });
+    anchors = drawShipPixel(c2d, model, { x: cx, y: cy, scale, time: now / 1000, crewCount: 0, highlight });
     const st = computeShipStats(design, level, data);
     const need = needsAttention(st);
     const blink = Math.floor(now / 300) % 2 === 0;

@@ -1,7 +1,8 @@
 // 8-bit orbital map. The scene is drawn at 1/PX resolution and upscaled with `image-rendering: pixelated`.
 // Text labels go on a full-resolution overlay canvas so they stay readable.
 // Ship events appear ON the ship part that failed, space events in open space, planet events on the surface.
-import { drawShip, shipModel } from './shipRenderer.js';
+import { shipModel, shipSize } from './shipRenderer.js';
+import { drawShipPixel, drawHubblePixel } from './pixelShip.js';
 import { drawIcon } from '../icons.js';
 import { drawPixelEarth } from './pixelEarth.js';
 
@@ -108,6 +109,8 @@ export class OrbitMap {
 
   /** Pixel Hubble (upright tube + two solar panels), snapped to the PX grid. */
   drawHubble(x, y, t) {
+    // Hubble en pixel art (tubo plateado, puerta abierta, paneles solares y antenas)
+    return drawHubblePixel(this.ctx, x, y, PX, t);
     const { ctx } = this;
     const u = PX;
     const R = (dx, dy, w, h, c) => {
@@ -188,9 +191,12 @@ export class OrbitMap {
     const rNorm = Math.hypot(sx - g.cx, sy - g.cy) / ((g.rx + g.ry) / 2);
     const target = BASE * (1 + 0.015 * (1 - rNorm)) + Math.sin(t * 1.7) * BASE * 0.0006;
     this.speed = this.speed ? this.speed + (target - this.speed) * 0.05 : target;
-    const shipScale = Math.max(0.6, Math.min(1.05, Math.min(w, h) / 500));
+    // tamaño de la nave: las naves grandes (con módulo habitable, motores largos) se dibujan más pequeñas
+    // para que todas ocupen más o menos lo mismo en el mapa
+    const sz = shipSize(this.model);
+    const shipScale = Math.max(0.4, Math.min(1.1, Math.min(w, h) / 480, (Math.min(w, h) * 0.12) / sz.w));
     const thrust = s.events.some(e => e.loc.type === 'ship' && e.loc.part === 'engine' && e.status === 'working');
-    const anchors = drawShip(ctx, this.model, { x: sx, y: sy, scale: shipScale, time: t, crewCount: s.crew.length, thrust });
+    const anchors = drawShipPixel(ctx, this.model, { x: sx, y: sy, scale: shipScale, time: t, crewCount: s.crew.length, thrust });
 
     // Mission target: the Hubble shares your orbit. Before capture it flies ahead,
     // while you work on it it stays next to your ship, and after release it drifts away.
@@ -201,7 +207,7 @@ export class OrbitMap {
       const captured = done(st('hubble_capture')) && !done(st('hubble_release'));
       const released = done(st('hubble_release'));
       if (captured) {
-        hubblePos = { x: sx + 4, y: sy - 78 * shipScale };
+        hubblePos = { x: sx + 4, y: sy - 96 * shipScale };
       } else {
         if (released && this.releasedAt == null) this.releasedAt = s.time;
         const ahead = released ? 0.35 + (s.time - this.releasedAt) * 0.02 : 0.42;
@@ -209,7 +215,7 @@ export class OrbitMap {
         hubblePos = { x: g.cx + Math.cos(ha) * g.rx, y: g.cy + Math.sin(ha) * g.ry };
       }
       this.drawHubble(hubblePos.x, hubblePos.y, t);
-      this.label('HUBBLE', hubblePos.x, hubblePos.y + 50, C.grey);
+      this.label('HUBBLE', hubblePos.x, hubblePos.y + 70, C.grey);
     }
 
     // Events
@@ -231,7 +237,7 @@ export class OrbitMap {
         pos = { x: g.cx + Math.cos(a) * g.rx, y: g.cy + Math.sin(a) * g.ry };
         drawIcon(ctx, 'satellite', pos.x, pos.y - 40, 36, C.grey);
       } else if (ev.loc.spot === 'hubble' && hubblePos) {
-        pos = { x: hubblePos.x + 62, y: hubblePos.y - 6 };
+        pos = { x: hubblePos.x + 78, y: hubblePos.y - 6 };
         link = { x: hubblePos.x + 16, y: hubblePos.y };
       } else if (ev.loc.spot) {
         pos = this.spotPosition(ev.loc.spot);

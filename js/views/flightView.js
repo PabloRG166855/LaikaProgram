@@ -6,6 +6,7 @@
 //   - shielding                       -> softens the damage of a rough flight
 import { computeShipStats, getSelectedComponents } from '../ship.js';
 import { drawShip, shipModel, shipSize } from './shipRenderer.js';
+import { pixelize } from './pixelShip.js';
 import { icon } from '../icons.js';
 import { sfx, sfxNoise } from '../sfx.js';
 import { esc, avatar } from '../ui.js';
@@ -85,7 +86,8 @@ export function renderFlight(root, { data, level, design, onDone }) {
   const shipImg = document.createElement('canvas');
   shipImg.width = Math.ceil(size.w) + 12;
   shipImg.height = Math.ceil(size.h) + 12;
-  drawShip(shipImg.getContext('2d'), model, { x: shipImg.width / 2, y: shipImg.height / 2, scale: 1, time: 0, crewCount: 0 });
+  drawShip(shipImg.getContext('2d', { willReadFrequently: true }), model, { x: shipImg.width / 2, y: shipImg.height / 2, scale: 1, time: 0, crewCount: 0 });
+  pixelize(shipImg); // mismo estilo pixel que en el mapa
 
 
   root.innerHTML = `
