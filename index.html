@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Laika Program — Space Mission Design Game</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/retro.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-icon" id="brand-laika"></div>
+      <div>
+        <div class="brand-name">LAIKA PROGRAM <span class="tag-event">NASA SPACE APPS 2026</span></div>
+        <div class="brand-sub">Space Mission Design Game · Directora de vuelo: Laika (tú)</div>
+      </div>
+    </div>
+    <nav class="steps" id="steps">
+      <span class="step" data-step="menu">1. Misión</span>
+      <span class="step" data-step="design">2. Hangar</span>
+      <span class="step" data-step="mission">3. Consola</span>
+      <span class="step" data-step="report">4. Reporte</span>
+    </nav>
+  </header>
+  <div id="app">
+    <section id="screen-menu" class="screen"></section>
+    <section id="screen-design" class="screen full hidden"></section>
+    <section id="screen-crew" class="screen hidden"></section>
+    <section id="screen-launch" class="screen full hidden"></section>
+    <section id="screen-mission" class="screen full hidden"></section>
+    <section id="screen-report" class="screen hidden"></section>
+  </div>
+  <div id="modal" class="modal hidden"><div class="modal-box" id="modal-box"></div></div>
+  <div id="toasts"></div>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
