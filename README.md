@@ -1,4 +1,4 @@
-# 🐕‍🚀 LAIKA PROGRAM — Space Mission Design Game
+# LAIKA PROGRAM — Space Mission Design Game
 
 An 8-bit space mission design and astronaut operations game built for the **NASA Space Apps Challenge** (*Space Mission Design Game / Mission Astronaut*). Written in pure **HTML5, CSS3, and JavaScript (ES modules)** with no external libraries or build steps. All missions, rockets, components, crew, and events live in `data/*.json`.
 
