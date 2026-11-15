@@ -10,6 +10,43 @@ You play as **Laika**, Flight Director, guiding **17 cartoon animal astronauts**
 
 ---
 
+## <img src="assets/readme/question.png" width="28" height="28" alt=""> Project Details
+
+### What exactly does it do?
+
+Laika Program is a free browser game that lets anyone **plan and fly a real space mission**. The player designs a spacecraft, chooses a crew of animal astronauts, launches it into orbit and runs the mission from the flight director's console. The playable mission recreates **STS-125 (May 2009)**, the last time astronauts visited the Hubble Space Telescope: the player catches the Hubble, replaces its camera, gyroscopes and batteries, repairs its spectrograph, releases it and lands back on Earth. Every step uses real NASA facts and photos, and the game ends with a graded report that explains what went well and what to improve.
+
+### How does it work?
+
+- **Design with real trade-offs:** the ship must stay under the rocket's lift capacity, generate enough power, carry an engine and shield strong enough for the destination, and produce enough science. Bars with MIN/MAX markers show each limit, and Laika explains every part.
+- **Crew with skills:** each animal astronaut has Speed, Analysis, Technical and Calm. During the mission, problems appear on the map and the player sends the crew member whose skills best cover what the problem needs. Fatigue, blackouts and lost signal make the decisions matter.
+- **Hands-on minigames:** the main objectives are short one-button minigames based on the real spacewalk tasks: aligning, timing and holding, like the astronauts did.
+- **Under the hood:** all content lives in JSON files; plain JavaScript modules calculate the ship's stats, simulate the mission and grade the result; the visuals are pixel art drawn on HTML canvas; and the minigames send their results back to the mission. Everything runs in the browser, with no installation.
+
+### What benefits does it have?
+
+Its main benefit is **education through play**:
+
+- **Engineering thinking:** players learn that every mission is a balance of mass, power, protection and science, and that a better design comes from testing, failing and improving.
+- **Real space history:** players learn about STS-125, the Hubble telescope and the real animals that opened the way to space, through real NASA and ESA/Hubble photos and facts.
+- **Science concepts made simple:** orbital speed, Max Q, inertia in space, why Hubble needs gyroscopes, how color photos are made with filters, and how a spectrograph reveals what stars are made of.
+- **Teamwork and decision-making:** choosing the right person for each problem and managing fatigue teaches how real crews and mission control work together.
+- **Accessible to everyone:** it is free, runs in any modern web browser with nothing to install, uses one-button controls, is available in English and Spanish, and uses gentle, photosensitivity-safe alerts.
+
+### What do you hope to achieve?
+
+We want to **spark curiosity about space and STEM** in children, students and the general public, especially people who don't have a technical background. We hope players understand that space missions are planned by people who make choices, solve problems and learn from mistakes, and that NASA's open data can become an exciting, playable story. Next, we want to add the Moon (Artemis) and Mars missions, more languages and versions for classrooms.
+
+### What tools, coding languages, hardware, or software did you use?
+
+- **Languages:** HTML5, CSS3 and JavaScript (ES modules), with JSON for all game data.
+- **Web technologies:** Canvas 2D for the pixel art, SVG for the crew portraits and icons, the Web Audio API for chiptune sounds, and `postMessage` to connect the minigames with the mission. No frameworks or build step.
+- **Data and assets:** NASA Image and Video Library, NASA STS-125 / Hubble SM4 pages, ESA/Hubble images, Natural Earth map data, *Press Start 2P* and *VT323* fonts, and *Pixelarticons*.
+- **Development and testing:** Git and GitHub for collaboration, Node.js with Puppeteer for automated play-testing and language checks, Python and ImageMagick to prepare images and map data, the balance simulator in `tools/simulate.mjs`, and an AI coding assistant (Claude Code) to help write and review code.
+- **Hosting and hardware:** deployed as a static site on Vercel; built on regular laptops and playable on any computer with a modern web browser.
+
+---
+
 ## <img src="assets/readme/rocket.png" width="28" height="28" alt=""> How to Run & Publish
 
 The game loads `data/*.json` with `fetch()`, so it needs an HTTP server (opening `index.html` directly from disk will not work):
