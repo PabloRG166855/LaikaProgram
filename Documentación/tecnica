@@ -1,0 +1,203 @@
+# Documentación Técnica y del Juego — LAIKA PROGRAM
+
+Documentación unificada, actualizada y verificada contra el código fuente actual de **LAIKA PROGRAM** (prototipo para el **NASA Space Apps Challenge**, reto *Space Mission Design Game*). Este documento corrige las discrepancias históricas del `README.md` original para reflejar fielmente la versión entregable.
+
+---
+
+## 1. Visión General
+
+**LAIKA PROGRAM** es un juego web de diseño de misiones espaciales y operaciones en vuelo hecho con **HTML5, CSS3 y JavaScript puro (ES Modules)**, sin frameworks ni dependencias externas. Todo el contenido jugable (misiones, componentes, cohetes, tripulación, eventos y objetivos principales) reside en archivos declarativos `data/*.json`.
+
+- **Directora de vuelo:** **Laika**, quien guía al jugador desde la pantalla de inicio, explica cada subsistema en el hangar, acompaña el despegue y entrega retroalimentación al final de la misión.
+- **Tripulación:** **17 animales astronautas** caricaturescos inspirados en los pioneros reales del espacio (Belka, Zvezdochka, Ham, Enos, Strelka, Albert II, Héctor, Félicette, Marfusha, Miss Baker, Arabella, Gordo, Veterok, Zondy, Ugolyok, Able y Chernushka), repartidos en **8 roles** y **9 especies** dibujadas por código en `js/views/animals.js`.
+- **Bilingüe (`EN / ES`):** Inicia en inglés por defecto y permite cambiar entre **Inglés** y **Español** en cualquier momento mediante el botón `EN | ES` (`js/i18n.js` y `js/i18n-en.js`), sincronizado en `localStorage` tanto en la app principal como en los minijuegos STS-125.
+
+---
+
+## 2. Cómo Ejecutarlo y Publicarlo
+
+Dado que el juego carga los archivos `data/*.json` mediante `fetch`, requiere un servidor HTTP local (no funciona abriendo `index.html` directamente con `file://`):
+
+```bash
+# Opción 1 (Node.js)
+npx serve .
+
+# Opción 2 (Python)
+python3 -m http.server 8000
+
+# Opción 3: Extensión "Live Server" en VS Code
+```
+
+### Publicación para Jueces (Recomendado)
+Subir el repositorio tal cual a **GitHub Pages** o empaquetarlo como proyecto HTML para **itch.io**. No requiere paso de compilación (`build`).
+
+---
+
+## 3. Estética 8 Bits, Renderizado y Audio
+
+- **Paleta y tema (`css/retro.css`):** Paleta PICO-8 de 16 colores, bordes marcados sin esquinas redondeadas, sombras duras y botones con bisel retro.
+- **Tipografías locales (`assets/fonts/`):** *Press Start 2P* (títulos/botones) y *VT323* (textos), incluidas localmente bajo **SIL Open Font License 1.1** para funcionar incluso sin conexión a internet.
+- **Iconografía (`js/icons.js`):** Conjunto *Pixelarticons* (MIT License, `assets/LICENSE-pixelarticons.txt`) más 6 íconos espaciales propios (`rocket`, `satellite`, `orbit`, `mountain`, `antenna`, `telescope`).
+- **Pixelado real (`PX = 3`):** El hangar (`js/views/hangarView.js`) y el mapa orbital (`js/views/orbitMap.js`) renderizan el canvas principal a 1/3 de la resolución de pantalla y lo escalan sin suavizado (`imageSmoothingEnabled = false`), mientras que un canvas superpuesto (`map-overlay`) dibuja etiquetas de texto nítidas. Los retratos SVG de la tripulación se cuantizan a sprites de 40×40 píxeles con la paleta PICO-8 al iniciar (`prepareSprites` en `js/views/animals.js`).
+- **Audio Chiptune (`js/sfx.js`):** Todos los efectos sonoros (`click`, `tick`, `select`, `success`, `fail`, `alert`, `objective`, `blip`, `launch`, `win`, `lose` y `sfxNoise`) se sintetizan en tiempo real mediante **Web Audio API** (ondas cuadradas, triangulares, diente de sierra y ruido filtrado), sin archivos de audio externos. Botón de silencio en la esquina superior izquierda (`#sfx-toggle`).
+
+---
+
+## 4. Misiones y Niveles (`data/levels.json`)
+
+| Nivel | Título | Destino | Estado | Cohete asignado (`rockets.json`) | Duración | Puestos de tripulación | Meta científica |
+|---|---|---|---|---|---|---|---|
+| `easy` | **Misión 1: Salva el Hubble** | Órbita terrestre baja (`LEO`) | **Jugable** | **Cóndor L** (8,000 kg máx.) | 150 s | Comandante, Piloto, Especialista (caminatas) | 500 |
+| `medium` | **Misión 2: Expedición a la Luna** | Polo sur lunar (`MOON`) | **Jugable** | **Jaguar H** (18,000 kg máx. en Luna) | 150 s | Comandante, Piloto, Ciencia | 600 |
+| `hard` | **Misión tripulada a Marte** | Marte (`MARS`) | **Próximamente** (`playable: false`) | **Titán SH** (30,000 kg máx. en Marte) | 270 s | Comandante, Piloto, Ingeniería, Médico, Ciencia | 1,200 |
+
+> **Nota sobre presupuesto:** En la versión final del juego **no hay dinero ni precios** para el jugador. Cada misión asigna un cohete específico (`rocketId`), la tripulación es gratuita y el desafío de diseño consiste en equilibrar **peso total (`kg`)**, **generación/consumo eléctrico (`kW`)**, **empuje**, **blindaje** y **transmisión de datos científicos**.
+
+---
+
+## 5. Flujo Completo del Juego (5 Fases)
+
+### Fase 1: Menú Principal (`js/views/menuView.js`)
+Presentación de Laika, resumen visual de los 4 pasos del juego y tarjetas para lanzar las misiones jugables (*Salva el Hubble* y *Expedición a la Luna*) o previsualizar *Marte* ("Próximamente").
+
+### Fase 2: Hangar y Diseño de Nave (`js/views/hangarView.js` + `js/ship.js`)
+- La nave se renderiza en tiempo real en el centro (`js/views/shipRenderer.js`) y destella al cambiar cada componente.
+- El catálogo tiene **10 categorías y 30 componentes** (`data/components.json`):
+  - **6 categorías configurables por el jugador:** Estructura/Cabina (`structure`), Propulsión (`propulsion`), Energía (`power`), Comunicaciones (`comms`), Blindaje (`shielding`) e Instrumentos (`instruments`, multiselección).
+  - **4 categorías automáticas (`"auto": true`):** Baterías (`battery`), Soporte vital (`life_support`), Computadora (`computer`) y Control de orientación (`attitude`).
+- **Validaciones en `computeShipStats()` (`js/ship.js`):**
+  1. **Peso total (`componentMass + crew.length * crewMassPerPersonKg`):** No puede superar la capacidad del cohete para ese destino (`rocketCapacity`).
+  2. **Energía:** `powerUse <= powerGen`.
+  3. **Propulsión y Blindaje:** Deben alcanzar `level.minPropulsion` y `level.minShielding`.
+  4. **Ciencia mínima:** Al menos 1 instrumento y ciencia proyectada (`scienceRate * durationSec * sentFraction`) igual o superior a `scienceGoal * minScience`.
+  5. **Fracción transmitida (`sentFraction`):** `Math.min(1, sendRate / dataRate)`, donde `sendRate = comms / level.commsFactor`. Si la antena es débil respecto a los instrumentos, parte de la ciencia generada se pierde y aparece una advertencia.
+
+### Fase 3: Selección de Tripulación (`js/views/crewView.js`)
+- Un asiento por rol requerido en `level.crewSlots`.
+- Muestra retrato SVG/pixel, rol, biografía histórica y barras de habilidades (**Rapidez ⚡**, **Análisis 🧠**, **Técnica 🔧**, **Calma 🧘**) sin sobrecargar de cifras, junto con una gráfica radar promedio del equipo.
+
+### Fase 4: Lanzamiento y Puesta en Órbita (`js/views/flightView.js`)
+Si la misión incluye `briefing` (como la **Misión 1: Salva el Hubble**), muestra la ficha histórica de la tripulación real del *Atlantis* antes del encendido. Luego inicia un minijuego de 3 etapas con un solo botón (`ESPACIO` / clic / toque) y opción **Saltar**:
+1. **Despegue:** Mantener la potencia en la zona verde y **bajar empuje al atravesar Max Q**.
+2. **Separación:** Soltar la primera etapa cuando el anillo coincide con el círculo verde; la cofia se abre revelando la nave exacta construida en el hangar.
+3. **Encendido orbital:** Activar el motor cuando el anillo toca el blanco verde para entrar en órbita.
+
+**El diseño importa en el vuelo:**
+- Mayor carga (`totalMass / rocketCapacity`) estrecha la ventana verde de *Max Q* y reduce la velocidad de ascenso.
+- Un mejor motor (`propulsionLevel` 1–3) amplía la tolerancia de captura en el encendido orbital (`ringTol`).
+- El blindaje atenúa el daño por un vuelo turbulento (que reduce la integridad inicial al entrar en órbita).
+
+### Fase 5: Simulación de Misión (`js/views/missionView.js` + `js/missionEngine.js`)
+- **HUD de Misión:** Barra superior con línea de tiempo y marcadores de objetivos principales; columna derecha con medidores de 8 bloques (**Nave**, **Energía**, **Aire**, **Ciencia**); panel inferior con tarjetas de estado y fatiga de la tripulación.
+- **Tres tipos de eventos en el mapa orbital:**
+  1. **Objetivos principales (`data/mainEvents.json`):** Columna vertebral de la misión.
+     - En **Misión 1 (Salva el Hubble)**, los 6 objetivos lanzan los **5 minijuegos históricos STS-125** (`minigames/sts125/`) en `iframe` con `?embed=1`, pausando el reloj principal hasta volver a la misión:
+       - `hubble_capture` → `sts125-captura` (Captura con el brazo robótico Canadarm).
+       - `hubble_camera` → `sts125-camara` (Tornillo atascado e instalación de WFC3).
+       - `hubble_gyros` → `sts125-giroscopios` (Cambio de 6 giroscopios y baterías).
+       - `hubble_stis` → `sts125-espectrografo` (111 tornillos y reparación del STIS).
+       - `hubble_release` → `sts125-adios?part=release` (Liberación del telescopio).
+       - `hubble_landing` → `sts125-adios?part=land` (Aterrizaje del *Atlantis* en Base Edwards).
+  2. **Reparaciones de nave con minijuego (`js/views/repairGame.js`):** 10 de los 20 eventos de `data/events.json` representan fallas técnicas (antena, batería en eclipse, filtro de CO₂, computadora, sobrecalentamiento, micrometeorito, instrumento atascado, fuga de combustible, estrella guía y falla eléctrica) y se resuelven con 4 mecánicas rápidas de un botón: `aim`, `charge`, `tap` y `patch`.
+  3. **Eventos y emergencias estilo *Dispatch* (`missionView.js`):** Se abre una ventana comparando el polígono **amarillo** (perfil requerido por el evento) contra el **azul** (equipo seleccionado de hasta 2 tripulantes).
+- **Fórmula de probabilidad de éxito (`calcChance` en `js/missionEngine.js`):**
+  - Base: `78 %`
+  - Déficit: `−8 %` por cada punto de habilidad faltante respecto al perfil requerido.
+  - Exceso: `+1 %` por cada 2 puntos sobrantes (tope `+6 %`).
+  - Especialista: `+8 %` si algún miembro asignado tiene un rol listado en `specialties`.
+  - Fatiga: `−0.25 × fatigaPromedio`.
+  - Bonos de componentes (`eventMods`).
+  - Acotado entre `5 %` y `95 %`.
+  - **Trabajo en equipo (`MAX_TEAM = 2`):** Usa la mejor habilidad de cada integrante en cada eje y completa la tarea **20 % más rápido** (`× 0.8`). Con fatiga `>= 80 %`, el tripulante queda agotado y sus tareas tardan **50 % más** (`× 1.5`).
+- **Estados temporales por fallas (`missionEngine.js`):**
+  - `blackout`: Energía en `0`, consola bloqueada para asignar tareas, trabajo en curso congelado y sin generación de ciencia.
+  - `commsDown`: La ciencia generada no se transmite (`dataSent` no avanza).
+  - `sensorsDown`: Se detiene la generación de ciencia y datos.
+  - `crewOut`: Un tripulante queda fuera de servicio temporalmente.
+  - `fatigueAll`: Añade fatiga adicional a toda la tripulación.
+- **Condición de aborto:** Si la integridad de la nave llega a `0`, la misión se aborta de inmediato y recibe calificación `F`.
+
+### Fase 6: Reporte Final (`js/report.js` + `js/views/reportView.js`)
+- **Puntuación sobre 100 puntos (`js/report.js`):**
+  - Objetivos principales cumplidos: **35 pts**
+  - Ciencia obtenida vs. meta (`scienceGoal`): **25 pts**
+  - Integridad final de la nave: **15 pts**
+  - Éxito en eventos aleatorios: **25 pts**
+- **Escala de calificación:** `A >= 85` (3 estrellas), `B >= 70` (2 estrellas), `C >= 55` (2 estrellas), `D >= 40` (1 estrella), `F < 40` o misión abortada (0 estrellas).
+- Incluye resumen de logros/causas, consejo personalizado de Laika, ficha de comparación con la misión real de la NASA y botón **"Mejorar mi nave y repetir"** conservando el diseño previo.
+
+---
+
+## 6. Estructura del Repositorio
+
+```text
+LaikaProgram/
+├── index.html                  # Entrada principal de la aplicación
+├── README.md                   # Documentación de referencia del repo
+├── css/
+│   ├── style.css               # Layout y pantallas base
+│   ├── retro.css               # Tema visual 8 bits (paleta PICO-8)
+│   └── fixes.css               # Ajustes de responsividad y overlays
+├── data/
+│   ├── levels.json             # 3 niveles (LEO Hubble, Luna, Marte)
+│   ├── rockets.json            # 4 cohetes (Cóndor L, Quetzal M, Jaguar H, Titán SH)
+│   ├── components.json         # 10 categorías y 30 componentes de nave
+│   ├── crew.json               # Laika + 8 roles + 17 animales astronautas
+│   ├── events.json             # 20 eventos aleatorios y fallas reparables
+│   └── mainEvents.json         # 21 objetivos principales entre los 3 niveles
+├── js/
+│   ├── main.js                 # Enrutador de pantallas e inicialización
+│   ├── data.js                 # Carga paralela de JSON
+│   ├── ship.js                 # LÓGICA PURA: stats y validación de diseño
+│   ├── missionEngine.js        # LÓGICA PURA: simulación en tiempo real
+│   ├── report.js               # LÓGICA PURA: puntaje, grados y análisis
+│   ├── i18n.js / i18n-en.js    # Motor de traducción en vivo ES <-> EN
+│   ├── icons.js                # Pixelarticons + 6 íconos espaciales propios
+│   ├── sfx.js                  # Sintetizador chiptune (Web Audio API)
+│   ├── ui.js / util.js / earthMap.js
+│   └── views/                  # Vistas DOM y Canvas (sin lógica de negocio)
+│       ├── menuView.js
+│       ├── hangarView.js
+│       ├── crewView.js
+│       ├── flightView.js
+│       ├── missionView.js
+│       ├── orbitMap.js
+│       ├── pixelEarth.js
+│       ├── repairGame.js
+│       ├── reportView.js
+│       ├── shipRenderer.js
+│       └── animals.js
+├── minigames/sts125/           # 5 minijuegos históricos independientes/embebidos
+│   ├── index.html
+│   ├── shared/                 # Engine pixel, sprites STS-125, íconos y fotos NASA
+│   ├── sts125-captura/
+│   ├── sts125-camara/
+│   ├── sts125-giroscopios/
+│   ├── sts125-espectrografo/
+│   └── sts125-adios/
+├── assets/                     # Fuentes locales (OFL), licencia MIT y fondos 8-bit / NASA
+├── tools/
+│   └── simulate.mjs            # Simulador headless en Node.js para balanceo
+└── Documentos/                 # Paquete de documentación y entrega NASA Space Apps
+```
+
+---
+
+## 7. Pruebas de Balance y Extensibilidad
+
+### Simulador de Balance (`tools/simulate.mjs`)
+Permite verificar rápidamente que los diseños válidos puedan completar cada misión con tasas realistas de éxito:
+
+```bash
+# Simulación estándar (200 partidas por nivel, tiempo de reacción 1.5 s)
+node tools/simulate.mjs 200
+
+# Simulación exigente (reacción humana simulada de 5 s, 300 partidas)
+REACTION=5 node tools/simulate.mjs 300
+```
+
+### Cómo Agregar Contenido sin Tocar Código
+- **Nuevo componente:** Añadir entrada en `data/components.json` con `category`, `mass`, `cost` y atributos (`powerGen`, `powerUse`, `crewMax`, `propulsion`, `lifeSupport`, `comms`, `shielding`, `science`, `data`, `batteryMult`, `drainMult`, `destinations`, `eventMods`, `eventWeights`).
+- **Nuevo evento / falla:** Añadir objeto en `data/events.json` (o `data/mainEvents.json`) definiendo `location` (`ship` + `part`, `space` + `trajectory`/`spot`, o `planet`), `options` y opcionalmente `minigame` (`aim`, `charge`, `tap`, `patch`).
+- **Nuevo astronauta:** Añadir entrada en `data/crew.json` dentro de `members` indicando `species`, `look`, `role` y `stats` (`tech`, `analysis`, `speed`, `calm`).
+- **Traducción:** Añadir cadenas nuevas al diccionario `window.LAIKA_EN` en `js/i18n-en.js`.
