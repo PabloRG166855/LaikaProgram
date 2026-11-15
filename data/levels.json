@@ -1,0 +1,313 @@
+[
+  {
+    "id": "easy",
+    "name": "Misión 1",
+    "title": "Salva el Hubble",
+    "destination": "LEO",
+    "destinationName": "el Hubble",
+    "bodyName": "Tierra",
+    "bodyColor": "#29ADFF",
+    "bodyColor2": "#1D2B53",
+    "description": "Vuela alrededor de la Tierra hasta el telescopio Hubble: atrápalo, cámbiale piezas y déjalo listo para seguir mirando el universo. Basada en la misión real STS-125 (2009).",
+    "budget": 1000,
+    "crewSlots": [
+      {
+        "id": "cmd",
+        "label": "Comandante",
+        "roles": [
+          "commander"
+        ]
+      },
+      {
+        "id": "plt",
+        "label": "Piloto",
+        "roles": [
+          "pilot"
+        ]
+      },
+      {
+        "id": "spc",
+        "label": "Especialista (caminatas)",
+        "roles": [
+          "mission_specialist",
+          "flight_engineer",
+          "payload_specialist"
+        ]
+      }
+    ],
+    "mainEvents": [
+      {
+        "id": "hubble_capture",
+        "at": 6
+      },
+      {
+        "id": "hubble_camera",
+        "at": 36
+      },
+      {
+        "id": "hubble_gyros",
+        "at": 66
+      },
+      {
+        "id": "hubble_stis",
+        "at": 96
+      },
+      {
+        "id": "hubble_release",
+        "at": 126
+      },
+      {
+        "id": "hubble_landing",
+        "at": 140
+      }
+    ],
+    "durationSec": 150,
+    "crewMassPerPersonKg": 300,
+    "minPropulsion": 1,
+    "minShielding": 1,
+    "commsFactor": 1,
+    "lifeSupportDrain": 0.4,
+    "scienceGoal": 500,
+    "difficultyBonus": 0,
+    "eventInterval": [
+      12,
+      18
+    ],
+    "firstEventAt": 22,
+    "eventTimeoutMult": 1.4,
+    "maxActiveEvents": 2,
+    "pauseOnDecision": true,
+    "realMission": {
+      "name": "STS-125 · Última visita de astronautas al Hubble (mayo de 2009)",
+      "text": "7 astronautas viajaron en el transbordador Atlantis: el comandante Scott Altman, el piloto Gregory C. Johnson y los especialistas Megan McArthur, John Grunsfeld, Mike Massimino, Andrew Feustel y Michael Good. Hicieron 5 caminatas espaciales (36 h 56 min en total): instalaron la cámara WFC3 y el espectrógrafo COS, repararon el STIS y el ACS, y cambiaron 6 giroscopios y 6 baterías.",
+      "photo": "assets/hubble/tripulacion.jpg",
+      "caption": "La tripulación de la STS-125 a bordo del Atlantis, 20 may 2009 (NASA, S125-E-012154)."
+    },
+    "image": "assets/mission-hubble-8bit.png",
+    "subtitle": "Telescopio Hubble · órbita terrestre",
+    "playable": true,
+    "goTo": "al Hubble",
+    "target": "hubble",
+    "bodyPatches": "#00E436",
+    "rocketId": "condor",
+    "minScience": 0.5,
+    "briefing": {
+      "img": "assets/hubble/tripulacion.jpg",
+      "cap": "La tripulación de la STS-125 a bordo del Atlantis, 20 may 2009 (NASA, S125-E-012154).",
+      "kicker": "La misión real · 11 may 2009",
+      "title": "7 astronautas van a salvar el Hubble",
+      "rows": [
+        [
+          "Nave",
+          "Transbordador Atlantis"
+        ],
+        [
+          "Despegue",
+          "11 may 2009, desde Florida"
+        ],
+        [
+          "Comandante",
+          "Scott Altman"
+        ],
+        [
+          "Piloto",
+          "Gregory C. Johnson"
+        ],
+        [
+          "Especialistas",
+          "M. McArthur, J. Grunsfeld, M. Massimino, A. Feustel y M. Good"
+        ]
+      ],
+      "note": "Dos días después del despegue alcanzaron al telescopio. Ahora tú diriges una misión como la suya."
+    }
+  },
+  {
+    "id": "medium",
+    "name": "Misión 2",
+    "title": "Expedición a la Luna",
+    "destination": "MOON",
+    "destinationName": "la Luna",
+    "bodyName": "Luna",
+    "bodyColor": "#cbd5e1",
+    "bodyColor2": "#475569",
+    "description": "Lleva a tu tripulación a la Luna, aterriza, recoge muestras y regresa a casa.",
+    "budget": 1300,
+    "crewSlots": [
+      {
+        "id": "cmd",
+        "label": "Comandante",
+        "roles": [
+          "commander"
+        ]
+      },
+      {
+        "id": "plt",
+        "label": "Piloto",
+        "roles": [
+          "pilot"
+        ]
+      },
+      {
+        "id": "sci",
+        "label": "Ciencia",
+        "roles": [
+          "geologist",
+          "mission_specialist",
+          "payload_specialist"
+        ]
+      }
+    ],
+    "mainEvents": [
+      {
+        "id": "tli_burn",
+        "at": 5
+      },
+      {
+        "id": "lunar_orbit",
+        "at": 33
+      },
+      {
+        "id": "lunar_landing",
+        "at": 62
+      },
+      {
+        "id": "moonwalk",
+        "at": 90
+      },
+      {
+        "id": "lunar_ascent",
+        "at": 120
+      }
+    ],
+    "durationSec": 150,
+    "crewMassPerPersonKg": 800,
+    "minPropulsion": 2,
+    "minShielding": 1,
+    "commsFactor": 1.5,
+    "lifeSupportDrain": 0.45,
+    "scienceGoal": 600,
+    "difficultyBonus": 1,
+    "eventInterval": [
+      12,
+      18
+    ],
+    "firstEventAt": 18,
+    "eventTimeoutMult": 1.1,
+    "maxActiveEvents": 2,
+    "pauseOnDecision": true,
+    "realMission": {
+      "name": "Programa Artemis",
+      "text": "Artemis busca regresar astronautas a la Luna y estudiar su polo sur. Igual que tú, debe equilibrar masa, energía y seguridad de la tripulación."
+    },
+    "image": "assets/mission-lunar-8bit.png",
+    "subtitle": "Polo sur lunar",
+    "playable": true,
+    "goTo": "a la Luna",
+    "rocketId": "jaguar",
+    "minScience": 0.5
+  },
+  {
+    "id": "hard",
+    "name": "Difícil",
+    "title": "Misión tripulada a Marte",
+    "destination": "MARS",
+    "destinationName": "Marte",
+    "bodyName": "Marte",
+    "bodyColor": "#f97316",
+    "bodyColor2": "#7c2d12",
+    "description": "La misión más exigente: tripulación grande, radiación intensa y la Tierra a minutos-luz de distancia. Necesitas el mejor equipo.",
+    "budget": 2300,
+    "crewSlots": [
+      {
+        "id": "cmd",
+        "label": "Comandante",
+        "roles": [
+          "commander"
+        ]
+      },
+      {
+        "id": "plt",
+        "label": "Piloto",
+        "roles": [
+          "pilot"
+        ]
+      },
+      {
+        "id": "eng",
+        "label": "Ingeniería",
+        "roles": [
+          "flight_engineer",
+          "life_support_engineer"
+        ]
+      },
+      {
+        "id": "med",
+        "label": "Médico",
+        "roles": [
+          "medical_officer"
+        ]
+      },
+      {
+        "id": "sci",
+        "label": "Ciencia",
+        "roles": [
+          "geologist",
+          "mission_specialist",
+          "payload_specialist"
+        ]
+      }
+    ],
+    "mainEvents": [
+      {
+        "id": "tmi_burn",
+        "at": 8
+      },
+      {
+        "id": "mcc",
+        "at": 50
+      },
+      {
+        "id": "mars_entry",
+        "at": 95
+      },
+      {
+        "id": "mars_landing",
+        "at": 130
+      },
+      {
+        "id": "mars_explore",
+        "at": 175
+      },
+      {
+        "id": "mars_return",
+        "at": 225
+      }
+    ],
+    "durationSec": 270,
+    "crewMassPerPersonKg": 2200,
+    "minPropulsion": 3,
+    "minShielding": 2,
+    "commsFactor": 3,
+    "lifeSupportDrain": 0.5,
+    "scienceGoal": 1200,
+    "difficultyBonus": 1,
+    "eventInterval": [
+      9,
+      13
+    ],
+    "firstEventAt": 18,
+    "eventTimeoutMult": 1.0,
+    "maxActiveEvents": 2,
+    "pauseOnDecision": false,
+    "realMission": {
+      "name": "Arquitectura de NASA para Marte (Moon to Mars)",
+      "text": "NASA estudia cómo enviar humanos a Marte. Los grandes retos son los mismos de tu misión: radiación, soporte vital por meses y comunicaciones con retraso."
+    },
+    "image": "assets/mission-mars-8bit.png",
+    "subtitle": "Antiguo lago marciano",
+    "playable": false,
+    "goTo": "a Marte",
+    "rocketId": "titan",
+    "minScience": 0.5
+  }
+]

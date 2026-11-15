@@ -1,0 +1,383 @@
+{
+  "director": {
+    "id": "laika",
+    "name": "Laika",
+    "species": "dog",
+    "look": {
+      "fur": "#f5efe6",
+      "fur2": "#b07a45",
+      "ears": "pointy",
+      "patch": true,
+      "accent": "#22d3ee"
+    },
+    "title": "Directora de vuelo (¡tú!)",
+    "bio": "Inspirada en Laika, la perrita soviética que en 1957 (Sputnik 2) fue el primer animal en orbitar la Tierra. Hoy dirige el programa desde la consola."
+  },
+  "roles": {
+    "commander": {
+      "name": "Comandante",
+      "icon": "⭐",
+      "desc": "Lidera a la tripulación, toma decisiones bajo presión y coordina con control de misión.",
+      "ico": "star"
+    },
+    "pilot": {
+      "name": "Piloto",
+      "icon": "🕹️",
+      "desc": "Controla maniobras, acoplamientos, descensos y aterrizajes.",
+      "ico": "compass"
+    },
+    "flight_engineer": {
+      "name": "Ingeniero(a) de vuelo",
+      "icon": "🔧",
+      "desc": "Mantiene y repara la nave: energía, motores, computadoras y comunicaciones.",
+      "ico": "wrench"
+    },
+    "life_support_engineer": {
+      "name": "Ingeniero(a) de soporte vital",
+      "icon": "🫁",
+      "desc": "Cuida el aire, el agua y la temperatura de la cabina.",
+      "ico": "wind"
+    },
+    "mission_specialist": {
+      "name": "Especialista de misión",
+      "icon": "🔬",
+      "desc": "Científico(a) a cargo de los experimentos y las observaciones.",
+      "ico": "microscope"
+    },
+    "payload_specialist": {
+      "name": "Especialista de carga útil",
+      "icon": "📡",
+      "desc": "Opera, calibra y repara los instrumentos científicos.",
+      "ico": "satellite-dish"
+    },
+    "geologist": {
+      "name": "Geólogo(a) planetario(a)",
+      "icon": "🪨",
+      "desc": "Estudia rocas y suelo de otros mundos y elige qué muestras traer.",
+      "ico": "gem"
+    },
+    "medical_officer": {
+      "name": "Oficial médico",
+      "icon": "🩺",
+      "desc": "Cuida la salud física y mental de la tripulación.",
+      "ico": "stethoscope"
+    }
+  },
+  "members": [
+    {
+      "id": "belka",
+      "name": "Belka",
+      "species": "dog",
+      "look": {
+        "fur": "#f8fafc",
+        "fur2": "#cbd5e1",
+        "ears": "pointy"
+      },
+      "role": "commander",
+      "stats": {
+        "tech": 6,
+        "analysis": 7,
+        "speed": 6,
+        "calm": 9
+      },
+      "cost": 60,
+      "bio": "Veterana. Orbitó la Tierra en el Sputnik 5 (1960) y regresó sana y salva."
+    },
+    {
+      "id": "zvezdochka",
+      "name": "Zvezdochka",
+      "species": "dog",
+      "look": {
+        "fur": "#e7c9a0",
+        "fur2": "#6b4423",
+        "ears": "floppy"
+      },
+      "role": "commander",
+      "stats": {
+        "tech": 5,
+        "analysis": 5,
+        "speed": 6,
+        "calm": 7
+      },
+      "cost": 35,
+      "bio": "Voló en la última prueba antes de Gagarin (1961). Primera vez al mando."
+    },
+    {
+      "id": "ham",
+      "name": "Ham",
+      "species": "chimp",
+      "look": {
+        "fur": "#3f2a1d",
+        "face": "#e8c4a0"
+      },
+      "role": "pilot",
+      "stats": {
+        "tech": 7,
+        "analysis": 5,
+        "speed": 9,
+        "calm": 7
+      },
+      "cost": 55,
+      "bio": "En 1961 movió palancas en pleno vuelo suborbital. Reflejos de campeón."
+    },
+    {
+      "id": "enos",
+      "name": "Enos",
+      "species": "chimp",
+      "look": {
+        "fur": "#2b211b",
+        "face": "#d9b08c"
+      },
+      "role": "pilot",
+      "stats": {
+        "tech": 5,
+        "analysis": 5,
+        "speed": 7,
+        "calm": 6
+      },
+      "cost": 30,
+      "bio": "Primer chimpancé en orbitar la Tierra (1961). Rápido, pero aún aprende."
+    },
+    {
+      "id": "strelka",
+      "name": "Strelka",
+      "species": "dog",
+      "look": {
+        "fur": "#f1e4d3",
+        "fur2": "#8b5a2b",
+        "ears": "pointy",
+        "patch": true
+      },
+      "role": "flight_engineer",
+      "stats": {
+        "tech": 9,
+        "analysis": 7,
+        "speed": 6,
+        "calm": 6
+      },
+      "cost": 55,
+      "bio": "Compañera de Belka en el Sputnik 5. Conoce cada cable de la nave."
+    },
+    {
+      "id": "albert",
+      "name": "Albert II",
+      "species": "rhesus",
+      "look": {
+        "fur": "#b98a4e",
+        "face": "#f2c6b4"
+      },
+      "role": "flight_engineer",
+      "stats": {
+        "tech": 7,
+        "analysis": 6,
+        "speed": 7,
+        "calm": 5
+      },
+      "cost": 40,
+      "bio": "Primer mono en llegar al espacio (1949, cohete V-2). Ágil pero impaciente."
+    },
+    {
+      "id": "hector",
+      "name": "Héctor",
+      "species": "rat",
+      "look": {
+        "fur": "#9ca3af",
+        "fur2": "#e5e7eb"
+      },
+      "role": "flight_engineer",
+      "stats": {
+        "tech": 6,
+        "analysis": 5,
+        "speed": 5,
+        "calm": 7
+      },
+      "cost": 28,
+      "bio": "Rata francesa que voló en 1961. Pequeño, metódico y tranquilo."
+    },
+    {
+      "id": "felicette",
+      "name": "Félicette",
+      "species": "cat",
+      "look": {
+        "fur": "#1f2937",
+        "fur2": "#f8fafc",
+        "eyes": "#a3e635"
+      },
+      "role": "life_support_engineer",
+      "stats": {
+        "tech": 8,
+        "analysis": 6,
+        "speed": 6,
+        "calm": 7
+      },
+      "cost": 50,
+      "bio": "Primera gata en el espacio (Francia, 1963). Ojo clínico para las fallas."
+    },
+    {
+      "id": "marfusha",
+      "name": "Marfusha",
+      "species": "rabbit",
+      "look": {
+        "fur": "#f5f5f4",
+        "fur2": "#fbcfe8"
+      },
+      "role": "life_support_engineer",
+      "stats": {
+        "tech": 6,
+        "analysis": 7,
+        "speed": 5,
+        "calm": 6
+      },
+      "cost": 32,
+      "bio": "Coneja que voló en 1959 junto a dos perritas. Experta en aire limpio."
+    },
+    {
+      "id": "missbaker",
+      "name": "Miss Baker",
+      "species": "squirrel",
+      "look": {
+        "fur": "#a3a03a",
+        "face": "#fef3c7"
+      },
+      "role": "mission_specialist",
+      "stats": {
+        "tech": 5,
+        "analysis": 9,
+        "speed": 5,
+        "calm": 6
+      },
+      "cost": 45,
+      "bio": "Mona ardilla del vuelo Júpiter AM-18 (1959). Obsesionada con los datos."
+    },
+    {
+      "id": "arabella",
+      "name": "Arabella",
+      "species": "spider",
+      "look": {
+        "fur": "#7c3aed",
+        "fur2": "#facc15"
+      },
+      "role": "mission_specialist",
+      "stats": {
+        "tech": 6,
+        "analysis": 7,
+        "speed": 6,
+        "calm": 7
+      },
+      "cost": 35,
+      "bio": "Araña del Skylab 3 (1973) que aprendió a tejer telarañas sin gravedad."
+    },
+    {
+      "id": "gordo",
+      "name": "Gordo",
+      "species": "squirrel",
+      "look": {
+        "fur": "#c08a2e",
+        "face": "#fde68a"
+      },
+      "role": "payload_specialist",
+      "stats": {
+        "tech": 7,
+        "analysis": 8,
+        "speed": 5,
+        "calm": 5
+      },
+      "cost": 40,
+      "bio": "Mono ardilla del cohete Júpiter (1958). Sabe calibrar cualquier instrumento."
+    },
+    {
+      "id": "veterok",
+      "name": "Veterok",
+      "species": "dog",
+      "look": {
+        "fur": "#d6d3d1",
+        "fur2": "#57534e",
+        "ears": "floppy",
+        "patch": true
+      },
+      "role": "payload_specialist",
+      "stats": {
+        "tech": 6,
+        "analysis": 6,
+        "speed": 7,
+        "calm": 5
+      },
+      "cost": 28,
+      "bio": "Pasó 22 días en órbita (Kosmos 110, 1966). Rápido con el equipo."
+    },
+    {
+      "id": "zondy",
+      "name": "Zondy",
+      "species": "tortoise",
+      "look": {
+        "fur": "#84cc16",
+        "fur2": "#a16207"
+      },
+      "role": "geologist",
+      "stats": {
+        "tech": 5,
+        "analysis": 8,
+        "speed": 4,
+        "calm": 9
+      },
+      "cost": 45,
+      "bio": "Inspirada en las tortugas del Zond 5 (1968), primeros seres vivos en rodear la Luna."
+    },
+    {
+      "id": "ugolyok",
+      "name": "Ugolyok",
+      "species": "dog",
+      "look": {
+        "fur": "#292524",
+        "fur2": "#a8a29e",
+        "ears": "floppy"
+      },
+      "role": "geologist",
+      "stats": {
+        "tech": 4,
+        "analysis": 7,
+        "speed": 6,
+        "calm": 7
+      },
+      "cost": 30,
+      "bio": "Compañero de Veterok en el Kosmos 110. Olfato para las rocas raras."
+    },
+    {
+      "id": "able",
+      "name": "Able",
+      "species": "rhesus",
+      "look": {
+        "fur": "#a16207",
+        "face": "#fbcfe8"
+      },
+      "role": "medical_officer",
+      "stats": {
+        "tech": 4,
+        "analysis": 8,
+        "speed": 6,
+        "calm": 8
+      },
+      "cost": 50,
+      "bio": "Mona rhesus que voló con Miss Baker en 1959. Cuida a todo el equipo."
+    },
+    {
+      "id": "chernushka",
+      "name": "Chernushka",
+      "species": "dog",
+      "look": {
+        "fur": "#1c1917",
+        "fur2": "#f5f5f4",
+        "ears": "pointy"
+      },
+      "role": "medical_officer",
+      "stats": {
+        "tech": 5,
+        "analysis": 6,
+        "speed": 7,
+        "calm": 6
+      },
+      "cost": 32,
+      "bio": "Orbitó la Tierra en el Sputnik 9 (1961). Actúa rápido en emergencias."
+    }
+  ]
+}

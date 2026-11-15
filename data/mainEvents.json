@@ -1,0 +1,1240 @@
+[
+  {
+    "id": "leo_dock",
+    "name": "Acoplamiento con la estación",
+    "icon": "🛰️",
+    "timeout": 22,
+    "location": {
+      "type": "space",
+      "spot": "station"
+    },
+    "objective": "Acoplarse con la estación espacial.",
+    "text": "La estación está a la vista. Hay que alinear la nave y acoplarse sin golpear el puerto.",
+    "learn": "Las naves se acoplan a la ISS a unos centímetros por segundo. Un error de alineación puede dañar ambos vehículos.",
+    "options": [
+      {
+        "label": "Acoplamiento manual",
+        "stat": "speed",
+        "difficulty": 6,
+        "duration": 6,
+        "specialties": [
+          "pilot",
+          "commander"
+        ],
+        "success": {
+          "effects": {
+            "science": 30
+          },
+          "text": "Acoplamiento perfecto. La tripulación ya puede usar los laboratorios de la estación."
+        },
+        "fail": {
+          "effects": {
+            "integrity": -20
+          },
+          "text": "La nave golpeó el puerto de acoplamiento y se dañó."
+        }
+      },
+      {
+        "label": "Acoplamiento automático supervisado",
+        "stat": "analysis",
+        "difficulty": 5,
+        "duration": 7,
+        "specialties": [
+          "flight_engineer",
+          "commander"
+        ],
+        "success": {
+          "effects": {
+            "science": 20
+          },
+          "text": "El sistema automático hizo el acoplamiento sin problemas."
+        },
+        "fail": {
+          "effects": {
+            "integrity": -15
+          },
+          "text": "El sistema automático falló al final y hubo un golpe."
+        }
+      }
+    ],
+    "onIgnore": {
+      "effects": {
+        "integrity": -15,
+        "science": -30
+      },
+      "text": "Nadie dirigió el acoplamiento: la nave tuvo que abortar la maniobra."
+    },
+    "ico": "satellite"
+  },
+  {
+    "id": "leo_experiment",
+    "name": "Experimento principal en microgravedad",
+    "icon": "🧪",
+    "timeout": 22,
+    "location": {
+      "type": "ship",
+      "part": "instruments"
+    },
+    "objective": "Completar el experimento principal.",
+    "text": "Es hora del experimento para el que se diseñó la misión. Solo hay una oportunidad.",
+    "learn": "Sin gravedad, el fuego, los líquidos y hasta las células se comportan distinto. Por eso se hacen experimentos en órbita.",
+    "options": [
+      {
+        "label": "Ejecutar el protocolo científico completo",
+        "stat": "analysis",
+        "difficulty": 6,
+        "duration": 8,
+        "specialties": [
+          "mission_specialist",
+          "payload_specialist",
+          "commander"
+        ],
+        "success": {
+          "effects": {
+            "science": 90
+          },
+          "text": "Resultados excelentes: los científicos en Tierra están felices."
+        },
+        "fail": {
+          "effects": {
+            "science": 10
+          },
+          "text": "Hubo errores en el protocolo y los datos salieron incompletos."
+        }
+      },
+      {
+        "label": "Ajustar el equipo y automatizar el experimento",
+        "stat": "tech",
+        "difficulty": 5,
+        "duration": 6,
+        "specialties": [
+          "flight_engineer",
+          "payload_specialist"
+        ],
+        "success": {
+          "effects": {
+            "science": 60
+          },
+          "text": "El experimento automatizado funcionó bien."
+        },
+        "fail": {
+          "effects": {
+            "science": -10
+          },
+          "text": "El equipo se desajustó y se arruinó parte del experimento."
+        }
+      }
+    ],
+    "onIgnore": {
+      "effects": {
+        "science": -40
+      },
+      "text": "El experimento principal no se hizo."
+    },
+    "ico": "flask-conical"
+  },
+  {
+    "id": "leo_spacewalk",
+    "name": "Caminata espacial programada",
+    "icon": "👨‍🚀",
+    "timeout": 22,
+    "location": {
+      "type": "ship",
+      "part": "hull"
+    },
+    "objective": "Instalar un nuevo módulo en el exterior.",
+    "text": "Hay que salir de la nave a instalar un módulo nuevo en el exterior.",
+    "learn": "Una caminata espacial puede durar más de 6 horas. Los astronautas entrenan bajo el agua para practicarlas.",
+    "options": [
+      {
+        "label": "Salir e instalarlo a mano",
+        "stat": "tech",
+        "difficulty": 6,
+        "duration": 8,
+        "specialties": [
+          "flight_engineer",
+          "life_support_engineer"
+        ],
+        "success": {
+          "effects": {
+            "power": 20,
+            "science": 20
+          },
+          "text": "Módulo instalado. ¡Ahora la nave tiene más energía!"
+        },
+        "fail": {
+          "effects": {
+            "integrity": -15,
+            "life": -10,
+            "crewOut": 15
+          },
+          "text": "Hubo un problema con un traje y la caminata se canceló a medias."
+        }
+      },
+      {
+        "label": "Instalarlo con el brazo robótico",
+        "stat": "analysis",
+        "difficulty": 6,
+        "duration": 6,
+        "specialties": [
+          "commander",
+          "flight_engineer"
+        ],
+        "success": {
+          "effects": {
+            "science": 15
+          },
+          "text": "El brazo robótico colocó el módulo sin que nadie saliera."
+        },
+        "fail": {
+          "effects": {
+            "integrity": -10
+          },
+          "text": "El brazo golpeó el casco al mover el módulo."
+        }
+      }
+    ],
+    "onIgnore": {
+      "effects": {
+        "integrity": -10
+      },
+      "text": "El módulo quedó suelto en el exterior y golpeó la nave."
+    },
+    "ico": "hard-hat"
+  },
+  {
+    "id": "leo_reentry",
+    "name": "Reentrada a la Tierra",
+    "icon": "🔥",
+    "timeout": 20,
+    "location": {
+      "type": "ship",
+      "part": "hull"
+    },
+    "objective": "Regresar a salvo a través de la atmósfera.",
+    "text": "La misión termina. La nave debe atravesar la atmósfera a más de 25,000 km/h.",
+    "learn": "Al reentrar, el aire frente a la nave se calienta a más de 1,500 °C. El escudo térmico protege a la tripulación.",
+    "options": [
+      {
+        "label": "Reentrada pilotada a mano",
+        "stat": "calm",
+        "difficulty": 6,
+        "duration": 6,
+        "specialties": [
+          "commander",
+          "pilot"
+        ],
+        "success": {
+          "effects": {},
+          "text": "Reentrada suave. ¡Bienvenidos a casa!"
+        },
+        "fail": {
+          "effects": {
+            "integrity": -25
+          },
+          "text": "El ángulo de entrada fue muy inclinado y la nave sufrió mucho calor."
+        }
+      },
+      {
+        "label": "Reentrada automática supervisada",
+        "stat": "analysis",
+        "difficulty": 5,
+        "duration": 6,
+        "specialties": [
+          "flight_engineer",
+          "commander"
+        ],
+        "success": {
+          "effects": {},
+          "text": "La computadora llevó la nave a casa sin problemas."
+        },
+        "fail": {
+          "effects": {
+            "integrity": -20
+          },
+          "text": "Un sensor falló y la reentrada fue más brusca de lo planeado."
+        }
+      }
+    ],
+    "onIgnore": {
+      "effects": {
+        "integrity": -35
+      },
+      "text": "Nadie supervisó la reentrada y la nave entró con un ángulo peligroso."
+    },
+    "ico": "flame"
+  },
+  {
+    "id": "tli_burn",
+    "name": "Encendido hacia la Luna",
+    "icon": "🔥",
+    "timeout": 20,
+    "location": {
+      "type": "ship",
+      "part": "engine"
+    },
+    "objective": "Encender el motor para dejar la Tierra.",
+    "text": "El motor debe encenderse en el momento exacto para salir de la órbita terrestre rumbo a la Luna.",
+    "learn": "Esta maniobra se llama inyección translunar (TLI). Un error de segundos puede desviarte miles de kilómetros.",
+    "options": [
+      {
+        "label": "Encendido manual de precisión",
+        "stat": "speed",
+        "difficulty": 6,
+        "duration": 5,
+        "specialties": [
+          "pilot"
+        ],
+        "success": {
+          "effects": {},
+          "text": "Encendido perfecto: trayectoria directa a la Luna."
+        },
+        "fail": {
+          "effects": {
+            "power": -20,
+            "integrity": -10
+          },
+          "text": "El encendido se desvió y hubo que gastar recursos en correcciones."
+        }
+      },
+      {
+        "label": "Revisar sistemas y encender en automático",
+        "stat": "tech",
+        "difficulty": 5,
+        "duration": 6,
+        "specialties": [
+          "flight_engineer",
+          "commander"
+        ],
+        "success": {
+          "effects": {},
+          "text": "Todo revisado; el encendido automático fue exacto."
+        },
+        "fail": {
+          "effects": {
+            "power": -15,
+            "integrity": -10
+          },
+          "text": "Una válvula falló durante el encendido."
+        }
+      }
+    ],
+    "onIgnore": {
+      "effects": {
+        "integrity": -25,
+        "power": -20
+      },
+      "text": "El encendido se hizo tarde y mal: hubo que corregir a la fuerza."
+    },
+    "ico": "rocket"
+  },
+  {
+    "id": "lunar_orbit",
+    "name": "Inserción en órbita lunar",
+    "icon": "🌕",
+    "timeout": 20,
+    "location": {
+      "type": "ship",
+      "part": "engine"
+    },
+    "objective": "Frenar para quedar en órbita de la Luna.",
+    "text": "Hay que frenar con el motor justo detrás de la Luna, sin comunicación con la Tierra.",
+    "learn": "Cuando una nave pasa detrás de la Luna, la Luna bloquea la señal y la tripulación está completamente sola.",
+    "options": [
+      {
+        "label": "Frenado manual detrás de la Luna",
+        "stat": "calm",
+        "difficulty": 6,
+        "duration": 6,
+        "specialties": [
+          "commander",
+          "pilot"
+        ],
+        "success": {
+          "effects": {
+            "science": 15
+          },
+          "text": "Órbita lunar perfecta. ¡La vista es increíble!"
+        },
+        "fail": {
+          "effects": {
+            "integrity": -15,
+            "power": -10
+          },
+          "text": "El frenado fue irregular y la órbita quedó inestable."
+        }
+      },
+      {
+        "label": "Calcular y programar el frenado",
+        "stat": "analysis",
+        "difficulty": 6,
+        "duration": 6,
+        "specialties": [
+          "pilot",
+          "mission_specialist"
+        ],
+        "success": {
+          "effects": {},
+          "text": "El frenado programado funcionó al segundo."
+        },
+        "fail": {
+          "effects": {
+            "integrity": -15
+          },
+          "text": "Un error de cálculo obligó a hacer una corrección extra."
+        }
+      }
+    ],
+    "onIgnore": {
+      "effects": {
+        "integrity": -30
+      },
+      "text": "Nadie controló el frenado y la nave quedó en una órbita peligrosa."
+    },
+    "ico": "orbit"
+  },
+  {
+    "id": "lunar_landing",
+    "name": "Descenso a la superficie",
+    "icon": "🚨",
+    "timeout": 18,
+    "location": {
+      "type": "planet"
+    },
+    "objective": "Aterrizar en la Luna.",
+    "text": "Durante el descenso, la computadora lanza una alarma desconocida y el terreno está lleno de rocas.",
+    "learn": "En Apolo 11 sonaron las alarmas 1202 y 1201 durante el descenso. El equipo decidió continuar y Armstrong aterrizó a mano.",
+    "options": [
+      {
+        "label": "Tomar el control manual del descenso",
+        "stat": "speed",
+        "difficulty": 7,
+        "duration": 5,
+        "specialties": [
+          "pilot",
+          "commander"
+        ],
+        "success": {
+          "effects": {
+            "science": 25
+          },
+          "text": "Aterrizaje manual perfecto, ¡y en un sitio mejor que el planeado!"
+        },
+        "fail": {
+          "effects": {
+            "integrity": -25
+          },
+          "text": "Aterrizaje brusco: el tren de aterrizaje se dañó."
+        }
+      },
+      {
+        "label": "Diagnosticar la alarma y seguir en automático",
+        "stat": "analysis",
+        "difficulty": 6,
+        "duration": 6,
+        "specialties": [
+          "flight_engineer",
+          "commander"
+        ],
+        "success": {
+          "effects": {},
+          "text": "Era una sobrecarga sin peligro. Aterrizaje automático exitoso."
+        },
+        "fail": {
+          "effects": {
+            "integrity": -20
+          },
+          "text": "El diagnóstico fue erróneo y el aterrizaje salió mal."
+        }
+      }
+    ],
+    "onIgnore": {
+      "effects": {
+        "integrity": -35
+      },
+      "text": "Nadie atendió la alarma y el descenso terminó en un aterrizaje forzoso."
+    },
+    "ico": "moon"
+  },
+  {
+    "id": "moonwalk",
+    "name": "Caminata lunar: muestras del polo sur",
+    "icon": "🪨",
+    "timeout": 22,
+    "location": {
+      "type": "planet"
+    },
+    "objective": "Recolectar muestras en la superficie lunar.",
+    "text": "Es el momento clave de la misión: salir a la superficie y recolectar muestras únicas.",
+    "learn": "El polo sur lunar tiene cráteres en sombra permanente donde podría haber hielo de agua.",
+    "options": [
+      {
+        "label": "Expedición geológica completa",
+        "stat": "analysis",
+        "difficulty": 6,
+        "duration": 8,
+        "specialties": [
+          "geologist",
+          "mission_specialist"
+        ],
+        "success": {
+          "effects": {
+            "science": 120
+          },
+          "text": "¡Muestras con rastros de hielo! Un hallazgo histórico."
+        },
+        "fail": {
+          "effects": {
+            "science": 15,
+            "life": -5,
+            "crewOut": 10
+          },
+          "text": "La caminata fue agotadora y las muestras no fueron las mejores."
+        }
+      },
+      {
+        "label": "Recolección rápida con instrumentos",
+        "stat": "tech",
+        "difficulty": 5,
+        "duration": 6,
+        "specialties": [
+          "payload_specialist",
+          "geologist"
+        ],
+        "success": {
+          "effects": {
+            "science": 70
+          },
+          "text": "Buenas muestras recolectadas con el equipo."
+        },
+        "fail": {
+          "effects": {
+            "science": 5
+          },
+          "text": "El equipo de recolección se atascó con el polvo lunar."
+        }
+      }
+    ],
+    "onIgnore": {
+      "effects": {
+        "science": -30
+      },
+      "text": "Nadie salió a la superficie: se perdió el objetivo principal."
+    },
+    "ico": "mountain"
+  },
+  {
+    "id": "lunar_ascent",
+    "name": "Despegue de la Luna y regreso",
+    "icon": "🚀",
+    "timeout": 20,
+    "location": {
+      "type": "ship",
+      "part": "engine"
+    },
+    "objective": "Despegar de la Luna y emprender el regreso.",
+    "text": "Hay que despegar de la superficie y reunirse con la nave en órbita. Solo hay un motor de despegue.",
+    "learn": "El motor de ascenso de Apolo no tenía respaldo: tenía que funcionar a la primera.",
+    "options": [
+      {
+        "label": "Despegue y encuentro manual",
+        "stat": "speed",
+        "difficulty": 6,
+        "duration": 6,
+        "specialties": [
+          "pilot"
+        ],
+        "success": {
+          "effects": {},
+          "text": "Despegue limpio y encuentro perfecto en órbita."
+        },
+        "fail": {
+          "effects": {
+            "integrity": -25
+          },
+          "text": "El encuentro en órbita fue torpe y las naves chocaron levemente."
+        }
+      },
+      {
+        "label": "Coordinar el despegue paso a paso",
+        "stat": "calm",
+        "difficulty": 6,
+        "duration": 7,
+        "specialties": [
+          "commander"
+        ],
+        "success": {
+          "effects": {},
+          "text": "Despegue sin sorpresas. ¡Rumbo a casa!"
+        },
+        "fail": {
+          "effects": {
+            "integrity": -20,
+            "power": -10
+          },
+          "text": "Hubo que repetir el encuentro y se gastó combustible."
+        }
+      }
+    ],
+    "onIgnore": {
+      "effects": {
+        "integrity": -35
+      },
+      "text": "El despegue se retrasó y el encuentro en órbita fue peligroso."
+    },
+    "ico": "rocket"
+  },
+  {
+    "id": "tmi_burn",
+    "name": "Inyección hacia Marte",
+    "icon": "🔥",
+    "timeout": 20,
+    "location": {
+      "type": "ship",
+      "part": "engine"
+    },
+    "objective": "Encender el motor rumbo a Marte.",
+    "text": "La ventana de lanzamiento a Marte solo se abre cada 26 meses. El encendido tiene que ser hoy.",
+    "learn": "La Tierra y Marte se alinean favorablemente solo cada 26 meses. Si pierdes la ventana, hay que esperar dos años.",
+    "options": [
+      {
+        "label": "Encendido manual",
+        "stat": "speed",
+        "difficulty": 6,
+        "duration": 5,
+        "specialties": [
+          "pilot"
+        ],
+        "success": {
+          "effects": {},
+          "text": "Encendido exacto: rumbo a Marte."
+        },
+        "fail": {
+          "effects": {
+            "power": -20,
+            "integrity": -10
+          },
+          "text": "El encendido se desvió y habrá que corregir más adelante."
+        }
+      },
+      {
+        "label": "Revisión completa y encendido automático",
+        "stat": "tech",
+        "difficulty": 6,
+        "duration": 6,
+        "specialties": [
+          "flight_engineer",
+          "commander"
+        ],
+        "success": {
+          "effects": {},
+          "text": "Todos los sistemas en verde. Encendido perfecto."
+        },
+        "fail": {
+          "effects": {
+            "integrity": -15
+          },
+          "text": "Una bomba de combustible falló a medio encendido."
+        }
+      }
+    ],
+    "onIgnore": {
+      "effects": {
+        "integrity": -25,
+        "power": -20,
+        "blackout": 6
+      },
+      "text": "El encendido salió tarde: la trayectoria quedó mal."
+    },
+    "ico": "rocket"
+  },
+  {
+    "id": "mcc",
+    "name": "Corrección de trayectoria",
+    "icon": "🧭",
+    "timeout": 20,
+    "location": {
+      "type": "space"
+    },
+    "objective": "Corregir el rumbo a mitad del viaje.",
+    "text": "A mitad del viaje, la nave se desvió un poco. Si no se corrige, llegará lejos de Marte.",
+    "learn": "Incluso las naves mejor lanzadas hacen varias correcciones pequeñas durante meses de viaje.",
+    "options": [
+      {
+        "label": "Calcular una corrección precisa",
+        "stat": "analysis",
+        "difficulty": 6,
+        "duration": 7,
+        "specialties": [
+          "pilot",
+          "flight_engineer"
+        ],
+        "success": {
+          "effects": {},
+          "text": "Corrección mínima y exacta: ahorraron combustible."
+        },
+        "fail": {
+          "effects": {
+            "integrity": -15,
+            "power": -15
+          },
+          "text": "La corrección se pasó y hubo que hacer otra."
+        }
+      },
+      {
+        "label": "Corrección rápida a ojo con los propulsores",
+        "stat": "speed",
+        "difficulty": 7,
+        "duration": 4,
+        "specialties": [
+          "pilot"
+        ],
+        "success": {
+          "effects": {},
+          "text": "Rápida y suficiente."
+        },
+        "fail": {
+          "effects": {
+            "integrity": -15,
+            "power": -20
+          },
+          "text": "La corrección improvisada desperdició combustible."
+        }
+      }
+    ],
+    "onIgnore": {
+      "effects": {
+        "integrity": -25
+      },
+      "text": "Sin corrección, la nave llegó desviada y forzó una maniobra peligrosa."
+    },
+    "ico": "compass"
+  },
+  {
+    "id": "mars_entry",
+    "name": "Entrada a la atmósfera marciana",
+    "icon": "☄️",
+    "timeout": 18,
+    "location": {
+      "type": "ship",
+      "part": "hull"
+    },
+    "objective": "Atravesar la atmósfera de Marte.",
+    "text": "La nave entra a la atmósfera de Marte. El escudo térmico va a estar al rojo vivo.",
+    "learn": "A estos minutos se les llama 'los siete minutos de terror': todo ocurre en automático porque la señal tarda en llegar a la Tierra.",
+    "options": [
+      {
+        "label": "Controlar el ángulo de entrada",
+        "stat": "calm",
+        "difficulty": 7,
+        "duration": 6,
+        "specialties": [
+          "pilot",
+          "commander"
+        ],
+        "success": {
+          "effects": {},
+          "text": "Entrada perfecta: el escudo resistió."
+        },
+        "fail": {
+          "effects": {
+            "integrity": -30
+          },
+          "text": "El ángulo fue muy agresivo y el escudo se dañó."
+        }
+      },
+      {
+        "label": "Vigilar los sensores y ajustar el escudo",
+        "stat": "tech",
+        "difficulty": 6,
+        "duration": 6,
+        "specialties": [
+          "flight_engineer",
+          "life_support_engineer"
+        ],
+        "success": {
+          "effects": {},
+          "text": "Los ajustes mantuvieron la temperatura bajo control."
+        },
+        "fail": {
+          "effects": {
+            "integrity": -25,
+            "life": -10
+          },
+          "text": "El calor llegó a la cabina."
+        }
+      }
+    ],
+    "onIgnore": {
+      "effects": {
+        "integrity": -40
+      },
+      "text": "Nadie supervisó la entrada y el escudo térmico se sobrecalentó."
+    },
+    "ico": "flame"
+  },
+  {
+    "id": "mars_landing",
+    "name": "Aterrizaje en Marte",
+    "icon": "🛬",
+    "timeout": 18,
+    "location": {
+      "type": "planet"
+    },
+    "objective": "Aterrizar en Marte.",
+    "text": "Los motores de descenso se encienden. El radar detecta un campo de rocas en el sitio planeado.",
+    "learn": "Marte tiene atmósfera, pero muy delgada: no basta para frenar con paracaídas, también se necesitan motores.",
+    "options": [
+      {
+        "label": "Desviar a mano a un sitio seguro",
+        "stat": "speed",
+        "difficulty": 7,
+        "duration": 5,
+        "specialties": [
+          "pilot",
+          "commander"
+        ],
+        "success": {
+          "effects": {
+            "science": 30
+          },
+          "text": "¡Aterrizaje en Marte! Y junto a un cauce seco muy interesante."
+        },
+        "fail": {
+          "effects": {
+            "integrity": -30
+          },
+          "text": "El aterrizaje fue duro y dañó la nave."
+        }
+      },
+      {
+        "label": "Confiar en el sistema de navegación",
+        "stat": "analysis",
+        "difficulty": 6,
+        "duration": 6,
+        "specialties": [
+          "flight_engineer",
+          "commander"
+        ],
+        "success": {
+          "effects": {},
+          "text": "La navegación automática encontró un lugar seguro."
+        },
+        "fail": {
+          "effects": {
+            "integrity": -25
+          },
+          "text": "El sistema eligió mal y una pata cayó sobre una roca."
+        }
+      }
+    ],
+    "onIgnore": {
+      "effects": {
+        "integrity": -40
+      },
+      "text": "Nadie controló el aterrizaje: fue un aterrizaje forzoso."
+    },
+    "ico": "target"
+  },
+  {
+    "id": "mars_explore",
+    "name": "Búsqueda de agua y señales de vida",
+    "icon": "🔎",
+    "timeout": 22,
+    "location": {
+      "type": "planet"
+    },
+    "objective": "Explorar Marte en busca de agua y vida.",
+    "text": "El objetivo central de la misión: explorar un antiguo lago marciano en busca de agua y señales de vida.",
+    "learn": "Hace miles de millones de años Marte tuvo ríos y lagos. Los científicos buscan si alguna vez hubo vida ahí.",
+    "options": [
+      {
+        "label": "Expedición de campo al antiguo lago",
+        "stat": "analysis",
+        "difficulty": 7,
+        "duration": 9,
+        "specialties": [
+          "geologist",
+          "mission_specialist"
+        ],
+        "success": {
+          "effects": {
+            "science": 180
+          },
+          "text": "¡Encontraron minerales que solo se forman con agua! Un descubrimiento histórico."
+        },
+        "fail": {
+          "effects": {
+            "science": 20,
+            "life": -10,
+            "crewOut": 12
+          },
+          "text": "La expedición fue agotadora y los resultados no fueron concluyentes."
+        }
+      },
+      {
+        "label": "Exploración remota con instrumentos",
+        "stat": "tech",
+        "difficulty": 6,
+        "duration": 6,
+        "specialties": [
+          "payload_specialist",
+          "geologist"
+        ],
+        "success": {
+          "effects": {
+            "science": 100
+          },
+          "text": "Los instrumentos detectaron hielo bajo la superficie."
+        },
+        "fail": {
+          "effects": {
+            "science": 10
+          },
+          "text": "Los instrumentos no lograron penetrar el suelo."
+        }
+      }
+    ],
+    "onIgnore": {
+      "effects": {
+        "science": -40
+      },
+      "text": "No se exploró el lago: se perdió el objetivo central de la misión."
+    },
+    "ico": "scan-search"
+  },
+  {
+    "id": "mars_return",
+    "name": "Despegue y ventana de regreso",
+    "icon": "🚀",
+    "timeout": 20,
+    "location": {
+      "type": "ship",
+      "part": "engine"
+    },
+    "objective": "Despegar de Marte y emprender el regreso.",
+    "text": "La ventana de regreso a la Tierra se abre. Hay que despegar a tiempo.",
+    "learn": "Despegar de Marte exige combustible que quizá se fabrique allá mismo con el CO₂ de su atmósfera.",
+    "options": [
+      {
+        "label": "Despegue pilotado",
+        "stat": "speed",
+        "difficulty": 7,
+        "duration": 6,
+        "specialties": [
+          "pilot"
+        ],
+        "success": {
+          "effects": {},
+          "text": "Despegue exitoso. ¡Rumbo a casa!"
+        },
+        "fail": {
+          "effects": {
+            "integrity": -25
+          },
+          "text": "El despegue fue inestable y dañó la nave."
+        }
+      },
+      {
+        "label": "Coordinar la secuencia de despegue",
+        "stat": "calm",
+        "difficulty": 6,
+        "duration": 7,
+        "specialties": [
+          "commander",
+          "flight_engineer"
+        ],
+        "success": {
+          "effects": {},
+          "text": "Secuencia perfecta, todos a salvo."
+        },
+        "fail": {
+          "effects": {
+            "integrity": -20,
+            "power": -15
+          },
+          "text": "Hubo que abortar el primer intento y repetirlo."
+        }
+      }
+    ],
+    "onIgnore": {
+      "effects": {
+        "integrity": -40
+      },
+      "text": "Se perdió la ventana de regreso y hubo que hacer un despegue de emergencia."
+    },
+    "ico": "rocket"
+  },
+  {
+    "id": "hubble_capture",
+    "name": "Atrapa el Hubble",
+    "icon": "🔭",
+    "ico": "telescope",
+    "timeout": 30,
+    "location": {
+      "type": "space",
+      "spot": "hubble"
+    },
+    "objective": "Atrapar el Hubble con el brazo robótico.",
+    "text": "¡Ahí está el Hubble! Hay que sujetarlo por su punto de agarre con el brazo robótico.",
+    "learn": "13 de mayo de 2009: Megan McArthur atrapó el Hubble con el brazo robótico del Atlantis (15 m, hecho en Canadá). El comandante Scott Altman acercó la nave.",
+    "options": [
+      {
+        "label": "Toca cuando la pinza del brazo esté sobre el punto de agarre del Hubble.",
+        "stat": "tech",
+        "difficulty": 5,
+        "duration": 6,
+        "specialties": [
+          "mission_specialist"
+        ],
+        "success": {
+          "effects": {
+            "science": 20
+          },
+          "text": "¡Hubble atrapado! Ya está bien sujeto para empezar las reparaciones."
+        },
+        "fail": {
+          "effects": {
+            "power": -15,
+            "integrity": -5
+          },
+          "text": "La pinza no lo agarró bien: hubo que gastar energía para volver a acercarse."
+        }
+      }
+    ],
+    "onIgnore": {
+      "effects": {
+        "integrity": -10,
+        "science": -40
+      },
+      "text": "Nadie atrapó el Hubble y se alejó: se perdió mucho tiempo."
+    },
+    "sts125": "sts125-captura"
+  },
+  {
+    "id": "hubble_camera",
+    "name": "Cámara nueva (1.ª caminata)",
+    "icon": "🔭",
+    "ico": "scan-search",
+    "timeout": 30,
+    "location": {
+      "type": "space",
+      "spot": "hubble"
+    },
+    "objective": "Instalar la nueva cámara WFC3.",
+    "text": "La cámara vieja ya salió. Ahora hay que meter la nueva Wide Field Camera 3 justo en su lugar.",
+    "learn": "14 de mayo de 2009, 1.ª caminata (7 h 20 min): John Grunsfeld y Andrew Feustel sacaron la cámara vieja WFPC2 e instalaron la nueva WFC3. Un tornillo atascado casi lo impide.",
+    "options": [
+      {
+        "label": "Toca cuando la cámara nueva esté justo encima de su hueco.",
+        "stat": "tech",
+        "difficulty": 5,
+        "duration": 6,
+        "specialties": [
+          "mission_specialist"
+        ],
+        "success": {
+          "effects": {
+            "science": 40
+          },
+          "text": "¡Clic! La WFC3 quedó instalada: ve luz ultravioleta, visible e infrarroja."
+        },
+        "fail": {
+          "effects": {
+            "science": -20,
+            "integrity": -5
+          },
+          "text": "La cámara no entró bien y hubo que sacarla y volver a intentarlo."
+        }
+      }
+    ],
+    "onIgnore": {
+      "effects": {
+        "science": -50
+      },
+      "text": "La cámara nueva se quedó sin instalar."
+    },
+    "sts125": "sts125-camara"
+  },
+  {
+    "id": "hubble_gyros",
+    "name": "Giroscopios (2.ª caminata)",
+    "icon": "🔭",
+    "ico": "compass",
+    "timeout": 30,
+    "location": {
+      "type": "space",
+      "spot": "hubble"
+    },
+    "objective": "Cambiar los giroscopios del Hubble.",
+    "text": "Los giroscopios ayudan al Hubble a apuntar. Hay que meter las cajas nuevas con la muesca hacia ARRIBA.",
+    "learn": "15 de mayo de 2009, 2.ª caminata (7 h 56 min): Mike Massimino y Michael Good cambiaron los 6 giroscopios (en 3 cajas) y un módulo de baterías. La última caja no encajaba y usaron una de repuesto.",
+    "options": [
+      {
+        "label": "Toca cuando la flecha ROJA apunte ARRIBA para meter cada caja.",
+        "stat": "tech",
+        "difficulty": 5,
+        "duration": 6,
+        "specialties": [
+          "mission_specialist"
+        ],
+        "success": {
+          "effects": {
+            "science": 30
+          },
+          "text": "¡Giroscopios nuevos! El Hubble ya puede apuntar sin moverse ni un poquito."
+        },
+        "fail": {
+          "effects": {
+            "science": -20,
+            "integrity": -5
+          },
+          "text": "Una caja no encajó bien: el Hubble apunta, pero con menos precisión."
+        }
+      }
+    ],
+    "onIgnore": {
+      "effects": {
+        "science": -40
+      },
+      "text": "Los giroscopios viejos se quedaron: el Hubble no puede apuntar bien."
+    },
+    "sts125": "sts125-giroscopios"
+  },
+  {
+    "id": "hubble_stis",
+    "name": "Reparar el STIS (4.ª caminata)",
+    "icon": "🔭",
+    "ico": "wrench",
+    "timeout": 30,
+    "location": {
+      "type": "space",
+      "spot": "hubble"
+    },
+    "objective": "Reparar el espectrógrafo STIS.",
+    "text": "El espectrógrafo STIS está apagado. Para abrirlo hay que quitar un pasamanos… ¡y su tornillo no se suelta!",
+    "learn": "17 de mayo de 2009, 4.ª caminata (8 h 2 min): el STIS estaba apagado desde 2004. Un tornillo del pasamanos no se soltaba y Control de Misión le dijo a Mike Massimino que lo arrancara a la fuerza. La tapa tenía 111 tornillos.",
+    "options": [
+      {
+        "label": "¡El pasamanos está atascado! Toca muy rápido para arrancarlo.",
+        "stat": "tech",
+        "difficulty": 5,
+        "duration": 6,
+        "specialties": [
+          "mission_specialist"
+        ],
+        "success": {
+          "effects": {
+            "science": 40
+          },
+          "text": "¡El STIS funciona otra vez! Separa la luz de las estrellas en colores para saber de qué están hechas."
+        },
+        "fail": {
+          "effects": {
+            "science": -20,
+            "integrity": -5
+          },
+          "text": "El pasamanos no salió a tiempo y la reparación se quedó a medias."
+        }
+      }
+    ],
+    "onIgnore": {
+      "effects": {
+        "science": -40
+      },
+      "text": "El espectrógrafo siguió apagado."
+    },
+    "sts125": "sts125-espectrografo"
+  },
+  {
+    "id": "hubble_release",
+    "name": "Suelta el Hubble",
+    "icon": "🔭",
+    "ico": "telescope",
+    "timeout": 30,
+    "location": {
+      "type": "space",
+      "spot": "hubble"
+    },
+    "objective": "Devolver el Hubble al espacio.",
+    "text": "¡El Hubble ya está reparado! Hay que levantarlo con el brazo y soltarlo con mucha suavidad para que no gire.",
+    "learn": "19 de mayo de 2009: Megan McArthur levantó el Hubble con el brazo robótico y lo soltó. Fue la última vez que unos astronautas visitaron el Hubble.",
+    "options": [
+      {
+        "label": "Mantén presionado para subir el Hubble. ¡Suelta en la zona VERDE!",
+        "stat": "tech",
+        "difficulty": 5,
+        "duration": 6,
+        "specialties": [
+          "mission_specialist"
+        ],
+        "success": {
+          "effects": {
+            "science": 20
+          },
+          "text": "¡El Hubble vuela otra vez, listo para seguir mirando el universo!"
+        },
+        "fail": {
+          "effects": {
+            "integrity": -10
+          },
+          "text": "Se soltó un poco brusco: hubo que esperar a que dejara de girar."
+        }
+      }
+    ],
+    "onIgnore": {
+      "effects": {
+        "integrity": -10,
+        "science": -20
+      },
+      "text": "El Hubble se quedó sujeto demasiado tiempo."
+    },
+    "sts125": "sts125-adios",
+    "sts125Query": "part=release"
+  },
+  {
+    "id": "hubble_landing",
+    "name": "Aterriza en casa",
+    "icon": "🏠",
+    "ico": "house",
+    "final": true,
+    "timeout": 45,
+    "location": {
+      "type": "planet"
+    },
+    "objective": "Volver a la Tierra y aterrizar la nave.",
+    "text": "¡Misión cumplida en órbita! Ahora hay que volver a casa: baja planeando y aterriza en la pista.",
+    "learn": "24 de mayo de 2009: por el mal tiempo en Florida, el Atlantis aterrizó en la Base Edwards (California). La misión duró 12 días, 21 h y 37 min y recorrió 8,5 millones de km.",
+    "options": [
+      {
+        "label": "Mantén presionado para subir el morro y sigue la línea VERDE hasta la pista.",
+        "stat": "tech",
+        "difficulty": 5,
+        "duration": 6,
+        "specialties": [
+          "pilot"
+        ],
+        "success": {
+          "effects": {
+            "science": 10
+          },
+          "text": "¡Aterrizaje suave! La tripulación está en casa."
+        },
+        "fail": {
+          "effects": {
+            "integrity": -15
+          },
+          "text": "Aterrizaje movido, pero todos llegaron bien."
+        }
+      }
+    ],
+    "onIgnore": {
+      "effects": {
+        "integrity": -25
+      },
+      "text": "La nave tuvo que esperar en órbita y aterrizar más tarde."
+    },
+    "sts125": "sts125-adios",
+    "sts125Query": "part=land"
+  }
+]

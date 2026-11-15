@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="shared/img/favicon.svg" />
+  <title>STS-125: Salva el Hubble</title>
+  <meta name="description" content="Minijuegos pixel basados en tareas reales de astronautas y misiones de la NASA." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #05060f;
+      --ink: #f4f1de;
+      --dim: #8b8fb3;
+      --accent: #ffcc33;
+      --good: #5cff8a;
+      --blue: #4cc9f0;
+      --pixel: 'Press Start 2P', ui-monospace, monospace;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--pixel);
+    }
+    body {
+      background-image:
+        radial-gradient(1px 1px at 20px 30px, #fff 50%, transparent 51%),
+        radial-gradient(1px 1px at 140px 80px, #9aa0c8 50%, transparent 51%),
+        radial-gradient(1px 1px at 90px 150px, #fff 50%, transparent 51%),
+        radial-gradient(1px 1px at 200px 190px, #6e76a8 50%, transparent 51%);
+      background-size: 240px 240px;
+      image-rendering: pixelated;
+    }
+    main { max-width: 980px; margin: 0 auto; padding: 32px 16px 48px; }
+    h1 {
+      font-size: clamp(22px, 5vw, 44px);
+      margin: 0 0 12px;
+      color: var(--accent);
+      text-shadow: 3px 3px 0 #b5179e, 6px 6px 0 #3a0ca3;
+      line-height: 1.3;
+    }
+    .lead { color: var(--dim); font-size: 12px; line-height: 2; margin: 0 0 28px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; }
+    .card {
+      display: block;
+      text-decoration: none;
+      color: var(--ink);
+      background: rgba(8, 10, 28, 0.85);
+      border: 4px solid var(--ink);
+      box-shadow: 6px 6px 0 #000;
+      padding: 18px;
+      transition: transform 0.1s steps(2);
+    }
+    a.card:hover, a.card:focus-visible { transform: translate(-2px, -2px); border-color: var(--accent); outline: none; }
+    .card .icon { position: absolute; left: 10px; top: 10px; width: 40px; height: 40px; padding: 5px; background: rgba(5,6,15,0.9); border: 3px solid var(--ink); box-shadow: 3px 3px 0 #000; }
+    .card .icon svg { display: block; width: 100%; height: 100%; }
+    .ico svg { display: inline-block; width: 1.1em; height: 1.1em; vertical-align: -0.15em; }
+    .card .tag { display: inline-flex; align-items: center; gap: 6px; }
+    .card .tag .ico svg { color: #fff; }
+    .card { position: relative; }
+    .card .thumb { display: block; width: calc(100% + 36px); margin: -18px -18px 14px; aspect-ratio: 16 / 9; object-fit: cover; border-bottom: 4px solid var(--ink); image-rendering: auto; }
+    .card .credit { display: block; font-size: 8px; color: var(--dim); margin-top: 8px; }
+    .hero { display: grid; grid-template-columns: 1fr 300px; gap: 20px; align-items: center; margin-bottom: 28px; }
+    .hero img { width: 100%; border: 4px solid var(--ink); box-shadow: 6px 6px 0 #000; }
+    .hero figcaption { font-size: 8px; color: var(--dim); line-height: 1.8; margin-top: 8px; }
+    .hero figure { margin: 0; }
+    @media (max-width: 700px) { .hero { grid-template-columns: 1fr; } }
+    .card h2 { font-size: 13px; margin: 0 0 10px; color: var(--accent); line-height: 1.6; }
+    .card p { font-size: 10px; line-height: 1.9; margin: 0; color: var(--dim); }
+    .card .tag { display: inline-block; margin-top: 12px; font-size: 9px; padding: 4px 6px; background: #0b3d91; border: 2px solid #fc3d21; color: #fff; }
+    .card.soon { opacity: 0.45; border-style: dashed; }
+    .card.soon .tag { background: #2c2f4a; border-color: var(--dim); }
+    footer { margin-top: 32px; font-size: 9px; color: var(--dim); line-height: 2; }
+    footer a { color: var(--blue); }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="hero">
+      <div>
+        <h1>STS-125: SALVA EL HUBBLE</h1>
+        <p class="lead">Mayo de 2009. El transbordador Atlantis lleva a 7 astronautas a reparar el telescopio Hubble por última vez. Cada minijuego es una tarea real de la misión, con fotos y datos reales de la NASA.</p>
+      </div>
+      <figure>
+        <img src="shared/img/despegue.jpg" alt="El transbordador Atlantis despega entre nubes de humo" />
+        <figcaption>Despegue del Atlantis, 11 may 2009 (NASA, STS125-S-036)</figcaption>
+      </figure>
+    </div>
+    <div class="grid">
+      <a class="card" href="sts125-captura/index.html">
+        <img class="thumb" src="shared/img/hst-atrapado.jpg" alt="" />
+        <span class="icon" data-icon="arm"></span>
+        <h2>1. Atrapa el Hubble</h2>
+        <p>13 may 2009 · Persigue al Hubble, sácale una foto y atrápalo con el brazo robótico para bajarlo a la bodega.</p>
+        <span class="tag">JUGAR <span class="ico" data-icon="play"></span></span>
+      </a>
+      <a class="card" href="sts125-camara/index.html">
+        <img class="thumb" src="shared/img/mariposa-wfc3.jpg" alt="" />
+        <span class="icon" data-icon="camera"></span>
+        <h2>2. Cámara nueva</h2>
+        <p>14 may 2009 · Afloja el tornillo atascado, cambia la cámara y alinea los filtros para su primera foto a color.</p>
+        <span class="tag">JUGAR <span class="ico" data-icon="play"></span></span>
+      </a>
+      <a class="card" href="sts125-giroscopios/index.html">
+        <img class="thumb" src="shared/img/eva2-giroscopios.jpg" alt="" />
+        <span class="icon" data-icon="gyro"></span>
+        <h2>3. Giroscopios y baterías</h2>
+        <p>15 may 2009 · Cambia los giroscopios y las baterías, y pon a prueba la puntería del Hubble.</p>
+        <span class="tag">JUGAR <span class="ico" data-icon="play"></span></span>
+      </a>
+      <a class="card" href="sts125-espectrografo/index.html">
+        <img class="thumb" src="shared/img/eva4-stis.jpg" alt="" />
+        <span class="icon" data-icon="rainbow"></span>
+        <h2>4. Reparar el espectrógrafo</h2>
+        <p>17 may 2009 · Quita 111 tornillos, cambia una tarjeta rota y descubre de qué está hecha una estrella.</p>
+        <span class="tag">JUGAR <span class="ico" data-icon="play"></span></span>
+      </a>
+      <a class="card" href="sts125-adios/index.html">
+        <img class="thumb" src="shared/img/foto-despedida.jpg" alt="" />
+        <span class="icon" data-icon="hand"></span>
+        <h2>5. Adiós, Hubble</h2>
+        <p>19–24 may 2009 · Suelta el Hubble, sácale la foto de despedida y aterriza el Atlantis en California.</p>
+        <span class="tag">JUGAR <span class="ico" data-icon="play"></span></span>
+      </a>
+    </div>
+    <footer>Datos y procedimientos reales de la NASA y sus socios. Fotos: NASA (dominio público) y NASA/ESA Hubble. Los tiempos y distancias están simplificados para jugar.</footer>
+  </main>
+  <script src="../../js/i18n-en.js"></script>
+  <script src="../../js/i18n.js"></script>
+  <script src="shared/icons.js"></script>
+</body>
+</html>
