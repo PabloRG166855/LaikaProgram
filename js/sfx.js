@@ -34,6 +34,7 @@ function tone(freq, start, dur, { type = 'square', vol = 0.06, slide = 0 } = {})
 
 const SOUNDS = {
   click: () => tone(880, 0, 0.04, { vol: 0.035 }),
+  tick: () => tone(1320, 0, 0.025, { vol: 0.04 }),
   select: () => { tone(660, 0, 0.05); tone(990, 0.05, 0.06); },
   success: () => [523, 659, 784, 1047].forEach((f, i) => tone(f, i * 0.07, 0.08)),
   fail: () => { tone(330, 0, 0.12); tone(247, 0.12, 0.12); tone(165, 0.24, 0.2, { slide: -40 }); },
@@ -75,8 +76,7 @@ function renderToggle(btn) {
 }
 
 export function initSfx() {
-  const header = document.querySelector('.app-header');
-  if (header && !document.getElementById('sfx-toggle')) {
+  if (!document.getElementById('sfx-toggle')) {
     const btn = document.createElement('button');
     btn.id = 'sfx-toggle';
     btn.className = 'btn ghost small sfx-toggle';
@@ -87,7 +87,7 @@ export function initSfx() {
       renderToggle(btn);
       if (!muted) sfx('select');
     });
-    header.appendChild(btn);
+    document.body.appendChild(btn); // fixed in the top-left corner
   }
   // Every button press makes a small blip
   document.addEventListener('click', e => {

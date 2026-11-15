@@ -20,7 +20,7 @@ export function createDesign(level, data) {
     selections[cat.id] = cheapest ? cheapest.id : null;
   }
   const crew = Object.fromEntries(level.crewSlots.map(slot => [slot.id, null]));
-  return { levelId: level.id, selections, instruments: [], rocketId: null, crew };
+  return { levelId: level.id, selections, instruments: [], rocketId: level.rocketId || null, crew }; // the mission sets the rocket
 }
 
 export const crewIdsOf = design => Object.values(design.crew).filter(Boolean);
@@ -88,7 +88,6 @@ export function computeShipStats(design, level, data) {
   else if (totalMass > rocketCapacity)
     errors.push(`La nave pesa ${fmt(totalMass)} kg y ${rocket.name} solo lleva ${fmt(rocketCapacity)} kg a ${level.destinationName}. Quita masa o usa un cohete más potente.`);
 
-  if (budgetLeft < 0) errors.push('Te pasaste del presupuesto.');
   if (powerUse > powerGen)
     errors.push(`Consumes ${fmt(powerUse, 1)} kW pero solo generas ${fmt(powerGen, 1)} kW. Mejora la energía o quita equipos.`);
 
@@ -104,6 +103,8 @@ export function computeShipStats(design, level, data) {
   if (shielding < level.minShielding)
     errors.push(`Ir a ${level.destinationName} requiere blindaje nivel ${level.minShielding} (tienes ${shielding}). Lejos de la Tierra hay más radiación.`);
 
+  if (instruments.length > 0 && projectedScience < level.scienceGoal * (level.minScience || 0))
+    errors.push('Tu nave hace muy poca ciencia: agrega instrumentos o una antena más fuerte.');
   if (instruments.length > 0 && sentFraction < 1)
     warnings.push(`Tu antena (${comms ? comms.name : 'ninguna'}) solo podrá enviar el ${Math.round(sentFraction * 100)} % de los datos. La ciencia que no se transmite se pierde.`);
   if (instruments.length > 0 && projectedScience < level.scienceGoal)

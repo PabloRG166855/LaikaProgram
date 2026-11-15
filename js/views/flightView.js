@@ -8,7 +8,7 @@ import { computeShipStats, getSelectedComponents } from '../ship.js';
 import { drawShip, shipModel, shipSize } from './shipRenderer.js';
 import { icon } from '../icons.js';
 import { sfx, sfxNoise } from '../sfx.js';
-import { esc } from '../ui.js';
+import { esc, avatar } from '../ui.js';
 
 const W = 320; // internal resolution width; height follows the screen aspect
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -87,9 +87,6 @@ export function renderFlight(root, { data, level, design, onDone }) {
   shipImg.height = Math.ceil(size.h) + 12;
   drawShip(shipImg.getContext('2d'), model, { x: shipImg.width / 2, y: shipImg.height / 2, scale: 1, time: 0, crewCount: 0 });
 
-  const loadCls = load < 0.6 ? 'good' : load < 0.85 ? 'warn' : 'bad';
-  const loadText = load < 0.6 ? 'Ligera: subir será fácil.' : load < 0.85 ? 'Pesada: la zona verde será más chica.' : 'Muy pesada: ¡cuida mucho la potencia!';
-  const blocks = (n, total = 12) => Array.from({ length: total }, (_, i) => `<i class="${i < n ? 'on' : ''}"></i>`).join('');
 
   root.innerHTML = `
     <div class="flight">
@@ -106,25 +103,44 @@ export function renderFlight(root, { data, level, design, onDone }) {
         <p id="f-action-text"></p>
         <div class="f-meter hidden" id="f-meter"><i id="f-meter-fill"></i></div>
       </div>
-      <div class="f-card glass" id="f-card">
-        <h2>${icon('rocket', 28)} ¡Hora de despegar!</h2>
-        <p>Vuela tu nave hasta la órbita de la Tierra. Ahí empieza la misión.</p>
-        <div class="f-rows">
-          <div class="f-row"><span>${icon('weight', 20)} Peso de tu nave</span><span class="blocks big ${loadCls}">${blocks(Math.round(load * 12))}</span></div>
-          <p class="f-note ${loadCls}">${loadText}</p>
-          <div class="f-row"><span>${icon('flame', 20)} Motor de tu nave</span><span class="blocks">${blocks(engine, 3)}</span></div>
-          <div class="f-row"><span>${icon('shield', 20)} Escudo</span><span class="blocks">${blocks(shield, 3)}</span></div>
-        </div>
-        <p class="f-how">${icon('circle-dot', 18)} Mantén <b>ESPACIO</b> o el clic presionado para dar potencia.</p>
-        <button class="btn go" data-act="start">${icon('rocket', 18)} ¡Despegar!</button>
+      <div class="f-center" id="f-center">
+        <h2>${icon('rocket', 32)} ¡Hora de despegar!</h2>
+        <button class="btn go big" data-act="start">${icon('rocket', 22)} ¡Despegar!</button>
       </div>
+      <aside class="f-laika glass" id="f-laika">
+        <span class="hl-face">${avatar(data.crew.director, 'lg')}<small>Laika</small></span>
+        <div class="hl-bubble" id="f-laika-text"></div>
+      </aside>
       <div class="f-flash" id="f-flash"></div>
+      ${level.briefing ? `
+      <section class="f-brief" id="f-brief">
+        <figure><img src="${esc(level.briefing.img)}" alt=""><figcaption>${esc(level.briefing.cap)}</figcaption></figure>
+        <div class="f-brief-body">
+          <p class="kicker">${esc(level.briefing.kicker)}</p>
+          <h2>${esc(level.briefing.title)}</h2>
+          <dl>${level.briefing.rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>
+          <p>${esc(level.briefing.note)}</p>
+          <button class="btn go big" data-act="brief-ok">${icon('rocket', 18)} ¡Vamos!</button>
+        </div>
+      </section>` : ''}
     </div>`;
 
   const $ = id => root.querySelector(`#${id}`);
+  // Laika explains every step, like a tutorial (bottom-right corner)
+  function laika(title, html) {
+    const b = $('f-laika-text');
+    b.innerHTML = `<b>${title}</b>${html}`;
+    const box = $('f-laika');
+    box.classList.remove('pop');
+    void box.offsetWidth;
+    box.classList.add('pop');
+  }
   const canvas = $('f-canvas');
   const ctx = canvas.getContext('2d');
   let H = 180;
+  laika(`${icon('rocket', 16)} Vamos al espacio`, `
+    <p>Primero hay que llevar tu nave hasta la órbita de la Tierra. Ahí empieza la misión.</p>
+    <p><b class="key">ESPACIO</b> o mantén el clic presionado para dar potencia.</p>`);
 
   // ---------- input (one button: hold or tap) ----------
   const input = { held: false, pressed: false };
@@ -132,13 +148,18 @@ export function renderFlight(root, { data, level, design, onDone }) {
     if (e.code !== 'Space' && e.code !== 'Enter') return;
     if (e.target.closest && e.target.closest('button')) return; // let the focused button handle it
     e.preventDefault();
-    if (phase === 'intro') { start(); return; }
+    if (phase === 'intro') {
+      const brief = root.querySelector('#f-brief');
+      if (brief) { brief.remove(); sfx('select'); return; }
+      start();
+      return;
+    }
     if (!e.repeat) input.pressed = true;
     input.held = true;
   };
   const onKeyUp = e => { if (e.code === 'Space' || e.code === 'Enter') input.held = false; };
   const onDown = e => {
-    if (e.target.closest('button, .f-card')) return;
+    if (e.target.closest('button, .f-center, .f-laika')) return;
     input.pressed = true;
     input.held = true;
   };
@@ -185,6 +206,7 @@ export function renderFlight(root, { data, level, design, onDone }) {
     ctx.fillRect(Math.round(x), Math.round(y), w, h);
   }
   function text(str, x, y, c = C.white, sz = 8, align = 'center') {
+    if (window.T) str = window.T(str);
     ctx.font = `${sz}px "Press Start 2P", monospace`;
     ctx.textAlign = align;
     ctx.textBaseline = 'top';
@@ -193,6 +215,20 @@ export function renderFlight(root, { data, level, design, onDone }) {
     ctx.fillStyle = c;
     ctx.fillText(str, Math.round(x), Math.round(y));
   }
+  // Velocímetro: velocidad del cohete (y altura durante el ascenso), en vivo
+  const num = n => Math.round(n).toLocaleString('es-MX');
+  function speedHud(kmh, km) {
+    const x = W - 8;
+    const y = 46;
+    px(x - 92, y - 4, 'rgba(0,0,0,0.55)', 96, km != null ? 58 : 32);
+    text('VELOCIDAD', x, y, C.grey, 7, 'right');
+    text(`${num(kmh)} km/h`, x, y + 11, C.yellow, 9, 'right');
+    if (km != null) {
+      text('ALTURA', x, y + 28, C.grey, 7, 'right');
+      text(`${num(km)} km`, x, y + 39, C.white, 9, 'right');
+    }
+  }
+
   function ring(cx, cy, r, c) {
     if (r <= 0) return;
     const step = 0.12 / Math.max(1, r / 10);
@@ -328,24 +364,27 @@ export function renderFlight(root, { data, level, design, onDone }) {
       setStep('ascent');
       S = { alt: 0, thr: 0, inBand: 0, total: 0, lastN: 4 };
       setAction('Prepárate: mantén presionado para dar potencia');
+      laika(`${icon('timer', 16)} Cuenta regresiva`, '<p>Cuando diga ¡YA!, mantén presionado. La barra de POTENCIA está a la izquierda.</p>');
     },
     sep() {
       setStep('sep');
       S = { p: 0, done: false, doneT: 0 };
       setAction('¡Separa la etapa cuando el anillo toque el verde!');
+      laika(`${icon('box', 16)} Separación`, '<p>La primera parte del cohete ya gastó su combustible. Suéltala cuando el anillo amarillo toque el círculo verde.</p>');
     },
     orbit() {
       setStep('orbit');
       S = { p: 0, loops: 0, done: false, doneT: 0, rot: 0 };
       setAction('Enciende tu motor cuando el anillo toque el verde para quedarte en órbita');
+      laika(`${icon('orbit', 16)} Entrar en órbita`, `<p>Para no caer hay que ir rapidísimo de lado. ${engine >= 2 ? 'Tu motor es fuerte: el círculo verde es más grande.' : 'Con un motor más fuerte, el círculo verde sería más grande.'}</p>`);
     }
   };
 
   function start() {
     if (phase !== 'intro') return;
-    const card = $('f-card');
-    card.innerHTML = '';
-    card.classList.add('hidden');
+    const center = $('f-center');
+    center.innerHTML = '';
+    center.classList.add('hidden');
     if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
     sfx('blip');
     go('count');
@@ -425,6 +464,7 @@ export function renderFlight(root, { data, level, design, onDone }) {
         if (t >= 3.3) {
           S.phase = 'burn';
           setAction('Mantén la aguja en la zona VERDE', true);
+          laika(`${icon('flame', 16)} Potencia`, `<p>Deja la rayita de POTENCIA dentro de la zona verde. ${load >= 0.6 ? 'Tu nave es pesada: la zona verde es más chica.' : 'Tu nave es ligera: ¡vas bien!'}</p>`);
         }
       } else {
         const holding = input.held;
@@ -439,13 +479,16 @@ export function renderFlight(root, { data, level, design, onDone }) {
         if (maxQ && !S.qSaid) {
           S.qSaid = true;
           setAction('¡MAX Q! Mucho aire empujando: baja un poco la potencia', true);
+          laika(`${icon('wind', 16)} ¡Max Q!`, '<p>Es el momento en que el aire empuja más fuerte contra el cohete. Los cohetes de verdad bajan la potencia aquí. ¡Suelta un poco!</p>');
           sfx('alert');
         }
         if (S.qSaid && !S.qDone && S.alt >= 0.58) {
           S.qDone = true;
           setAction('¡Superado! Ahora, ¡potencia máxima!', true);
+          laika(`${icon('check', 16)} ¡Superado!`, '<p>Ya casi no hay aire. Ahora sí: ¡potencia máxima!</p>');
         }
         setMeter(S.alt);
+        speedHud(8000 * S.alt * S.alt + S.thr * 40 * Math.random(), 70 * Math.pow(S.alt, 1.6));
         drawRocket(rx, ry, S.thr);
         if (S.thr > 0.1 && Math.random() < 0.7) {
           particles.push({ x: rx + rand(-6, 6), y: ry + 20, vx: rand(-24, 24), vy: rand(20, 40), life: 1.1, c: [C.grey, C.white, C.lav][(Math.random() * 3) | 0], g: -10, s: 2 });
@@ -453,20 +496,16 @@ export function renderFlight(root, { data, level, design, onDone }) {
         if (holding && Math.random() < 0.35) sfxNoise(0.08, 0.05 * S.thr, 300);
         shake = Math.max(shake, S.thr * 0.06);
         // power gauge
-        const gx = W - 34;
+        const gx = 14;
         const g0 = 52;
         const gh = H - 96;
         px(gx - 2, g0 - 2, C.white, 18, gh + 4);
         px(gx, g0, C.black, 14, gh);
         px(gx, g0 + gh * (1 - hi), C.dgreen, 14, gh * (hi - lo));
         px(gx, g0 + gh * (1 - S.thr) - 1, ok ? C.green : C.red, 14, 3);
-        text('POTENCIA', gx - 20, g0 - 12, C.white, 8);
-        if (maxQ) text('MAX Q', gx - 4, g0 + gh + 6, C.orange, 8);
+        text('POTENCIA', gx - 6, g0 - 12, C.white, 8, 'left');
+        if (maxQ) text('MAX Q', gx - 6, g0 + gh + 6, C.orange, 8, 'left');
         // altitude bar on the left
-        px(10, g0 - 2, C.white, 8, gh + 4);
-        px(12, g0, C.black, 4, gh);
-        px(12, g0 + gh * (1 - S.alt), C.yellow, 4, gh * S.alt);
-        text('ALTURA', 8, g0 - 12, C.white, 8, 'left');
         if (S.alt >= 1) {
           const frac = S.inBand / Math.max(0.1, S.total);
           result.ascent = frac > 0.72 ? 3 : frac > 0.5 ? 2 : 1;
@@ -487,6 +526,7 @@ export function renderFlight(root, { data, level, design, onDone }) {
       drawStars(dt, 0, 40);
       const rx = W / 2;
       const ry = H - 6; // camera reframes on the upper part of the rocket
+      speedHud(8000 + (S.done ? Math.min(1, S.doneT / 2) : 0) * 9000, 70 + (S.done ? Math.min(1, S.doneT / 2) * 60 : 0));
       if (!S.done) {
         S.p += dt / 1.7;
         drawRocket(rx, ry, 0.6);
@@ -497,6 +537,7 @@ export function renderFlight(root, { data, level, design, onDone }) {
           S.done = true;
           popup(j.label, rx, 24, j.color, input.pressed ? 16 : 8);
           setAction('¡Etapa separada! Sigue subiendo…');
+          laika(`${icon('sparkles', 16)} ¡Ahí está tu nave!`, '<p>La punta del cohete se abre y aparece la nave que armaste. ¡Ya estamos en el espacio!</p>');
           flash();
           sfxNoise(0.4, 0.15, 900);
           sfx('select');
@@ -554,6 +595,8 @@ export function renderFlight(root, { data, level, design, onDone }) {
       drawEarth(H - 44, S.rot);
       const sx = W / 2 - 10;
       const sy = H * 0.42 + Math.sin(t * 2) * 1.5;
+      // en órbita baja se va a unos 27.000-28.000 km/h; el encendido final da el último empujón
+      speedHud(S.done ? 26800 + Math.min(1, S.doneT / 1.2) * 600 + Math.sin(t * 3) * 25 : 26200 + Math.sin(t * 2) * 30);
       // upper stage drifting away
       if (t < 3) {
         const o = t * 14;
@@ -634,25 +677,21 @@ export function renderFlight(root, { data, level, design, onDone }) {
     const f = info.flight;
     setAction(null);
     sfx(f.total >= 7 ? 'win' : 'objective');
-    const card = $('f-card');
-    card.classList.add('end');
-    card.classList.remove('hidden');
-    card.innerHTML = `
-      <h2>${icon('orbit', 28)} ¡Llegaste a la órbita!</h2>
+    laika(`${icon('orbit', 16)} ¡Llegaste a la órbita!`, `
       <div class="f-rows">
-        <div class="f-row"><span>${icon('rocket', 20)} Despegue</span><span>${starRow(f.stars.ascent)}</span></div>
-        <div class="f-row"><span>${icon('box', 20)} Separación</span><span>${starRow(f.stars.sep)}</span></div>
-        <div class="f-row"><span>${icon('orbit', 20)} Órbita</span><span>${starRow(f.stars.orbit)}</span></div>
+        <div class="f-row"><span>${icon('rocket', 16)} Despegue</span><span>${starRow(f.stars.ascent)}</span></div>
+        <div class="f-row"><span>${icon('box', 16)} Separación</span><span>${starRow(f.stars.sep)}</span></div>
+        <div class="f-row"><span>${icon('orbit', 16)} Órbita</span><span>${starRow(f.stars.orbit)}</span></div>
       </div>
-      <p class="f-note ${info.anomalyDamage ? 'warn' : 'good'}">
-        ${info.anomalyDamage
-          ? `${icon('heart', 18)} El viaje sacudió la nave: empieza con ${100 - info.anomalyDamage}% de vida.`
-          : `${icon('heart', 18)} ¡Vuelo perfecto! La nave llega intacta.`}
-        ${f.shieldSaved > 0 ? `<br>${icon('shield', 18)} Tu escudo la protegió un poco.` : ''}
-      </p>
-      <p class="f-how">Ahora sí: rumbo a ${esc(level.destinationName)}.</p>
-      <button class="btn go" data-act="done">Empezar la misión ${icon('arrow-right', 18)}</button>`;
-    card.querySelector('[data-act="done"]').focus();
+      <p class="f-note ${info.anomalyDamage ? 'warn' : 'good'}">${info.anomalyDamage
+        ? `El viaje sacudió la nave: empieza con ${100 - info.anomalyDamage}% de vida.${f.shieldSaved > 0 ? ' Tu escudo la protegió un poco.' : ''}`
+        : '¡Vuelo perfecto! La nave llega intacta.'}</p>
+      <p>Ahora sí: rumbo ${esc(level.goTo || `a ${level.destinationName}`)}.</p>`);
+    const center = $('f-center');
+    center.classList.remove('hidden');
+    center.classList.add('end');
+    center.innerHTML = `<button class="btn go big" data-act="done">Empezar la misión ${icon('arrow-right', 22)}</button>`;
+    center.querySelector('[data-act="done"]').focus();
   }
 
   function finish(skipped = false) {
@@ -669,6 +708,7 @@ export function renderFlight(root, { data, level, design, onDone }) {
   root.onclick = e => {
     const b = e.target.closest('[data-act]');
     if (!b) return;
+    if (b.dataset.act === 'brief-ok') { root.querySelector('#f-brief')?.remove(); sfx('select'); return; }
     if (b.dataset.act === 'start') start();
     if (b.dataset.act === 'skip') finish(true);
     if (b.dataset.act === 'done') finish(false);

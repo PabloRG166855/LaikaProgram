@@ -33,6 +33,7 @@ Para publicarlo: súbelo tal cual a GitHub Pages o itch.io (proyecto HTML).
 - **Una misión jugable:** Expedición a la Luna (2:30 min, 5 objetivos). Las otras dos aparecen como "Próximamente" (`"playable"` en `levels.json`).
 - **Pocos números y poco texto:** barras y medidores que se llenan, íconos pixel art, sin emojis en la interfaz.
 - **Hangar a pantalla completa** (`js/views/hangarView.js`): la nave se ve al centro (tamaño ajustado para no tapar paneles); tocas una parte (botones sobre la nave) o una pestaña de abajo y eliges la pieza.
+- **Laika te guía:** a la izquierda, Laika explica en un globo de diálogo para qué sirve cada parte de la nave (al tocar una pestaña) y qué te da cada pieza (al pasar el mouse o elegirla). Los textos están en `components.json` (`laika` por categoría y `guide`).
 - **Presupuesto simple:** no hay cifras de dinero. Cada pieza muestra un ícono de precio con 1 a 4 barritas, y arriba a la izquierda hay un medidor de presupuesto de 12 bloques que baja al comprar. Las piezas que ya no alcanzas salen grises con "Muy caro". La tripulación es gratis: el presupuesto solo sirve para construir la nave (Luna: 1300). Las piezas internas (baterías, aire, computadora, orientación) se eligen solas (`"auto": true` en la categoría). Cada barra tiene un "?" que la explica al tocarlo.
 - **Tripulación** (`js/views/crewView.js`): un asiento por puesto, retratos grandes, barras de habilidad sin números y gráfica radar del equipo.
 - **Misión a pantalla completa** (`js/views/missionView.js`): el mapa ocupa todo; arriba, anillos (nave, energía, aire, ciencia) y la barra del viaje con los objetivos; abajo, la tripulación con anillo de cansancio.
@@ -54,7 +55,15 @@ Para publicarlo: súbelo tal cual a GitHub Pages o itch.io (proyecto HTML).
    - **Órbita:** sobre la Tierra, enciende tu motor cuando el anillo toque el verde para quedarte en órbita.
    - **La construcción importa:** si la nave pesa mucho para el cohete, la zona verde es más chica y sube más lento; un mejor motor agranda el blanco de la órbita; el escudo reduce el daño de un vuelo movido.
    - Cada fase da 1–3 estrellas. Un mal vuelo hace que la misión empiece con menos vida (máx. −17, menos con escudo). El reporte final muestra la barra "Despegue". Hay botón "Saltar".
-4. **Misión**: hay dos tipos de eventos:
+4. **Misión**: hay tres tipos de eventos:
+   - **Reparaciones con minijuego** (`js/views/repairGame.js`, campo `minigame` en `events.json`): cuando falla una parte de la nave (antena, energía, filtro de CO₂, computadora, casco, válvula…), la reparas tú con un minijuego de un botón, adaptado de los minijuegos STS-125 del equipo. En el mapa salen con una llave y la etiqueta "¡REPARA!". Si fallas, bajan los stats (vida de la nave, energía, aire, señal…).
+     | Mecánica | Fallas | Cómo se juega |
+     |---|---|---|
+     | `aim` | Pérdida de señal, Estrella guía, Error en la computadora | Toca cuando la antena/cámara/flecha esté sobre el verde (gana 2 de 3) |
+     | `charge` | Falla eléctrica, Baterías en eclipse, Sobrecalentamiento | Mantén presionado y suelta en la zona verde (gana 2 de 3) |
+     | `tap` | Filtro de CO₂, Instrumento atascado, Fuga de combustible | Toca muy rápido antes de que se acabe el tiempo |
+     | `patch` | Micrometeorito | Suelta el parche justo encima del agujero (gana 2 de 3) |
+   - Al elegir tripulante, cada animal muestra sus 4 stats como **números** (verde = alcanza, rojo = le falta).
    - **Objetivos principales** (scripteados en `mainEvents.json`, programados por nivel en `levels.json`): son la columna vertebral de la misión y valen más.
    - **Eventos aleatorios** (`events.json`): fallas, asteroides, señales inesperadas, oportunidades científicas… suman o restan ⭐ puntos.
    - Cada evento aparece **donde ocurre** (`location`): sobre la parte de la nave que falló (`ship` + `part`), en el espacio (`space`, con trayectoria o en un punto como `sun`, `earth`, `station`) o en la superficie (`planet`). La nave orbita lento para que sea fácil tocar los eventos.
@@ -144,3 +153,33 @@ REACTION=5 node tools/simulate.mjs 300 # bot más lento (más parecido a una per
 - **Vista 3D** opcional con Three.js, alternando con el mapa 2D.
 - Reemplazar los datos inventados por valores reales de NASA.
 - Arte (Kenney), sonidos y tutorial guiado.
+
+## Misión 1: Salva el Hubble (STS-125, mayo de 2009)
+
+Vuelas alrededor de la Tierra hasta el Hubble. **Los 5 objetivos principales son los minijuegos STS-125 del equipo, tal cual**, con sus fotos reales, fichas NASA, preguntas, álbum y fuentes. Se juegan dentro de la misión (la misión se pausa mientras juegas):
+
+| Objetivo | Minijuego del equipo (`minigames/sts125/`) |
+|---|---|
+| Atrapa el Hubble | `sts125-captura` |
+| Cámara nueva (1.ª caminata) | `sts125-camara` |
+| Giroscopios (2.ª caminata) | `sts125-giroscopios` |
+| Reparar el STIS (4.ª caminata) | `sts125-espectrografo` |
+| Suelta el Hubble | `sts125-adios` |
+
+- Se cargan en un iframe con `?embed=1`. El único cambio a su código está en `shared/sts125.js` (`makeGame`): al terminar, el juego le avisa a la misión su resultado (estrellas) y el enlace "Menú" se convierte en **"Volver a la misión"**. Fuera de la misión funcionan exactamente igual que antes (`minigames/sts125/index.html`).
+- Terminar el minijuego cumple el objetivo; con muchas estrellas ganas puntos extra. El botón "Salir (seguir después)" deja el objetivo pendiente en el mapa.
+- Las **fallas de la nave** (antena, energía, filtro de CO₂, etc.) siguen siendo minijuegos cortos de reparación (`js/views/repairGame.js`); las emergencias de tripulación se resuelven enviando astronautas.
+
+## Sin presupuesto: peso y energía
+
+- Ya no hay dinero ni precios. Cada misión trae su propio cohete (`rocketId` en `levels.json`: Hubble → Cóndor L, 8,000 kg; Luna → Jaguar H; Marte → Titán SH).
+- Armas la nave cuidando dos cosas: que **no pese más de lo que levanta el cohete** y que tenga **energía suficiente**. El peso además cambia la dificultad del despegue.
+
+## Pantalla
+
+- Sin barra superior: solo el botón de sonido en la esquina superior izquierda.
+- En la misión, la barra de objetivos va arriba a lo largo (delgada) y los indicadores (Nave, Energía, Aire, Ciencia) van chicos en una columna a la derecha, fuera del mapa.
+
+## Despegue con Laika
+
+En la pantalla de despegue, Laika explica cada paso en la esquina inferior derecha (peso, motor, escudo, Max Q, separación, órbita), y el botón **¡Despegar!** queda en el centro.

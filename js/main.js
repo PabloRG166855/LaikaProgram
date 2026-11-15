@@ -7,7 +7,6 @@ import { renderFlight } from './views/flightView.js';
 import { startMission } from './views/missionView.js';
 import { renderReport } from './views/reportView.js';
 import { prepareSprites } from './views/animals.js';
-import { avatar } from './ui.js';
 import { initSfx } from './sfx.js';
 
 const app = { data: null, level: null, designs: {} };
@@ -77,8 +76,8 @@ loadData()
   .then(async data => {
     app.data = data;
     await prepareSprites([data.crew.director, ...data.crew.members]);
-    document.getElementById('brand-laika').innerHTML = avatar(data.crew.director);
     initSfx();
+    window.LAIKA_I18N?.addToggle();
     nav.menu();
   })
   .catch(err => {

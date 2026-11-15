@@ -1,6 +1,6 @@
 [
-  { "id": "condor", "name": "Cóndor L", "desc": "Cohete ligero y barato. Solo llega a órbita baja.", "capacityKg": { "LEO": 8000, "MOON": 0, "MARS": 0 }, "cost": 60, "reliability": 0.92 },
-  { "id": "quetzal", "name": "Quetzal M", "desc": "Cohete mediano. Puede enviar cargas pequeñas a la Luna.", "capacityKg": { "LEO": 22000, "MOON": 10000, "MARS": 0 }, "cost": 180, "reliability": 0.95 },
-  { "id": "jaguar", "name": "Jaguar H", "desc": "Cohete pesado. Llega a la Luna con holgura y a Marte con poca carga.", "capacityKg": { "LEO": 50000, "MOON": 18000, "MARS": 12000 }, "cost": 380, "reliability": 0.97 },
-  { "id": "titan", "name": "Titán SH", "desc": "Superpesado. Muy caro, pero puede llevar una nave tripulada a Marte.", "capacityKg": { "LEO": 120000, "MOON": 45000, "MARS": 30000 }, "cost": 750, "reliability": 0.98 }
+  {"id": "condor", "name": "Cóndor L", "desc": "Cohete ligero. Llega a la órbita baja de la Tierra con poco peso.", "capacityKg": {"LEO": 8000, "MOON": 0, "MARS": 0}, "cost": 60, "reliability": 0.92},
+  {"id": "quetzal", "name": "Quetzal M", "desc": "Cohete mediano. Puede enviar cargas pequeñas a la Luna.", "capacityKg": {"LEO": 22000, "MOON": 10000, "MARS": 0}, "cost": 180, "reliability": 0.95},
+  {"id": "jaguar", "name": "Jaguar H", "desc": "Cohete pesado. Llega a la Luna con holgura y a Marte con poca carga.", "capacityKg": {"LEO": 50000, "MOON": 18000, "MARS": 12000}, "cost": 380, "reliability": 0.97},
+  {"id": "titan", "name": "Titán SH", "desc": "Superpesado: puede llevar una nave tripulada a Marte.", "capacityKg": {"LEO": 120000, "MOON": 45000, "MARS": 30000}, "cost": 750, "reliability": 0.98}
 ]

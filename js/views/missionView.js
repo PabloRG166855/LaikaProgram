@@ -2,8 +2,9 @@
 // Events appear on the map; tapping one opens a Dispatch-style window to send 1–2 crew.
 import {
   createMission, tick, assign, calcChance, isPaused, creditedScience, sentFraction, isBlackout, isExhausted,
-  unavailableReason, taskDuration, requirements, teamStats, chooseApproach, eventSpecialties, MAX_TEAM
+  unavailableReason, taskDuration, requirements, teamStats, chooseApproach, eventSpecialties, MAX_TEAM, resolveRepair, debugSpawn
 } from '../missionEngine.js';
+import { openRepairGame } from './repairGame.js';
 import { STAT_NAMES } from '../util.js';
 import { esc, avatar, dispatchRadar, STAT_KEYS, STAT_ICON_NAME } from '../ui.js';
 import { icon } from '../icons.js';
@@ -52,31 +53,43 @@ function setRing(el, frac) {
   el.classList.toggle('warn', f >= 0.25 && f < 0.5);
 }
 
+let hintSeenThisSession = false; // el aviso de "toca un evento" sale una sola vez
+
 export function startMission(root, ctx) {
   const s = createMission(ctx.level, ctx.design, ctx.data, ctx.launchInfo);
   const roles = ctx.data.crew.roles;
 
   root.innerHTML = `
     <div class="mission-full">
-      <canvas id="m-map"></canvas>
-      <div class="hud-top">
-        <div class="hud-rings glass">
-          ${ring('r-int', 'heart', 'Nave')}
-          ${ring('r-pow', 'battery-charging', 'Energía')}
-          ${ring('r-life', 'wind', 'Aire')}
-          ${ring('r-sci', 'flask-conical', 'Ciencia')}
-        </div>
+      <div class="hud-bar">
         <div class="hud-progress glass">
           <div class="hp-label" id="hp-label"></div>
           <div class="hp-track" id="hp-track"><div class="hp-fill" id="hp-fill"></div><div id="hp-marks"></div></div>
         </div>
-        <button class="hud-pause glass" data-act="pause" id="m-pause" aria-label="Pausa">${icon('pause', 22)}</button>
+        <button class="hud-pause glass" data-act="pause" id="m-pause" aria-label="Pausa">${icon('pause', 20)}</button>
       </div>
-      <div class="hud-status" id="m-status"></div>
-      <div class="hud-hint" id="m-hint">${icon('crosshair', 16)} Toca un evento en el mapa para enviar a tu tripulación</div>
-      <div class="hud-crew glass" id="m-crew"></div>
-      <div class="paused-banner hidden" id="m-paused">${icon('pause', 16)} Pausa</div>
-      <div class="blackout-overlay hidden" id="m-blackout">${icon('battery-low', 56)}<b>APAGÓN</b><span>Nadie puede trabajar un momento…</span></div>
+      <div class="m-body">
+        <div class="m-mapwrap">
+          <canvas id="m-map"></canvas>
+          <div class="hud-status" id="m-status"></div>
+          <div class="m-alerts" id="m-alerts" aria-live="polite"></div>
+          <div class="m-laika hidden" id="m-laika">
+            <span class="hl-face">${avatar(ctx.data.crew.director, 'lg')}<small>Laika</small></span>
+            <div class="hl-bubble" id="m-laika-text"></div>
+          </div>
+          <div class="hud-crew" id="m-crew"></div>
+          <div class="m-speed" id="m-speed"><span>VELOCIDAD DE TU NAVE</span><b id="m-speed-val">—</b></div>
+          <div class="m-redflash" id="m-redflash" aria-hidden="true"></div>
+          <div class="paused-banner hidden" id="m-paused">${icon('pause', 16)} Pausa</div>
+          <div class="blackout-overlay hidden" id="m-blackout">${icon('battery-low', 56)}<b>APAGÓN</b><span>Nadie puede trabajar un momento…</span></div>
+        </div>
+        <aside class="hud-rings glass">
+          ${ring('r-int', 'heart', 'Nave')}
+          ${ring('r-pow', 'battery-charging', 'Energía')}
+          ${ring('r-life', 'wind', 'Aire')}
+          ${ring('r-sci', 'flask-conical', 'Ciencia')}
+        </aside>
+      </div>
     </div>`;
 
   const $ = id => root.querySelector(`#${id}`);
@@ -92,6 +105,7 @@ export function startMission(root, ctx) {
   let lastRandomCount = 0;
   let last = performance.now();
   let running = true;
+  let hintShown = hintSeenThisSession;
 
   const whereText = ev => (ev.loc.type === 'ship' ? `En la nave: ${PART_TEXT[ev.loc.part] || 'casco'}` : ev.loc.type === 'planet' ? 'En la superficie' : 'En el espacio');
 
@@ -133,7 +147,7 @@ export function startMission(root, ctx) {
     setRing($('r-life'), s.life / 100);
     setRing($('r-sci'), creditedScience(s) / s.level.scienceGoal);
     $('r-int').classList.toggle('danger', s.integrity < 30);
-    $('hp-fill').style.width = `${(s.time / s.duration) * 100}%`;
+    $('hp-fill').style.width = `${Math.min(1, s.time / s.duration) * 100}%`;
     const st = s.status;
     const out = s.crew.filter(m => m.outFor > 0);
     $('m-status').innerHTML = [
@@ -146,7 +160,11 @@ export function startMission(root, ctx) {
     $('m-blackout').classList.toggle('hidden', st.blackout <= 0);
     $('m-paused').classList.toggle('hidden', !s.pauseReasons.has('manual'));
     $('m-pause').innerHTML = icon(s.pauseReasons.has('manual') ? 'play' : 'pause', 22);
-    $('m-hint').classList.toggle('hidden', s.events.length === 0 || s.time > 40);
+    if (s.events.length > 0 && !hintShown) {
+      hintShown = true;
+      hintSeenThisSession = true;
+      laikaSay('crosshair', '¡Algo pasa!', 'Toca un evento en el mapa. Los que tienen llave los arreglas tú; los demás, tu tripulación.', 9000);
+    }
     for (const m of s.crew) {
       const c = $(`cf-${m.id}`);
       if (c) c.style.width = `${100 - m.fatigue}%`;
@@ -158,15 +176,72 @@ export function startMission(root, ctx) {
     const ev = s.events.find(e => e.uid === uid);
     if (!ev || ev.status !== 'pending') return;
     if (isBlackout(s)) {
-      kidToast('bad', 'battery-low', 'Apagón', 'Espera a que vuelva la energía.');
+      kidToast('bad', 'battery-low', 'Apagón: espera a que vuelva la energía');
       return;
     }
+    if (ev.def.sts125) return openSts125(ev);
+    if (ev.def.minigame) return openRepair(ev);
     modalUid = uid;
     picked = [];
     hoverId = null;
     if (s.level.pauseOnDecision) s.pauseReasons.add('modal');
     renderModal();
     modal.classList.remove('hidden');
+  }
+
+  // ---------- Ship repairs: the player fixes them with a minigame ----------
+  let repairOpen = null;
+  function openRepair(ev) {
+    if (repairOpen) return;
+    s.pauseReasons.add('repair');
+    repairOpen = openRepairGame(root.querySelector('.mission-full'), {
+      def: ev.def,
+      main: ev.main,
+      onDone: res => {
+        repairOpen = null;
+        s.pauseReasons.delete('repair');
+        if (!res) return;
+        const n = resolveRepair(s, ev.uid, res);
+        if (n) showNotice(n);
+      }
+    });
+  }
+
+  // ---------- Hubble objectives: the team's STS-125 minigames, played inside the mission ----------
+  let stsOpen = null;
+  function openSts125(ev) {
+    if (stsOpen) return;
+    s.pauseReasons.add('repair');
+    const wrap = document.createElement('div');
+    wrap.className = 'sts-overlay';
+    wrap.innerHTML = `
+      <iframe src="minigames/sts125/${ev.def.sts125}/index.html?embed=1${ev.def.sts125Query ? `&${ev.def.sts125Query}` : ''}" title="${esc(ev.def.name)}" allow="autoplay"></iframe>
+      <button class="sts-exit" type="button" aria-label="Salir y seguir después">${icon('x', 18)}<span>Salir (seguir después)</span></button>`;
+    root.querySelector('.mission-full').appendChild(wrap);
+    document.body.classList.add('rg-open');
+    const frame = wrap.querySelector('iframe');
+    frame.addEventListener('load', () => frame.focus());
+    let result = null;
+    const onMsg = e => {
+      if (e.source !== frame.contentWindow || !e.data || e.data.source !== 'sts125') return;
+      if (e.data.type === 'result') result = e.data;
+      if (e.data.type === 'close') close();
+    };
+    function close() {
+      window.removeEventListener('message', onMsg);
+      wrap.remove();
+      document.body.classList.remove('rg-open');
+      stsOpen = null;
+      s.pauseReasons.delete('repair');
+      if (!result) return; // left before finishing: the objective stays on the map
+      // finishing the team's game completes the objective; lots of stars give bonus points
+      const ratio = result.max ? result.total / result.max : 0;
+      const n = resolveRepair(s, ev.uid, { success: true, perfect: ratio >= 0.85 });
+      if (n) showNotice(n);
+    }
+    wrap.querySelector('.sts-exit').addEventListener('click', close);
+    window.addEventListener('message', onMsg);
+    stsOpen = { close };
   }
 
   function closeModal() {
@@ -176,13 +251,6 @@ export function startMission(root, ctx) {
     hoverId = null;
     s.pauseReasons.delete('modal');
     modal.classList.add('hidden');
-  }
-
-  const chanceWord = c => (c >= 70 ? ['hi', 'Alta'] : c >= 45 ? ['mid', 'Media'] : ['lo', 'Baja']);
-
-  function reqLine(o) {
-    const [verb, ...rest] = o.label.split(' ');
-    return `<li><span class="req-ico" style="--c:var(--stat-${o.stat})">${icon(STAT_ICON_NAME[o.stat], 16)}</span><span><b class="verb ${o.stat}">${esc(verb)}</b> ${esc(rest.join(' '))}</span></li>`;
   }
 
   function teamMembers() {
@@ -196,62 +264,29 @@ export function startMission(root, ctx) {
     const team = teamMembers();
     const stats = team.length ? teamStats(team) : null;
     const res = team.length ? calcChance(s, ev, team) : null;
-    const slots = [0, 1].map(i => {
-      const m = picked[i] ? s.crew.find(c => c.id === picked[i]) : null;
-      return m
-        ? `<button class="dsp-slot filled" data-m="unpick" data-id="${m.id}">${avatar(m, 'lg')}<span><b>${esc(m.name)}</b><small class="rm">${icon('x', 12)} quitar</small></span></button>`
-        : `<div class="dsp-slot empty"><span class="plus">${icon(i === 0 ? 'user' : 'users', 20)}</span><span>${i === 0 ? 'Elige a alguien' : 'Ayudante (opcional)'}</span></div>`;
-    }).join('');
-    let verdict = `<div class="dsp-verdict empty">Toca a un tripulante: su forma <b class="c-team">azul</b> debe cubrir la forma <b class="c-req">amarilla</b>.</div>`;
-    if (res) {
-      const [cls, word] = chanceWord(res.chance);
-      verdict = `
-        <div class="dsp-verdict ${cls}">
-          <div class="v-top"><span>Posibilidad de éxito</span><b>${word}</b></div>
-          <div class="v-bar"><span style="width:${res.chance}%"></span></div>
-          <div class="v-approach">${res.missing.length
-            ? `${icon('triangle-alert', 14)} Le falta: ${res.missing.map(k => `<b class="verb ${k}">${STAT_NAMES[k]}</b>`).join(', ')}`
-            : `${icon('check', 14)} ¡Cubre todo lo que pide!`}</div>
-        </div>`;
-    }
+    const line = !res
+      ? `Elige a quién mandar: su forma <b class="c-team">azul</b> debe cubrir la <b class="c-req">amarilla</b>.`
+      : res.missing.length
+        ? `${icon('triangle-alert', 14)} Le falta: ${res.missing.map(k => `<b class="verb ${k}">${STAT_NAMES[k]}</b>`).join(', ')}`
+        : `${icon('check', 14)} ¡Cubre todo lo que pide!`;
     return `
-      <div class="dsp-radar">${dispatchRadar(req, stats, 310, false)}</div>
-      <div class="dsp-slots">${slots}</div>
-      ${verdict}
-      <div class="dsp-actions">
-        <button class="btn ghost" data-m="close">${icon('x', 16)} Cerrar</button>
-        <button class="btn go" data-m="send" ${picked.length ? '' : 'disabled'}>${icon('rocket', 18)} Enviar</button>
-      </div>`;
-  }
-
-  function barFor(m, k, need) {
-    const v = m.stats[k];
-    return `
-      <div class="cs-row ${need > v ? 'miss' : 'ok'}">
-        <span class="cs-k verb ${k}">${icon(STAT_ICON_NAME[k], 14)}</span>
-        <span class="cs-track">
-          <span class="cs-fill ${k}" style="width:${v * 10}%"></span>
-          ${need > v ? `<span class="cs-gap" style="left:${v * 10}%;width:${(need - v) * 10}%"></span>` : ''}
-          <span class="cs-need" style="left:${need * 10}%"></span>
-        </span>
-      </div>`;
+      <div class="dsp-radar">${dispatchRadar(req, stats, 300, false)}</div>
+      <p class="lite-line ${res ? (res.missing.length ? 'miss' : 'ok') : ''}">${line}</p>`;
   }
 
   function renderRoster(ev) {
     const specs = eventSpecialties(ev.def);
-    const req = requirements(s, ev.def);
     const order = [...s.crew].sort((x, y) => (unavailableReason(s, x) ? 1 : 0) - (unavailableReason(s, y) ? 1 : 0));
     return order.map(m => {
       const why = unavailableReason(s, m);
       const [st, label] = crewState(m);
       const sel = picked.includes(m.id);
       return `
-        <button class="crew-pick ${sel ? 'selected' : ''}" data-m="pick" data-id="${m.id}" ${why ? 'disabled' : ''}>
-          <span class="cp-face">${avatar(m, 'xl')}${sel ? `<span class="cp-check">${icon('check', 14)}</span>` : ''}</span>
+        <button class="crew-pick lite ${sel ? 'selected' : ''}" data-m="pick" data-id="${m.id}" ${why ? 'disabled' : ''}>
+          <span class="cp-face">${avatar(m, 'lg')}${sel ? `<span class="cp-check">${icon('check', 14)}</span>` : ''}</span>
           <span class="cp-info">
-            <span class="cp-head"><b>${esc(m.name)}</b><span class="badge ${st}">${label}</span></span>
-            <small>${icon(roles[m.role].ico, 13)} ${esc(roles[m.role].name)}${specs.includes(m.role) ? ` <span class="spec">${icon('star', 11)} IDEAL</span>` : ''}</small>
-            ${STAT_KEYS.map(k => barFor(m, k, req[k])).join('')}
+            <b>${esc(m.name)}</b>
+            <small>${specs.includes(m.role) ? `<span class="spec">${icon('star', 11)} IDEAL</span>` : esc(roles[m.role].name)}${st !== 'free' ? ` · <span class="badge ${st}">${label}</span>` : ''}</small>
           </span>
         </button>`;
     }).join('');
@@ -262,30 +297,24 @@ export function startMission(root, ctx) {
     if (!ev) return closeModal();
     const def = ev.def;
     const kind = ev.main ? '<span class="tag-main">OBJETIVO</span>' : def.positive ? '<span class="tag-kind pos">OPORTUNIDAD</span>' : '<span class="tag-kind neg">EMERGENCIA</span>';
-    const ignore = effectChips(def.onIgnore?.effects);
-    modalBox.className = `modal-box dsp ${ev.main ? 'main' : ''}`;
     modal.classList.add('dsp-mode');
+    modalBox.className = `modal-box dsp lite ${ev.main ? 'main' : ''}`;
     modalBox.innerHTML = `
       <header class="dsp-top">
-        <span class="dsp-icon ${ev.main ? 'main' : def.positive ? 'pos' : 'neg'}">${icon(def.ico, 34)}</span>
-        <div class="dsp-title">${kind}<h2>${esc(def.name)}</h2><small>${icon('map', 13)} ${esc(whereText(ev))}</small></div>
+        <span class="dsp-icon ${ev.main ? 'main' : def.positive ? 'pos' : 'neg'}">${icon(def.ico, 30)}</span>
+        <div class="dsp-title">${kind}<h2>${esc(def.name)}</h2></div>
         <div class="meter timer" id="dsp-timer"><span class="meter-ico">${icon('timer', 20)}</span><span class="blocks">${'<i></i>'.repeat(BLOCKS)}</span></div>
         <button class="btn ghost small" data-m="close" aria-label="Cerrar">${icon('x', 18)}</button>
       </header>
-      <div class="dsp-body">
-        <section class="dsp-panel dsp-left">
-          <header class="panel-head">EL PROBLEMA</header>
+      <div class="lite-body">
+        <section class="lite-left">
           <p class="case-text">${esc(def.text)}</p>
-          <header class="panel-head mid">QUÉ SE NECESITA</header>
-          <ul class="req-list">${def.options.map(reqLine).join('')}</ul>
-          ${ignore ? `<div class="risk">${icon('triangle-alert', 16)} Si lo ignoras:<div class="fx-row">${ignore}</div></div>` : ''}
-          ${def.learn ? `<details class="learn"><summary>${icon('sparkles', 14)} Dato real</summary>${esc(def.learn)}</details>` : ''}
+          <div id="dsp-center">${renderCenter(ev)}</div>
         </section>
-        <section class="dsp-panel dsp-center" id="dsp-center">${renderCenter(ev)}</section>
-        <section class="dsp-panel dsp-right">
-          <header class="panel-head">TU TRIPULACIÓN</header>
-          <p class="info small"><span class="mk-need"></span> = lo que pide · <span class="mk-gap"></span> = le falta</p>
+        <section class="lite-right">
+          <header class="panel-head">¿A QUIÉN MANDAS?</header>
           <div class="crew-list" id="dsp-roster">${renderRoster(ev)}</div>
+          <button class="btn go big" data-m="send" id="dsp-send" ${picked.length ? '' : 'disabled'}>${icon('rocket', 18)} Enviar</button>
         </section>
       </div>`;
     updateModalTimer();
@@ -296,6 +325,7 @@ export function startMission(root, ctx) {
     if (!ev) return;
     modalBox.querySelector('#dsp-center').innerHTML = renderCenter(ev);
     modalBox.querySelector('#dsp-roster').innerHTML = renderRoster(ev);
+    modalBox.querySelector('#dsp-send').disabled = !picked.length;
   }
 
   function updateModalTimer() {
@@ -355,28 +385,43 @@ export function startMission(root, ctx) {
     }
   };
 
-  // ---------- Kid-friendly toasts ----------
-  function kidToast(kind, ico, title, text, fxHtml = '') {
-    const box = document.getElementById('toasts');
+  // ---------- Avisos simples: Laika habla, y los resultados son iconos pequeños ----------
+  let laikaTimer = 0;
+  function laikaSay(ico, title, text, ms = 6000) {
+    const box = $('m-laika');
+    $('m-laika-text').innerHTML = `<b>${icon(ico, 16)} ${esc(title)}</b><p>${esc(text)}</p>`;
+    box.classList.remove('hidden', 'pop');
+    void box.offsetWidth;
+    box.classList.add('pop');
+    clearTimeout(laikaTimer);
+    laikaTimer = setTimeout(() => box.classList.add('hidden'), ms);
+  }
+  $('m-laika').addEventListener('click', () => $('m-laika').classList.add('hidden'));
+
+  // pequeño aviso con icono (se va solo); los fallos además hacen parpadear el borde en rojo, suave
+  function kidToast(kind, ico, title) {
+    const box = $('m-alerts');
     const el = document.createElement('div');
-    el.className = `toast kid ${kind}`;
-    el.innerHTML = `<span class="kt-ico">${icon(ico, 22)}</span><div><b>${esc(title)}</b>${text ? `<div>${esc(text)}</div>` : ''}${fxHtml ? `<div class="fx-row">${fxHtml}</div>` : ''}</div>`;
-    el.addEventListener('click', () => el.remove());
+    el.className = `m-chip ${kind}`;
+    el.innerHTML = `${icon(ico, 18)}<span>${esc(title)}</span>`;
     box.appendChild(el);
     while (box.children.length > 3) box.firstElementChild.remove();
-    setTimeout(() => el.remove(), 5000);
+    setTimeout(() => el.remove(), 3200);
+    if (kind === 'fail' || kind === 'bad') {
+      const f = $('m-redflash');
+      f.classList.remove('on');
+      void f.offsetWidth;
+      f.classList.add('on');
+    }
   }
 
   function showNotice(n) {
     sfx(n.kind === 'main' ? 'objective' : n.kind === 'success' ? 'success' : n.kind === 'status' ? 'blip' : 'fail');
-    if (n.kind === 'main') return kidToast('main', 'target', n.title.replace(/^🎯\s*/, ''), n.text);
-    if (n.kind === 'status') return kidToast('status', 'check', n.title.replace(/^[^\wÁÉÍÓÚáéíóúñ¡]+/, ''), '');
-    const ev = n;
-    const fx = n.rawEffects ? effectChips(n.rawEffects) : '';
-    const title = n.kind === 'success' ? '¡Lo lograron!' : n.kind === 'fail' ? 'No salió bien' : 'Nadie lo atendió';
-    const ico = n.kind === 'success' ? 'check' : n.kind === 'fail' ? 'triangle-alert' : 'clock';
-    kidToast(n.kind === 'success' ? 'success' : 'fail', ico, `${title} · ${n.eventName || ''}`, n.shortText || '', fx);
-    void ev;
+    if (n.kind === 'main') return laikaSay('target', '¡Nuevo objetivo!', `${n.title.replace(/^🎯\s*Objetivo principal:\s*/, '')}. ${n.text || ''}`, 5000);
+    if (n.kind === 'status') return kidToast('status', 'check', n.title.replace(/^[^\wÁÉÍÓÚáéíóúñ¡]+/, ''));
+    const name = n.eventName || '';
+    if (n.kind === 'success') return kidToast('success', 'check', n.repair ? `Reparado · ${name}` : `¡Bien! · ${name}`);
+    kidToast('fail', n.kind === 'fail' ? 'x' : 'clock', `${n.kind === 'fail' ? 'Fallaste' : 'Se te pasó'} · ${name}`);
   }
 
   // ---------- Loop ----------
@@ -388,7 +433,7 @@ export function startMission(root, ctx) {
 
     if (modalUid !== null && isBlackout(s)) {
       closeModal();
-      kidToast('bad', 'battery-low', 'Apagón', 'La consola se bloqueó.');
+      kidToast('bad', 'battery-low', 'Apagón: la consola se bloqueó');
     }
     const tiredSig = s.crew.map(m => crewState(m)[0]).join('');
     if (tiredSig !== lastTiredSig) { lastTiredSig = tiredSig; renderCrew(); }
@@ -404,15 +449,29 @@ export function startMission(root, ctx) {
     updateHud();
     updateModalTimer();
     map.draw(s, now);
+    if (map.speed) {
+      const v = Math.round(map.speed);
+      const el = $('m-speed-val');
+      const txt = `${v.toLocaleString('es-MX')} km/h`;
+      if (el.textContent !== txt) {
+        el.classList.toggle('up', v > (el._v || v));
+        el.classList.toggle('down', v < (el._v || v));
+        el._v = v;
+        el.textContent = txt;
+      }
+    }
 
     if (s.over) {
       running = false;
       closeModal();
+      if (repairOpen) repairOpen.close();
+      if (stsOpen) stsOpen.close();
       setTimeout(() => ctx.onEnd(s), 900);
       return;
     }
     requestAnimationFrame(frame);
   }
 
+  if (location.search.includes('debug')) window.__laika = { s, openEvent, spawn: id => debugSpawn(s, id) };
   requestAnimationFrame(t => { last = t; frame(t); });
 }

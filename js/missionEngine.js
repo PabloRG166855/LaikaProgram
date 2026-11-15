@@ -304,9 +304,23 @@ export function tick(s, dt, rng = Math.random) {
     else if (ev.status === 'pending' && s.time >= ev.expiresAt) expireEvent(s, ev, notices);
   }
 
-  // Scripted main events
+  // Scripted main events. A "final" objective (the landing) only starts when the other objectives are
+  // over (or when time runs out), and the mission ends when it is resolved.
+  const OPEN = ['upcoming', 'active', 'working'];
+  const othersOpen = s.objectives.some(o => !o.def.final && OPEN.includes(o.status));
   for (const obj of s.objectives) {
-    if (obj.status === 'upcoming' && s.time >= obj.at) {
+    if (obj.def.final && obj.status === 'upcoming' && s.time >= s.duration && othersOpen) {
+      // time is up: whatever was still open is lost, then comes the landing
+      for (const o of s.objectives) {
+        if (o.def.final || !OPEN.includes(o.status)) continue;
+        const ev = o.uid && s.events.find(e => e.uid === o.uid);
+        if (ev) removeEvent(s, ev);
+        o.status = 'missed';
+      }
+      s.version++;
+    }
+    const ready = obj.def.final ? (s.time >= obj.at && !s.objectives.some(o => !o.def.final && OPEN.includes(o.status))) || s.time >= s.duration : s.time >= obj.at;
+    if (obj.status === 'upcoming' && ready) {
       const ev = makeEvent(s, obj.def, true, rng);
       obj.status = 'active';
       obj.uid = ev.uid;
@@ -320,7 +334,8 @@ export function tick(s, dt, rng = Math.random) {
   }
 
   // Random events
-  if (s.time >= s.nextSpawnAt) {
+  const landing = s.objectives.some(o => o.def.final && o.status !== 'upcoming');
+  if (s.time >= s.nextSpawnAt && !landing) {
     const randomActive = s.events.filter(e => !e.main).length;
     if (randomActive < s.level.maxActiveEvents && spawnRandom(s, rng)) {
       s.nextSpawnAt = s.time + randRange(s.level.eventInterval, rng);
@@ -335,9 +350,17 @@ export function tick(s, dt, rng = Math.random) {
     s.over = true;
     s.outcome = 'aborted';
     s.abortedAt = s.time;
-  } else if (s.time >= s.duration) {
-    s.over = true;
-    s.outcome = 'completed';
+  } else {
+    const final = s.objectives.find(o => o.def.final);
+    if (final) {
+      if (!OPEN.includes(final.status) || s.time >= s.duration + 90) {
+        s.over = true;
+        s.outcome = 'completed';
+      }
+    } else if (s.time >= s.duration) {
+      s.over = true;
+      s.outcome = 'completed';
+    }
   }
   if (s.over) {
     for (const obj of s.objectives) {
@@ -345,6 +368,12 @@ export function tick(s, dt, rng = Math.random) {
     }
   }
   return notices;
+}
+
+/** Debug/testing helper: spawn a specific random event now. */
+export function debugSpawn(s, defId) {
+  const def = s.data.events.find(e => e.id === defId);
+  return def ? makeEvent(s, def, false, Math.random) : null;
 }
 
 function eventWeight(s, def) {
@@ -535,6 +564,44 @@ function resolveTask(s, ev, rng, notices) {
   s.log.push(entry);
   notices.push(entry);
   s.version++;
+}
+
+/** Ship repairs are minigames: the player fixes it directly. result = { success, perfect }. */
+export function resolveRepair(s, eventUid, { success, perfect = false }) {
+  const ev = s.events.find(e => e.uid === eventUid);
+  if (!ev || ev.status !== 'pending' || !(ev.def.minigame || ev.def.sts125)) return null;
+  const opt = ev.def.options[ev.def.minigame?.option ?? 0];
+  const outcome = success ? opt.success : opt.fail;
+  const applied = applyEffects(s, outcome.effects, ev.def.name);
+  let points = pointsFor(ev, success ? 'success' : 'fail', outcome);
+  if (success && perfect) points += 5;
+  s.points += points;
+  removeEvent(s, ev);
+  if (ev.main) setObjective(s, ev, success ? 'success' : 'fail');
+  else if (success) s.counters.success++;
+  else s.counters.fail++;
+  const hints = success ? [] : ['En los minijuegos, lee la instrucción y espera el momento justo antes de tocar.'];
+  addHints(s, hints);
+  const entry = {
+    time: s.time,
+    kind: success ? 'success' : 'fail',
+    main: ev.main,
+    repair: true,
+    title: ev.main
+      ? `${success ? '🎯 Objetivo cumplido' : '🎯 Objetivo fallido'}: ${ev.def.name}`
+      : `${success ? '🔧 Reparado' : '❌ Reparación fallida'}: ${ev.def.name}`,
+    text: outcome.text,
+    effects: effectsText(applied),
+    rawEffects: outcome.effects,
+    eventName: ev.def.name,
+    shortText: outcome.text,
+    points,
+    reason: 'Reparación hecha por ti (minijuego).',
+    hints
+  };
+  s.log.push(entry);
+  s.version++;
+  return entry;
 }
 
 function expireEvent(s, ev, notices) {

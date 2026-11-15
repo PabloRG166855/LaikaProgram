@@ -1,14 +1,14 @@
 [
   {
     "id": "easy",
-    "name": "Fácil",
-    "title": "Laboratorio en órbita terrestre",
+    "name": "Misión 1",
+    "title": "Salva el Hubble",
     "destination": "LEO",
-    "destinationName": "órbita baja terrestre",
+    "destinationName": "el Hubble",
     "bodyName": "Tierra",
-    "bodyColor": "#3b82f6",
-    "bodyColor2": "#1e3a8a",
-    "description": "Una misión corta a 400 km de altura. Tienes buen presupuesto y la Tierra está cerca: ideal para aprender.",
+    "bodyColor": "#29ADFF",
+    "bodyColor2": "#1D2B53",
+    "description": "Vuela alrededor de la Tierra hasta el telescopio Hubble: atrápalo, cámbiale piezas y déjalo listo para seguir mirando el universo. Basada en la misión real STS-125 (2009).",
     "budget": 1000,
     "crewSlots": [
       {
@@ -19,36 +19,52 @@
         ]
       },
       {
-        "id": "eng",
-        "label": "Ingeniería",
+        "id": "plt",
+        "label": "Piloto",
         "roles": [
+          "pilot"
+        ]
+      },
+      {
+        "id": "spc",
+        "label": "Especialista (caminatas)",
+        "roles": [
+          "mission_specialist",
           "flight_engineer",
-          "life_support_engineer"
+          "payload_specialist"
         ]
       }
     ],
     "mainEvents": [
       {
-        "id": "leo_dock",
-        "at": 10
+        "id": "hubble_capture",
+        "at": 6
       },
       {
-        "id": "leo_experiment",
-        "at": 48
+        "id": "hubble_camera",
+        "at": 36
       },
       {
-        "id": "leo_spacewalk",
-        "at": 88
+        "id": "hubble_gyros",
+        "at": 66
       },
       {
-        "id": "leo_reentry",
-        "at": 122
+        "id": "hubble_stis",
+        "at": 96
+      },
+      {
+        "id": "hubble_release",
+        "at": 126
+      },
+      {
+        "id": "hubble_landing",
+        "at": 140
       }
     ],
     "durationSec": 150,
     "crewMassPerPersonKg": 300,
     "minPropulsion": 1,
-    "minShielding": 0,
+    "minShielding": 1,
     "commsFactor": 1,
     "lifeSupportDrain": 0.4,
     "scienceGoal": 500,
@@ -62,16 +78,52 @@
     "maxActiveEvents": 2,
     "pauseOnDecision": true,
     "realMission": {
-      "name": "Estación Espacial Internacional (ISS)",
-      "text": "La ISS orbita a unos 400 km de altura. Sus tripulaciones se acoplan, hacen experimentos y caminatas espaciales, igual que en tu misión."
+      "name": "STS-125 · Última visita de astronautas al Hubble (mayo de 2009)",
+      "text": "7 astronautas viajaron en el transbordador Atlantis: el comandante Scott Altman, el piloto Gregory C. Johnson y los especialistas Megan McArthur, John Grunsfeld, Mike Massimino, Andrew Feustel y Michael Good. Hicieron 5 caminatas espaciales (36 h 56 min en total): instalaron la cámara WFC3 y el espectrógrafo COS, repararon el STIS y el ACS, y cambiaron 6 giroscopios y 6 baterías.",
+      "photo": "assets/hubble/tripulacion.jpg",
+      "caption": "La tripulación de la STS-125 a bordo del Atlantis, 20 may 2009 (NASA, S125-E-012154)."
     },
-    "image": "assets/mission-leo-8bit.png",
-    "subtitle": "Estación espacial a 400 km",
-    "playable": false
+    "image": "assets/mission-hubble-8bit.png",
+    "subtitle": "Telescopio Hubble · órbita terrestre",
+    "playable": true,
+    "goTo": "al Hubble",
+    "target": "hubble",
+    "bodyPatches": "#00E436",
+    "rocketId": "condor",
+    "minScience": 0.5,
+    "briefing": {
+      "img": "assets/hubble/tripulacion.jpg",
+      "cap": "La tripulación de la STS-125 a bordo del Atlantis, 20 may 2009 (NASA, S125-E-012154).",
+      "kicker": "La misión real · 11 may 2009",
+      "title": "7 astronautas van a salvar el Hubble",
+      "rows": [
+        [
+          "Nave",
+          "Transbordador Atlantis"
+        ],
+        [
+          "Despegue",
+          "11 may 2009, desde Florida"
+        ],
+        [
+          "Comandante",
+          "Scott Altman"
+        ],
+        [
+          "Piloto",
+          "Gregory C. Johnson"
+        ],
+        [
+          "Especialistas",
+          "M. McArthur, J. Grunsfeld, M. Massimino, A. Feustel y M. Good"
+        ]
+      ],
+      "note": "Dos días después del despegue alcanzaron al telescopio. Ahora tú diriges una misión como la suya."
+    }
   },
   {
     "id": "medium",
-    "name": "Medio",
+    "name": "Misión 2",
     "title": "Expedición a la Luna",
     "destination": "MOON",
     "destinationName": "la Luna",
@@ -149,7 +201,10 @@
     },
     "image": "assets/mission-lunar-8bit.png",
     "subtitle": "Polo sur lunar",
-    "playable": true
+    "playable": true,
+    "goTo": "a la Luna",
+    "rocketId": "jaguar",
+    "minScience": 0.5
   },
   {
     "id": "hard",
@@ -250,6 +305,9 @@
     },
     "image": "assets/mission-mars-8bit.png",
     "subtitle": "Antiguo lago marciano",
-    "playable": false
+    "playable": false,
+    "goTo": "a Marte",
+    "rocketId": "titan",
+    "minScience": 0.5
   }
 ]

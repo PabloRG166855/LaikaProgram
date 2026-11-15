@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <link rel="icon" href="../shared/img/favicon.svg" />
+  <title>Adiós, Hubble</title>
+  <meta name="description" content="Minijuego de la misión STS-125 al telescopio Hubble: Adiós, Hubble." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../shared/style.css" />
+</head>
+<body>
+  <p id="rotate-hint"><span class="ico" data-icon="phone"></span> Gira el teléfono para jugar en grande</p>
+  <main id="stage" aria-label="Minijuego: Adiós, Hubble">
+    <canvas id="screen" width="320" height="180" aria-hidden="true"></canvas>
+    <div id="ui">
+      <header id="topbar">
+        <ol id="steps" aria-label="Pasos">
+          <li title="Levantar" data-icon="up"></li>
+          <li title="Soltar" data-icon="hand"></li>
+          <li title="Alejarse" data-icon="rocket"></li>
+          <li title="Foto" data-icon="camera"></li>
+          <li title="Aterrizar" data-icon="land"></li>
+          <li title="Pregunta" data-icon="question"></li>
+        </ol>
+        <div id="score" class="hidden"><span class="ico" data-icon="star"></span> <span id="score-val">0</span></div>
+        <button id="mute" type="button" aria-label="Silenciar sonido" data-icon="sound"></button>
+      </header>
+
+      <section id="title" class="sts">
+        <p class="kicker">STS-125 · Misión al Hubble · 2009</p>
+        <h1>ADIÓS, HUBBLE</h1>
+        <p class="subtitle">¡Devuélvelo al espacio y vuelve a casa!</p>
+        <p class="lead">19 de mayo de 2009: el Hubble está reparado. Suéltalo con cuidado, sácale la foto de despedida y aterriza el Atlantis.</p>
+        <p class="prompt blink">Pulsa ESPACIO o toca START</p>
+        <button id="start" type="button">START</button>
+      </section>
+
+      <div id="action" class="hidden">
+        <p id="action-text"></p>
+        <div id="meter" class="hidden"><div id="meter-fill"></div></div>
+      </div>
+
+      <aside id="fact" class="hidden" aria-live="polite">
+        <span id="fact-text"></span>
+      </aside>
+
+      <section id="result" class="panel center hidden">
+        <p class="kicker">¡Misión STS-125 cumplida!</p>
+        <h2>¡Gracias, Hubble!</h2>
+        <p class="stat" id="result-stat"></p>
+        <div id="result-stars"></div>
+        <p class="small time" id="result-rank"></p>
+        <div class="learn">
+          <p class="small"><span class="ico" data-icon="hand"></span> Fue la última vez que unos astronautas visitaron el Hubble.</p>
+          <p class="small"><span class="ico" data-icon="land"></span> Por mal tiempo en Florida, el Atlantis aterrizó en California.</p>
+        </div>
+        <p class="small today" id="result-today"></p>
+        <div class="buttons">
+          <button id="again" type="button"><span class="ico" data-icon="retry"></span> Otra vez</button>
+          <button id="album-btn" type="button"><span class="ico" data-icon="album"></span> Álbum</button>
+          <button id="sources-btn" type="button">Fuentes</button>
+          <a id="menu-link" href="../index.html"><span class="ico" data-icon="back"></span> Menú</a>
+        </div>
+      </section>
+
+      <section id="sources" class="panel hidden" aria-label="Fuentes">
+        <h3>Datos reales</h3>
+        <ul>
+          <li><a href="https://spaceflightnow.com/shuttle/sts125/090519fd9/index.html" target="_blank" rel="noreferrer">Spaceflight Now — Liberación del Hubble (19 may 2009)</a></li>
+          <li><a href="https://asd.gsfc.nasa.gov/archive/sm4/multimedia/gallery10_space-day9.html" target="_blank" rel="noreferrer">NASA Goddard — Día 9: el Hubble se separa</a></li>
+          <li><a href="https://images.nasa.gov/details/KSC-2009-3264" target="_blank" rel="noreferrer">NASA — Aterrizaje en la Base Edwards (KSC-2009-3264)</a></li>
+          <li><a href="https://science.nasa.gov/mission/hubble/overview/hubbles-35th-anniversary" target="_blank" rel="noreferrer">NASA — Hubble cumple 35 años</a></li>
+          <li><a href="https://www.nasa.gov/mission/sts-125/" target="_blank" rel="noreferrer">NASA — Misión STS-125</a></li>
+          <li><a href="https://science.nasa.gov/mission/hubble/observatory/missions-to-hubble/servicing-mission-4/" target="_blank" rel="noreferrer">NASA — Servicing Mission 4 (SM4)</a></li>
+          <li><a href="https://images.nasa.gov/" target="_blank" rel="noreferrer">NASA Image and Video Library — fotos S125-E y STS125-S</a></li>
+        </ul>
+        <p class="small dim">Fotos: NASA (dominio público) y NASA/ESA Hubble. Fuerzas, tiempos y movimientos están simplificados para el juego; la misión, las fechas, los nombres y los datos son reales.</p>
+        <button id="sources-close" type="button">Cerrar</button>
+      </section>
+
+      <div id="flash" aria-hidden="true"></div>
+    </div>
+  </main>
+
+  <script src="../../../js/i18n-en.js"></script>
+  <script src="../../../js/i18n.js"></script>
+  <script src="../shared/icons.js"></script>
+  <script src="../shared/engine.js"></script>
+  <script src="../shared/sts125.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

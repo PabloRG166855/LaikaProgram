@@ -16,7 +16,6 @@ export function computeReport(s) {
   const fraction = sentFraction(s);
   const c = s.counters;
   const decisions = c.success + c.fail + c.ignored;
-  const budgetLeft = Math.max(0, s.stats.budgetLeft);
 
   const mainTotal = s.objectives.length;
   const mainDone = s.objectives.filter(o => o.status === 'success').length;
@@ -28,10 +27,8 @@ export function computeReport(s) {
       detail: `${fmt(science)} de ${fmt(level.scienceGoal)} puntos de la meta` },
     { label: 'Integridad de la nave', value: (s.integrity / 100) * 15, max: 15,
       detail: `${fmt(s.integrity)} % al final` },
-    { label: 'Eventos aleatorios', value: decisions ? (c.success / decisions) * 15 : 15, max: 15,
-      detail: `${c.success} éxitos · ${c.fail} fallas · ${c.ignored} sin atender` },
-    { label: 'Eficiencia del presupuesto', value: Math.min(1, budgetLeft / (0.25 * level.budget)) * 10, max: 10,
-      detail: `Te sobraron $${fmt(budgetLeft)} M de $${fmt(level.budget)} M` }
+    { label: 'Eventos aleatorios', value: decisions ? (c.success / decisions) * 25 : 25, max: 25,
+      detail: `${c.success} éxitos · ${c.fail} fallas · ${c.ignored} sin atender` }
   ];
   const score = Math.round(breakdown.reduce((acc, b) => acc + b.value, 0));
   const aborted = s.outcome === 'aborted';
@@ -118,7 +115,6 @@ function buildStrengths(s, fraction) {
   if (total > 0 && c.success / total >= 0.7) out.push('Asignaste bien a tu tripulación: la mayoría de los eventos se resolvió con éxito.');
   if (fraction >= 0.95) out.push('Tus comunicaciones fueron suficientes: casi todos los datos llegaron a la Tierra.');
   if (s.integrity >= 80) out.push('La nave terminó en muy buen estado.');
-  if (s.stats.budgetLeft >= 0.2 * s.level.budget) out.push('Fuiste eficiente con el presupuesto.');
   if (c.powerOutSec === 0) out.push('Nunca te quedaste sin energía.');
   return out;
 }

@@ -1,549 +1,565 @@
 {
- "categories": [
-  {
-   "id": "structure",
-   "name": "Estructura y cabina",
-   "icon": "🛰️",
-   "required": true,
-   "multi": false,
-   "info": "Es el esqueleto y la cabina de la nave. Define cuántos tripulantes caben. Más grande = más masa.",
-   "ico": "box",
-   "short": "Cabina",
-   "auto": false,
-   "kid": "Dónde viaja tu tripulación. Una cabina más grande pesa más."
-  },
-  {
-   "id": "propulsion",
-   "name": "Propulsión",
-   "icon": "🔥",
-   "required": true,
-   "multi": false,
-   "info": "El motor que te lleva de la órbita terrestre a tu destino. Ir más lejos exige más empuje (delta-v).",
-   "ico": "flame",
-   "short": "Motor",
-   "auto": false,
-   "kid": "El motor empuja la nave. Para llegar a la Luna necesitas uno más fuerte."
-  },
-  {
-   "id": "power",
-   "name": "Energía",
-   "icon": "☀️",
-   "required": true,
-   "multi": false,
-   "info": "Genera la electricidad para todos los sistemas. Si consumes más de lo que generas, la nave no funciona.",
-   "ico": "sun",
-   "short": "Energía",
-   "auto": false,
-   "kid": "Los paneles dan electricidad a toda la nave."
-  },
-  {
-   "id": "battery",
-   "name": "Baterías",
-   "icon": "🔋",
-   "required": true,
-   "multi": false,
-   "info": "Guardan energía para la sombra y las emergencias. Mejores baterías se recargan más rápido y resisten mejor las fallas.",
-   "ico": "battery-charging",
-   "short": "Baterías",
-   "auto": true,
-   "kid": "Guardan energía."
-  },
-  {
-   "id": "life_support",
-   "name": "Soporte vital",
-   "icon": "🫁",
-   "required": true,
-   "multi": false,
-   "info": "Produce oxígeno, elimina CO₂ y recicla agua. Debe alcanzar para toda la tripulación.",
-   "ico": "wind",
-   "short": "Aire",
-   "auto": true,
-   "kid": "Da aire y agua a la tripulación."
-  },
-  {
-   "id": "comms",
-   "name": "Comunicaciones",
-   "icon": "📶",
-   "required": true,
-   "multi": false,
-   "info": "Envía los datos científicos a la Tierra. Entre más lejos estés, más lenta es la transmisión. Lo que no se transmite, se pierde.",
-   "ico": "satellite-dish",
-   "short": "Antena",
-   "auto": false,
-   "kid": "La antena manda tus descubrimientos a la Tierra."
-  },
-  {
-   "id": "computer",
-   "name": "Computadora de vuelo",
-   "icon": "💻",
-   "required": true,
-   "multi": false,
-   "info": "El cerebro de la nave. Una computadora redundante falla menos y se recupera mejor.",
-   "ico": "cpu",
-   "short": "Computadora",
-   "auto": true,
-   "kid": "El cerebro de la nave."
-  },
-  {
-   "id": "attitude",
-   "name": "Control de orientación",
-   "icon": "🧭",
-   "required": true,
-   "multi": false,
-   "info": "Controla hacia dónde apunta la nave: necesario para apuntar instrumentos y antena, y para esquivar objetos.",
-   "ico": "compass",
-   "short": "Orientación",
-   "auto": true,
-   "kid": "Apunta la nave."
-  },
-  {
-   "id": "shielding",
-   "name": "Blindaje",
-   "icon": "🛡️",
-   "required": false,
-   "multi": false,
-   "info": "Protege contra radiación y calor. Lejos de la Tierra ya no te protege su campo magnético. Opcional en órbita baja.",
-   "ico": "shield",
-   "short": "Escudo",
-   "auto": false,
-   "kid": "Protege a la tripulación del calor y la radiación del espacio."
-  },
-  {
-   "id": "instruments",
-   "name": "Instrumentos científicos",
-   "icon": "🔭",
-   "required": false,
-   "multi": true,
-   "info": "Producen la ciencia de tu misión. Más instrumentos = más ciencia, pero también más masa, energía, costo y datos que transmitir.",
-   "ico": "microscope",
-   "short": "Ciencia",
-   "auto": false,
-   "kid": "Tus herramientas para descubrir cosas. Más ciencia, pero más peso y energía."
+  "categories": [
+    {
+      "id": "structure",
+      "name": "Estructura y cabina",
+      "icon": "🛰️",
+      "required": true,
+      "multi": false,
+      "info": "Es el esqueleto y la cabina de la nave. Define cuántos tripulantes caben. Más grande = más masa.",
+      "ico": "box",
+      "short": "Cabina",
+      "auto": false,
+      "kid": "Dónde viaja tu tripulación. Una cabina más grande pesa más.",
+      "laika": "La cabina es la casa de tu tripulación: ahí viajan, comen y duermen. Una cabina grande lleva más gente y te protege más, pero pesa más y al cohete le cuesta subirla."
+    },
+    {
+      "id": "propulsion",
+      "name": "Propulsión",
+      "icon": "🔥",
+      "required": true,
+      "multi": false,
+      "info": "El motor que te lleva de la órbita terrestre a tu destino. Ir más lejos exige más empuje (delta-v).",
+      "ico": "flame",
+      "short": "Motor",
+      "auto": false,
+      "kid": "El motor empuja la nave. Para ir lejos necesitas uno más fuerte.",
+      "laika": "El motor empuja tu nave hasta su destino. Si es débil, no llegas. Uno fuerte también te ayuda a entrar en órbita durante el despegue."
+    },
+    {
+      "id": "power",
+      "name": "Energía",
+      "icon": "☀️",
+      "required": true,
+      "multi": false,
+      "info": "Genera la electricidad para todos los sistemas. Si consumes más de lo que generas, la nave no funciona.",
+      "ico": "sun",
+      "short": "Energía",
+      "auto": false,
+      "kid": "Los paneles dan electricidad a toda la nave.",
+      "laika": "Los paneles solares convierten la luz del Sol en electricidad. Todo en la nave usa energía: si te falta, se apaga la consola y no puedes trabajar."
+    },
+    {
+      "id": "battery",
+      "name": "Baterías",
+      "icon": "🔋",
+      "required": true,
+      "multi": false,
+      "info": "Guardan energía para la sombra y las emergencias. Mejores baterías se recargan más rápido y resisten mejor las fallas.",
+      "ico": "battery-charging",
+      "short": "Baterías",
+      "auto": true,
+      "kid": "Guardan energía.",
+      "laika": "Las baterías guardan energía para cuando estás a la sombra."
+    },
+    {
+      "id": "life_support",
+      "name": "Soporte vital",
+      "icon": "🫁",
+      "required": true,
+      "multi": false,
+      "info": "Produce oxígeno, elimina CO₂ y recicla agua. Debe alcanzar para toda la tripulación.",
+      "ico": "wind",
+      "short": "Aire",
+      "auto": true,
+      "kid": "Da aire y agua a la tripulación.",
+      "laika": "El soporte vital da aire y agua a la tripulación."
+    },
+    {
+      "id": "comms",
+      "name": "Comunicaciones",
+      "icon": "📶",
+      "required": true,
+      "multi": false,
+      "info": "Envía los datos científicos a la Tierra. Entre más lejos estés, más lenta es la transmisión. Lo que no se transmite, se pierde.",
+      "ico": "satellite-dish",
+      "short": "Antena",
+      "auto": false,
+      "kid": "La antena manda tus descubrimientos a la Tierra.",
+      "laika": "La antena manda tus fotos y datos a la Tierra. Con una antena fuerte llegan más descubrimientos, y eso es más ciencia para tu misión."
+    },
+    {
+      "id": "computer",
+      "name": "Computadora de vuelo",
+      "icon": "💻",
+      "required": true,
+      "multi": false,
+      "info": "El cerebro de la nave. Una computadora redundante falla menos y se recupera mejor.",
+      "ico": "cpu",
+      "short": "Computadora",
+      "auto": true,
+      "kid": "El cerebro de la nave.",
+      "laika": "La computadora es el cerebro de la nave."
+    },
+    {
+      "id": "attitude",
+      "name": "Control de orientación",
+      "icon": "🧭",
+      "required": true,
+      "multi": false,
+      "info": "Controla hacia dónde apunta la nave: necesario para apuntar instrumentos y antena, y para esquivar objetos.",
+      "ico": "compass",
+      "short": "Orientación",
+      "auto": true,
+      "kid": "Apunta la nave.",
+      "laika": "La orientación apunta la nave hacia donde quieres."
+    },
+    {
+      "id": "shielding",
+      "name": "Blindaje",
+      "icon": "🛡️",
+      "required": false,
+      "multi": false,
+      "info": "Protege contra radiación y calor. Lejos de la Tierra ya no te protege su campo magnético. Opcional en órbita baja.",
+      "ico": "shield",
+      "short": "Escudo",
+      "auto": false,
+      "kid": "Protege a la tripulación del calor y la radiación del espacio.",
+      "laika": "El escudo protege a la tripulación de la radiación del Sol. Lejos de la Tierra es obligatorio, y también cuida la nave si el despegue sale movido."
+    },
+    {
+      "id": "instruments",
+      "name": "Instrumentos científicos",
+      "icon": "🔭",
+      "required": false,
+      "multi": true,
+      "info": "Producen la ciencia de tu misión. Más instrumentos = más ciencia, pero también más masa, energía, costo y datos que transmitir.",
+      "ico": "microscope",
+      "short": "Ciencia",
+      "auto": false,
+      "kid": "Tus herramientas para descubrir cosas. Más ciencia, pero más peso y energía.",
+      "laika": "Los instrumentos son tus herramientas para descubrir cosas: cámaras, sensores, taladros. Más instrumentos dan más ciencia, pero gastan energía y pesan."
+    }
+  ],
+  "components": [
+    {
+      "id": "str_basic",
+      "category": "structure",
+      "name": "Cápsula estándar",
+      "desc": "Cabina sencilla y probada.",
+      "mass": 4000,
+      "cost": 120,
+      "crewMax": 3
+    },
+    {
+      "id": "str_composite",
+      "category": "structure",
+      "name": "Cápsula de compuestos ligeros",
+      "desc": "Misma capacidad, 1,000 kg menos. Más cara.",
+      "mass": 3000,
+      "cost": 220,
+      "crewMax": 3
+    },
+    {
+      "id": "str_large",
+      "category": "structure",
+      "name": "Nave con módulo habitable",
+      "desc": "Espacio para 5 personas y paredes gruesas.",
+      "mass": 9000,
+      "cost": 300,
+      "crewMax": 5,
+      "shielding": 1,
+      "eventMods": {
+        "crew_conflict": 10,
+        "micrometeoroid": 10,
+        "mars_entry": 5
+      }
+    },
+    {
+      "id": "prop_basic",
+      "category": "propulsion",
+      "name": "Motor de maniobra químico",
+      "desc": "Suficiente para moverte en órbita terrestre.",
+      "mass": 800,
+      "cost": 40,
+      "powerUse": 0.2,
+      "propulsion": 1
+    },
+    {
+      "id": "prop_medium",
+      "category": "propulsion",
+      "name": "Etapa de transferencia química",
+      "desc": "Empuje para llegar a la Luna.",
+      "mass": 2500,
+      "cost": 120,
+      "powerUse": 0.3,
+      "propulsion": 2,
+      "eventMods": {
+        "debris": 5,
+        "tli_burn": 10,
+        "lunar_orbit": 10,
+        "lunar_ascent": 10,
+        "fuel_leak": 5
+      }
+    },
+    {
+      "id": "prop_advanced",
+      "category": "propulsion",
+      "name": "Motor criogénico de alto rendimiento",
+      "desc": "Necesario para un viaje interplanetario.",
+      "mass": 4000,
+      "cost": 260,
+      "powerUse": 0.5,
+      "propulsion": 3,
+      "eventMods": {
+        "debris": 10,
+        "tli_burn": 15,
+        "lunar_orbit": 15,
+        "lunar_ascent": 15,
+        "tmi_burn": 15,
+        "mcc": 10,
+        "mars_landing": 10,
+        "mars_return": 15,
+        "lunar_landing": 10,
+        "fuel_leak": 10
+      }
+    },
+    {
+      "id": "pwr_basic",
+      "category": "power",
+      "name": "Paneles solares básicos",
+      "desc": "Baratos, pero fallan más seguido.",
+      "mass": 200,
+      "cost": 20,
+      "powerGen": 4,
+      "eventWeights": {
+        "power_failure": 1.6
+      }
+    },
+    {
+      "id": "pwr_high",
+      "category": "power",
+      "name": "Paneles de alta eficiencia",
+      "desc": "Casi el doble de energía con poca masa extra.",
+      "mass": 250,
+      "cost": 60,
+      "powerGen": 7
+    },
+    {
+      "id": "pwr_rtg",
+      "category": "power",
+      "name": "Generador de radioisótopos (RTG)",
+      "desc": "No depende del Sol: ideal contra tormentas de polvo.",
+      "mass": 450,
+      "cost": 150,
+      "powerGen": 6,
+      "eventWeights": {
+        "power_failure": 0.6,
+        "eclipse_battery": 0.4
+      },
+      "eventMods": {
+        "dust_storm": 20,
+        "power_failure": 10
+      }
+    },
+    {
+      "id": "bat_basic",
+      "category": "battery",
+      "name": "Baterías estándar",
+      "desc": "Capacidad básica.",
+      "mass": 150,
+      "cost": 10,
+      "batteryMult": 1,
+      "eventWeights": {
+        "eclipse_battery": 1.4
+      }
+    },
+    {
+      "id": "bat_adv",
+      "category": "battery",
+      "name": "Baterías de ion-litio avanzadas",
+      "desc": "Recargan más rápido y amortiguan las fallas eléctricas.",
+      "mass": 120,
+      "cost": 35,
+      "batteryMult": 1.5,
+      "eventMods": {
+        "power_failure": 15,
+        "dust_storm": 10,
+        "eclipse_battery": 20
+      }
+    },
+    {
+      "id": "ls_basic",
+      "category": "life_support",
+      "name": "Soporte vital básico",
+      "desc": "Para 2 personas.",
+      "mass": 400,
+      "cost": 40,
+      "powerUse": 1.0,
+      "lifeSupport": 2
+    },
+    {
+      "id": "ls_std",
+      "category": "life_support",
+      "name": "Soporte vital estándar",
+      "desc": "Para 4 personas.",
+      "mass": 800,
+      "cost": 90,
+      "powerUse": 1.6,
+      "lifeSupport": 4
+    },
+    {
+      "id": "ls_regen",
+      "category": "life_support",
+      "name": "Soporte vital regenerativo",
+      "desc": "Para 6 personas. Recicla aire y agua: se gasta más lento.",
+      "mass": 1400,
+      "cost": 200,
+      "powerUse": 2.2,
+      "lifeSupport": 6,
+      "drainMult": 0.6,
+      "eventMods": {
+        "co2_scrubber": 20,
+        "crew_conflict": 5
+      }
+    },
+    {
+      "id": "com_omni",
+      "category": "comms",
+      "name": "Antena omnidireccional",
+      "desc": "Barata pero lenta. Pierde la señal con facilidad.",
+      "mass": 30,
+      "cost": 10,
+      "powerUse": 0.2,
+      "comms": 2,
+      "eventWeights": {
+        "comms_loss": 1.5
+      }
+    },
+    {
+      "id": "com_hga",
+      "category": "comms",
+      "name": "Antena de alta ganancia",
+      "desc": "Antena parabólica: mucho más rápida.",
+      "mass": 90,
+      "cost": 45,
+      "powerUse": 0.5,
+      "comms": 5,
+      "eventMods": {
+        "comms_loss": 10,
+        "ground_pass": 10
+      }
+    },
+    {
+      "id": "com_laser",
+      "category": "comms",
+      "name": "Terminal de comunicación láser",
+      "desc": "Transmite muchísimos datos, ideal para el espacio profundo.",
+      "mass": 60,
+      "cost": 110,
+      "powerUse": 0.6,
+      "comms": 10,
+      "eventMods": {
+        "ground_pass": 15,
+        "unknown_signal": 5
+      }
+    },
+    {
+      "id": "cpu_basic",
+      "category": "computer",
+      "name": "Computadora estándar",
+      "desc": "Un solo procesador: si falla, falla todo.",
+      "mass": 40,
+      "cost": 15,
+      "powerUse": 0.3,
+      "eventWeights": {
+        "software_error": 1.5
+      }
+    },
+    {
+      "id": "cpu_redundant",
+      "category": "computer",
+      "name": "Computadoras redundantes",
+      "desc": "Tres computadoras que se vigilan entre sí.",
+      "mass": 90,
+      "cost": 60,
+      "powerUse": 0.6,
+      "eventWeights": {
+        "software_error": 0.7
+      },
+      "eventMods": {
+        "software_error": 20,
+        "mars_landing": 10,
+        "leo_dock": 10,
+        "leo_reentry": 5
+      }
+    },
+    {
+      "id": "att_basic",
+      "category": "attitude",
+      "name": "Ruedas de reacción básicas",
+      "desc": "Orientación sencilla.",
+      "mass": 60,
+      "cost": 15,
+      "powerUse": 0.2,
+      "eventWeights": {
+        "star_tracker": 1.4
+      }
+    },
+    {
+      "id": "att_adv",
+      "category": "attitude",
+      "name": "Rastreadores estelares + propulsores RCS",
+      "desc": "Apunta con precisión y maniobra rápido.",
+      "mass": 150,
+      "cost": 50,
+      "powerUse": 0.4,
+      "eventMods": {
+        "debris": 20,
+        "observation_window": 10,
+        "comms_loss": 5,
+        "leo_dock": 15,
+        "mcc": 15,
+        "asteroid": 10,
+        "star_tracker": 20
+      }
+    },
+    {
+      "id": "shd_thermal",
+      "category": "shielding",
+      "name": "Aislamiento térmico mejorado",
+      "desc": "Protege del calor extremo. Blindaje nivel 1.",
+      "mass": 300,
+      "cost": 30,
+      "shielding": 1,
+      "eventMods": {
+        "overheating": 20,
+        "leo_reentry": 15,
+        "mars_entry": 10
+      }
+    },
+    {
+      "id": "shd_radiation",
+      "category": "shielding",
+      "name": "Refugio contra radiación",
+      "desc": "Cabina protegida para tormentas solares. Blindaje nivel 2.",
+      "mass": 900,
+      "cost": 90,
+      "shielding": 2,
+      "eventMods": {
+        "solar_storm": 25,
+        "mars_entry": 5
+      }
+    },
+    {
+      "id": "shd_full",
+      "category": "shielding",
+      "name": "Blindaje completo + refugio",
+      "desc": "Protección contra radiación, calor e impactos. Blindaje nivel 3.",
+      "mass": 1600,
+      "cost": 170,
+      "shielding": 3,
+      "eventMods": {
+        "solar_storm": 35,
+        "overheating": 15,
+        "micrometeoroid": 15,
+        "leo_reentry": 20,
+        "mars_entry": 20,
+        "asteroid": 10
+      }
+    },
+    {
+      "id": "ins_camera",
+      "category": "instruments",
+      "name": "Cámara multiespectral",
+      "desc": "Fotografía la superficie en muchos colores de luz.",
+      "mass": 50,
+      "cost": 25,
+      "powerUse": 0.3,
+      "science": 1.0,
+      "data": 1.0,
+      "eventMods": {
+        "observation_window": 5,
+        "leo_experiment": 5
+      }
+    },
+    {
+      "id": "ins_spectro",
+      "category": "instruments",
+      "name": "Espectrómetro",
+      "desc": "Descubre de qué están hechas las cosas analizando su luz.",
+      "mass": 80,
+      "cost": 45,
+      "powerUse": 0.5,
+      "science": 1.5,
+      "data": 1.5,
+      "eventMods": {
+        "observation_window": 10,
+        "unknown_signal": 10,
+        "mars_explore": 5
+      }
+    },
+    {
+      "id": "ins_radar",
+      "category": "instruments",
+      "name": "Radar de penetración",
+      "desc": "Ve debajo de la superficie. Genera muchos datos.",
+      "mass": 150,
+      "cost": 70,
+      "powerUse": 1.0,
+      "science": 2.0,
+      "data": 3.0,
+      "eventMods": {
+        "mars_explore": 10,
+        "unknown_signal": 5,
+        "moonwalk": 5
+      }
+    },
+    {
+      "id": "ins_geo",
+      "category": "instruments",
+      "name": "Kit de geología y perforadora",
+      "desc": "Para tomar y analizar muestras del suelo.",
+      "mass": 300,
+      "cost": 60,
+      "powerUse": 0.8,
+      "science": 2.5,
+      "data": 1.0,
+      "destinations": [
+        "MOON",
+        "MARS"
+      ],
+      "eventMods": {
+        "sample_collection": 20,
+        "moonwalk": 20,
+        "mars_explore": 15
+      }
+    },
+    {
+      "id": "ins_bio",
+      "category": "instruments",
+      "name": "Laboratorio biológico",
+      "desc": "Estudia cómo afecta el espacio a seres vivos.",
+      "mass": 400,
+      "cost": 80,
+      "powerUse": 1.2,
+      "science": 2.0,
+      "data": 1.5,
+      "eventMods": {
+        "medical": 10,
+        "leo_experiment": 15,
+        "mars_explore": 10
+      }
+    },
+    {
+      "id": "ins_rad",
+      "category": "instruments",
+      "name": "Detector de radiación",
+      "desc": "Mide la radiación y avisa antes de las tormentas.",
+      "mass": 30,
+      "cost": 15,
+      "powerUse": 0.2,
+      "science": 0.8,
+      "data": 0.5,
+      "eventMods": {
+        "solar_storm": 10
+      }
+    }
+  ],
+  "guide": {
+    "intro": "¡Hola! Soy Laika, tu directora de vuelo. Arma tu nave cuidando dos cosas: que no pese más de lo que tu cohete puede levantar y que tenga energía para todo. Toca cada pestaña y te explico cada parte.",
+    "rocket": "El cohete lanza tu nave al espacio. Si tu nave pesa mucho para el cohete, no despega, o el vuelo será más difícil. Uno más fuerte cuesta más.",
+    "pickPrefix": "Buena elección.",
+    "ready": "¡Tu nave está lista! Revisa que nada esté en rojo y pasa a elegir a tu tripulación."
   }
- ],
- "components": [
-  {
-   "id": "str_basic",
-   "category": "structure",
-   "name": "Cápsula estándar",
-   "desc": "Cabina sencilla y probada.",
-   "mass": 4000,
-   "cost": 120,
-   "crewMax": 3
-  },
-  {
-   "id": "str_composite",
-   "category": "structure",
-   "name": "Cápsula de compuestos ligeros",
-   "desc": "Misma capacidad, 1,000 kg menos. Más cara.",
-   "mass": 3000,
-   "cost": 220,
-   "crewMax": 3
-  },
-  {
-   "id": "str_large",
-   "category": "structure",
-   "name": "Nave con módulo habitable",
-   "desc": "Espacio para 5 personas y paredes gruesas.",
-   "mass": 9000,
-   "cost": 300,
-   "crewMax": 5,
-   "shielding": 1,
-   "eventMods": {
-    "crew_conflict": 10,
-    "micrometeoroid": 10,
-    "mars_entry": 5
-   }
-  },
-  {
-   "id": "prop_basic",
-   "category": "propulsion",
-   "name": "Motor de maniobra químico",
-   "desc": "Suficiente para moverte en órbita terrestre.",
-   "mass": 800,
-   "cost": 40,
-   "powerUse": 0.2,
-   "propulsion": 1
-  },
-  {
-   "id": "prop_medium",
-   "category": "propulsion",
-   "name": "Etapa de transferencia química",
-   "desc": "Empuje para llegar a la Luna.",
-   "mass": 2500,
-   "cost": 120,
-   "powerUse": 0.3,
-   "propulsion": 2,
-   "eventMods": {
-    "debris": 5,
-    "tli_burn": 10,
-    "lunar_orbit": 10,
-    "lunar_ascent": 10,
-    "fuel_leak": 5
-   }
-  },
-  {
-   "id": "prop_advanced",
-   "category": "propulsion",
-   "name": "Motor criogénico de alto rendimiento",
-   "desc": "Necesario para un viaje interplanetario.",
-   "mass": 4000,
-   "cost": 260,
-   "powerUse": 0.5,
-   "propulsion": 3,
-   "eventMods": {
-    "debris": 10,
-    "tli_burn": 15,
-    "lunar_orbit": 15,
-    "lunar_ascent": 15,
-    "tmi_burn": 15,
-    "mcc": 10,
-    "mars_landing": 10,
-    "mars_return": 15,
-    "lunar_landing": 10,
-    "fuel_leak": 10
-   }
-  },
-  {
-   "id": "pwr_basic",
-   "category": "power",
-   "name": "Paneles solares básicos",
-   "desc": "Baratos, pero fallan más seguido.",
-   "mass": 200,
-   "cost": 20,
-   "powerGen": 4,
-   "eventWeights": {
-    "power_failure": 1.6
-   }
-  },
-  {
-   "id": "pwr_high",
-   "category": "power",
-   "name": "Paneles de alta eficiencia",
-   "desc": "Casi el doble de energía con poca masa extra.",
-   "mass": 250,
-   "cost": 60,
-   "powerGen": 7
-  },
-  {
-   "id": "pwr_rtg",
-   "category": "power",
-   "name": "Generador de radioisótopos (RTG)",
-   "desc": "No depende del Sol: ideal contra tormentas de polvo.",
-   "mass": 450,
-   "cost": 150,
-   "powerGen": 6,
-   "eventWeights": {
-    "power_failure": 0.6,
-    "eclipse_battery": 0.4
-   },
-   "eventMods": {
-    "dust_storm": 20,
-    "power_failure": 10
-   }
-  },
-  {
-   "id": "bat_basic",
-   "category": "battery",
-   "name": "Baterías estándar",
-   "desc": "Capacidad básica.",
-   "mass": 150,
-   "cost": 10,
-   "batteryMult": 1,
-   "eventWeights": {
-    "eclipse_battery": 1.4
-   }
-  },
-  {
-   "id": "bat_adv",
-   "category": "battery",
-   "name": "Baterías de ion-litio avanzadas",
-   "desc": "Recargan más rápido y amortiguan las fallas eléctricas.",
-   "mass": 120,
-   "cost": 35,
-   "batteryMult": 1.5,
-   "eventMods": {
-    "power_failure": 15,
-    "dust_storm": 10,
-    "eclipse_battery": 20
-   }
-  },
-  {
-   "id": "ls_basic",
-   "category": "life_support",
-   "name": "Soporte vital básico",
-   "desc": "Para 2 personas.",
-   "mass": 400,
-   "cost": 40,
-   "powerUse": 1.0,
-   "lifeSupport": 2
-  },
-  {
-   "id": "ls_std",
-   "category": "life_support",
-   "name": "Soporte vital estándar",
-   "desc": "Para 4 personas.",
-   "mass": 800,
-   "cost": 90,
-   "powerUse": 1.6,
-   "lifeSupport": 4
-  },
-  {
-   "id": "ls_regen",
-   "category": "life_support",
-   "name": "Soporte vital regenerativo",
-   "desc": "Para 6 personas. Recicla aire y agua: se gasta más lento.",
-   "mass": 1400,
-   "cost": 200,
-   "powerUse": 2.2,
-   "lifeSupport": 6,
-   "drainMult": 0.6,
-   "eventMods": {
-    "co2_scrubber": 20,
-    "crew_conflict": 5
-   }
-  },
-  {
-   "id": "com_omni",
-   "category": "comms",
-   "name": "Antena omnidireccional",
-   "desc": "Barata pero lenta. Pierde la señal con facilidad.",
-   "mass": 30,
-   "cost": 10,
-   "powerUse": 0.2,
-   "comms": 2,
-   "eventWeights": {
-    "comms_loss": 1.5
-   }
-  },
-  {
-   "id": "com_hga",
-   "category": "comms",
-   "name": "Antena de alta ganancia",
-   "desc": "Antena parabólica: mucho más rápida.",
-   "mass": 90,
-   "cost": 45,
-   "powerUse": 0.5,
-   "comms": 5,
-   "eventMods": {
-    "comms_loss": 10,
-    "ground_pass": 10
-   }
-  },
-  {
-   "id": "com_laser",
-   "category": "comms",
-   "name": "Terminal de comunicación láser",
-   "desc": "Transmite muchísimos datos, ideal para el espacio profundo.",
-   "mass": 60,
-   "cost": 110,
-   "powerUse": 0.6,
-   "comms": 10,
-   "eventMods": {
-    "ground_pass": 15,
-    "unknown_signal": 5
-   }
-  },
-  {
-   "id": "cpu_basic",
-   "category": "computer",
-   "name": "Computadora estándar",
-   "desc": "Un solo procesador: si falla, falla todo.",
-   "mass": 40,
-   "cost": 15,
-   "powerUse": 0.3,
-   "eventWeights": {
-    "software_error": 1.5
-   }
-  },
-  {
-   "id": "cpu_redundant",
-   "category": "computer",
-   "name": "Computadoras redundantes",
-   "desc": "Tres computadoras que se vigilan entre sí.",
-   "mass": 90,
-   "cost": 60,
-   "powerUse": 0.6,
-   "eventWeights": {
-    "software_error": 0.7
-   },
-   "eventMods": {
-    "software_error": 20,
-    "mars_landing": 10,
-    "leo_dock": 10,
-    "leo_reentry": 5
-   }
-  },
-  {
-   "id": "att_basic",
-   "category": "attitude",
-   "name": "Ruedas de reacción básicas",
-   "desc": "Orientación sencilla.",
-   "mass": 60,
-   "cost": 15,
-   "powerUse": 0.2,
-   "eventWeights": {
-    "star_tracker": 1.4
-   }
-  },
-  {
-   "id": "att_adv",
-   "category": "attitude",
-   "name": "Rastreadores estelares + propulsores RCS",
-   "desc": "Apunta con precisión y maniobra rápido.",
-   "mass": 150,
-   "cost": 50,
-   "powerUse": 0.4,
-   "eventMods": {
-    "debris": 20,
-    "observation_window": 10,
-    "comms_loss": 5,
-    "leo_dock": 15,
-    "mcc": 15,
-    "asteroid": 10,
-    "star_tracker": 20
-   }
-  },
-  {
-   "id": "shd_thermal",
-   "category": "shielding",
-   "name": "Aislamiento térmico mejorado",
-   "desc": "Protege del calor extremo. Blindaje nivel 1.",
-   "mass": 300,
-   "cost": 30,
-   "shielding": 1,
-   "eventMods": {
-    "overheating": 20,
-    "leo_reentry": 15,
-    "mars_entry": 10
-   }
-  },
-  {
-   "id": "shd_radiation",
-   "category": "shielding",
-   "name": "Refugio contra radiación",
-   "desc": "Cabina protegida para tormentas solares. Blindaje nivel 2.",
-   "mass": 900,
-   "cost": 90,
-   "shielding": 2,
-   "eventMods": {
-    "solar_storm": 25,
-    "mars_entry": 5
-   }
-  },
-  {
-   "id": "shd_full",
-   "category": "shielding",
-   "name": "Blindaje completo + refugio",
-   "desc": "Protección contra radiación, calor e impactos. Blindaje nivel 3.",
-   "mass": 1600,
-   "cost": 170,
-   "shielding": 3,
-   "eventMods": {
-    "solar_storm": 35,
-    "overheating": 15,
-    "micrometeoroid": 15,
-    "leo_reentry": 20,
-    "mars_entry": 20,
-    "asteroid": 10
-   }
-  },
-  {
-   "id": "ins_camera",
-   "category": "instruments",
-   "name": "Cámara multiespectral",
-   "desc": "Fotografía la superficie en muchos colores de luz.",
-   "mass": 50,
-   "cost": 25,
-   "powerUse": 0.3,
-   "science": 1.0,
-   "data": 1.0,
-   "eventMods": {
-    "observation_window": 5,
-    "leo_experiment": 5
-   }
-  },
-  {
-   "id": "ins_spectro",
-   "category": "instruments",
-   "name": "Espectrómetro",
-   "desc": "Descubre de qué están hechas las cosas analizando su luz.",
-   "mass": 80,
-   "cost": 45,
-   "powerUse": 0.5,
-   "science": 1.5,
-   "data": 1.5,
-   "eventMods": {
-    "observation_window": 10,
-    "unknown_signal": 10,
-    "mars_explore": 5
-   }
-  },
-  {
-   "id": "ins_radar",
-   "category": "instruments",
-   "name": "Radar de penetración",
-   "desc": "Ve debajo de la superficie. Genera muchos datos.",
-   "mass": 150,
-   "cost": 70,
-   "powerUse": 1.0,
-   "science": 2.0,
-   "data": 3.0,
-   "eventMods": {
-    "mars_explore": 10,
-    "unknown_signal": 5,
-    "moonwalk": 5
-   }
-  },
-  {
-   "id": "ins_geo",
-   "category": "instruments",
-   "name": "Kit de geología y perforadora",
-   "desc": "Para tomar y analizar muestras del suelo.",
-   "mass": 300,
-   "cost": 60,
-   "powerUse": 0.8,
-   "science": 2.5,
-   "data": 1.0,
-   "destinations": [
-    "MOON",
-    "MARS"
-   ],
-   "eventMods": {
-    "sample_collection": 20,
-    "moonwalk": 20,
-    "mars_explore": 15
-   }
-  },
-  {
-   "id": "ins_bio",
-   "category": "instruments",
-   "name": "Laboratorio biológico",
-   "desc": "Estudia cómo afecta el espacio a seres vivos.",
-   "mass": 400,
-   "cost": 80,
-   "powerUse": 1.2,
-   "science": 2.0,
-   "data": 1.5,
-   "eventMods": {
-    "medical": 10,
-    "leo_experiment": 15,
-    "mars_explore": 10
-   }
-  },
-  {
-   "id": "ins_rad",
-   "category": "instruments",
-   "name": "Detector de radiación",
-   "desc": "Mide la radiación y avisa antes de las tormentas.",
-   "mass": 30,
-   "cost": 15,
-   "powerUse": 0.2,
-   "science": 0.8,
-   "data": 0.5,
-   "eventMods": {
-    "solar_storm": 10
-   }
-  }
- ]
 }

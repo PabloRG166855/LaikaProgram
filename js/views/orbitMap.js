@@ -3,6 +3,7 @@
 // Ship events appear ON the ship part that failed, space events in open space, planet events on the surface.
 import { drawShip, shipModel } from './shipRenderer.js';
 import { drawIcon } from '../icons.js';
+import { drawPixelEarth } from './pixelEarth.js';
 
 const ORBIT_SPEED = 0.05; // rad/s — slow so ship events are easy to tap
 const PX = 3;             // size of one "pixel" in screen pixels
@@ -57,25 +58,33 @@ export class OrbitMap {
   geometry() {
     const { w, h } = this;
     const bodyR = Math.min(w, h) * 0.14;
+    // the crew panel sits at the bottom of the map area: keep the orbit above it
+    const usable = h - 165;
     return {
       cx: w / 2,
-      cy: h / 2 + 8,
+      cy: usable / 2 + 12,
       bodyR,
-      rx: Math.max(bodyR + 90, w * 0.32),
-      ry: Math.max(bodyR + 50, (h - 230) * 0.42)
+      rx: Math.max(bodyR + 90, w * 0.33),
+      ry: Math.max(bodyR + 40, usable / 2 - 62)
     };
   }
 
   spotPosition(spot) {
-    if (spot === 'sun') return { x: this.w - 80, y: 160 };
-    if (spot === 'earth') return { x: 80, y: 160 };
-    return { x: this.w / 2, y: 140 };
+    if (spot === 'sun') return { x: this.w - 70, y: 70 };
+    if (spot === 'earth') return { x: 70, y: 70 };
+    return { x: this.w / 2, y: 70 };
   }
 
   /** Flat-shaded pixel planet (no gradients). */
-  drawPlanet(g) {
+  drawPlanet(g, t = 0) {
     const { ctx, level } = this;
     const r = g.bodyR;
+    if (level.destination === 'LEO') {
+      // la Tierra de verdad (continentes reales), girando despacio y con el Sol arriba a la derecha
+      const sun = this.spotPosition('sun');
+      drawPixelEarth(ctx, g.cx, g.cy, r, PX, t * 0.06, [sun.x - g.cx, sun.y - g.cy, Math.hypot(sun.x - g.cx, sun.y - g.cy) * 0.9]);
+      return;
+    }
     ctx.fillStyle = level.bodyColor2;
     ctx.beginPath(); ctx.arc(g.cx, g.cy, r, 0, Math.PI * 2); ctx.fill();
     ctx.save();
@@ -84,17 +93,44 @@ export class OrbitMap {
     ctx.beginPath(); ctx.arc(g.cx - r * 0.18, g.cy - r * 0.18, r * 0.92, 0, Math.PI * 2); ctx.fill();
     ctx.fillStyle = 'rgba(255,241,232,.35)';
     ctx.beginPath(); ctx.arc(g.cx - r * 0.42, g.cy - r * 0.42, r * 0.28, 0, Math.PI * 2); ctx.fill();
-    // craters / patches
-    ctx.fillStyle = level.bodyColor2;
-    [[0.25, 0.2, 0.16], [-0.3, 0.35, 0.11], [0.45, -0.3, 0.09], [-0.05, -0.45, 0.07], [0.1, 0.55, 0.12]].forEach(([dx, dy, rr]) => {
-      ctx.globalAlpha = 0.55;
+    // craters / patches (continents when the body is the Earth)
+    ctx.fillStyle = level.bodyPatches || level.bodyColor2;
+    const patches = level.bodyPatches
+      ? [[0.2, 0.15, 0.3], [-0.35, 0.3, 0.2], [0.4, -0.35, 0.16], [-0.2, -0.45, 0.14], [0.05, 0.6, 0.12]]
+      : [[0.25, 0.2, 0.16], [-0.3, 0.35, 0.11], [0.45, -0.3, 0.09], [-0.05, -0.45, 0.07], [0.1, 0.55, 0.12]];
+    patches.forEach(([dx, dy, rr]) => {
+      ctx.globalAlpha = level.bodyPatches ? 1 : 0.55;
       ctx.beginPath(); ctx.arc(g.cx + dx * r, g.cy + dy * r, rr * r, 0, Math.PI * 2); ctx.fill();
     });
     ctx.globalAlpha = 1;
     ctx.restore();
   }
 
+  /** Pixel Hubble (upright tube + two solar panels), snapped to the PX grid. */
+  drawHubble(x, y, t) {
+    const { ctx } = this;
+    const u = PX;
+    const R = (dx, dy, w, h, c) => {
+      ctx.fillStyle = c;
+      ctx.fillRect(Math.round(x / u + dx) * u, Math.round(y / u + dy) * u, w * u, h * u);
+    };
+    for (const ax of [-13, 5]) {
+      R(ax, -1, 8, 7, C.navy);
+      for (let i = 0; i < 8; i += 2) R(ax + i, -1, 1, 7, C.blue);
+    }
+    R(-5, 2, 2, 1, C.grey);
+    R(3, 2, 2, 1, C.grey);
+    R(-3, -12, 6, 22, C.grey);
+    R(-3, -12, 2, 22, C.white);
+    R(2, -12, 1, 22, C.dark);
+    R(-4, -14, 7, 2, C.grey);
+    R(-4, 10, 8, 5, C.grey);
+    R(-2, 11, 3, 3, C.dark);
+    if (Math.floor(t * 2) % 2 === 0) R(3, 11, 1, 1, C.red);
+  }
+
   label(text, x, y, color) {
+    if (window.T) text = window.T(text);
     const o = this.octx;
     o.font = '9px "Press Start 2P", monospace';
     o.textAlign = 'center';
@@ -129,29 +165,52 @@ export class OrbitMap {
     ctx.beginPath(); ctx.arc(sun.x, sun.y, 19, 0, Math.PI * 2); ctx.fill();
     if (level.destination !== 'LEO') {
       const e = this.spotPosition('earth');
-      ctx.fillStyle = C.blue;
-      ctx.beginPath(); ctx.arc(e.x, e.y, 14, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = C.green;
-      ctx.fillRect(e.x - 8, e.y - 6, 7, 6); ctx.fillRect(e.x + 2, e.y + 2, 6, 6);
+      drawPixelEarth(ctx, e.x, e.y, 16, PX, t * 0.06, [1, -0.3, 0.8]);
       this.label('TIERRA', e.x, e.y + 32, C.grey);
     }
 
-    // Orbit (dotted, pixel steps)
-    ctx.fillStyle = C.navy;
-    for (let a = 0; a < Math.PI * 2; a += 0.035) {
+    // Orbit (dotted, pixel steps) — en blanco para que se vea bien
+    ctx.fillStyle = C.white;
+    for (let a = 0; a < Math.PI * 2; a += 0.045) {
       ctx.fillRect(Math.round((g.cx + Math.cos(a) * g.rx) / PX) * PX, Math.round((g.cy + Math.sin(a) * g.ry) / PX) * PX, PX, PX);
     }
 
-    this.drawPlanet(g);
+    this.drawPlanet(g, t);
     this.label(level.bodyName.toUpperCase(), g.cx, g.cy + g.bodyR + 22, C.grey);
 
     // Ship (slow orbit)
     const shipA = -Math.PI / 2 + s.time * ORBIT_SPEED;
     const sx = g.cx + Math.cos(shipA) * g.rx;
     const sy = g.cy + Math.sin(shipA) * g.ry;
+    // Velocidad en vivo: un poco más rápido cuando la nave pasa más cerca del planeta (como en una órbita real).
+    // Órbita baja de la Tierra ≈ 27.300 km/h (como el Hubble), órbita lunar ≈ 5.800 km/h, órbita baja de Marte ≈ 12.200 km/h.
+    const BASE = { LEO: 27300, MOON: 5800, MARS: 12200 }[level.destination] || 27300;
+    const rNorm = Math.hypot(sx - g.cx, sy - g.cy) / ((g.rx + g.ry) / 2);
+    const target = BASE * (1 + 0.015 * (1 - rNorm)) + Math.sin(t * 1.7) * BASE * 0.0006;
+    this.speed = this.speed ? this.speed + (target - this.speed) * 0.05 : target;
     const shipScale = Math.max(0.6, Math.min(1.05, Math.min(w, h) / 500));
     const thrust = s.events.some(e => e.loc.type === 'ship' && e.loc.part === 'engine' && e.status === 'working');
     const anchors = drawShip(ctx, this.model, { x: sx, y: sy, scale: shipScale, time: t, crewCount: s.crew.length, thrust });
+
+    // Mission target: the Hubble shares your orbit. Before capture it flies ahead,
+    // while you work on it it stays next to your ship, and after release it drifts away.
+    let hubblePos = null;
+    if (level.target === 'hubble') {
+      const st = id => (s.objectives.find(o => o.def.id === id) || {}).status;
+      const done = x => ['success', 'fail', 'ignored', 'missed'].includes(x);
+      const captured = done(st('hubble_capture')) && !done(st('hubble_release'));
+      const released = done(st('hubble_release'));
+      if (captured) {
+        hubblePos = { x: sx + 4, y: sy - 78 * shipScale };
+      } else {
+        if (released && this.releasedAt == null) this.releasedAt = s.time;
+        const ahead = released ? 0.35 + (s.time - this.releasedAt) * 0.02 : 0.42;
+        const ha = shipA + ahead;
+        hubblePos = { x: g.cx + Math.cos(ha) * g.rx, y: g.cy + Math.sin(ha) * g.ry };
+      }
+      this.drawHubble(hubblePos.x, hubblePos.y, t);
+      this.label('HUBBLE', hubblePos.x, hubblePos.y + 50, C.grey);
+    }
 
     // Events
     this.markers = [];
@@ -171,10 +230,13 @@ export class OrbitMap {
         const a = shipA + 0.35;
         pos = { x: g.cx + Math.cos(a) * g.rx, y: g.cy + Math.sin(a) * g.ry };
         drawIcon(ctx, 'satellite', pos.x, pos.y - 40, 36, C.grey);
+      } else if (ev.loc.spot === 'hubble' && hubblePos) {
+        pos = { x: hubblePos.x + 62, y: hubblePos.y - 6 };
+        link = { x: hubblePos.x + 16, y: hubblePos.y };
       } else if (ev.loc.spot) {
         pos = this.spotPosition(ev.loc.spot);
       } else {
-        pos = { x: ev.loc.x * w, y: Math.max(130, ev.loc.y * h) };
+        pos = { x: ev.loc.x * w, y: Math.min(h - 200, Math.max(60, ev.loc.y * h)) };
         if (ev.loc.trajectory) {
           ctx.fillStyle = C.red;
           const steps = 26;
@@ -215,6 +277,16 @@ export class OrbitMap {
     ctx.lineWidth = PX;
     ctx.strokeRect(x + PX / 2, y + PX / 2, size - PX, size - PX);
     drawIcon(ctx, ev.def.ico, pos.x, pos.y, size - 14, C.white);
+    if ((ev.def.minigame || ev.def.sts125) && !working) {
+      // wrench badge: "you repair this one yourself"
+      const bx = x + size - 8;
+      const by = y - 12;
+      ctx.fillStyle = C.yellow;
+      ctx.fillRect(bx - 2, by - 2, 24, 24);
+      ctx.fillStyle = '#000';
+      ctx.fillRect(bx, by, 20, 20);
+      drawIcon(ctx, 'wrench', bx + 10, by + 10, 16, C.yellow);
+    }
     // timer: block bar under the marker
     const blocks = 6;
     const on = Math.ceil(left * blocks);
@@ -222,6 +294,6 @@ export class OrbitMap {
       ctx.fillStyle = i < on ? color : C.dark;
       ctx.fillRect(x + i * (size / blocks), y + size + PX * 3, size / blocks - PX, PX * 2);
     }
-    this.label(working ? 'TRABAJANDO' : ev.def.name, pos.x, y + size + PX * 3 + 22, color);
+    this.label(working ? 'TRABAJANDO' : ev.def.minigame && !ev.main ? `¡REPARA! ${ev.def.name}` : ev.def.name, pos.x, y + size + PX * 3 + 22, color);
   }
 }

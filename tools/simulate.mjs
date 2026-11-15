@@ -1,7 +1,7 @@
 // Balance tester: a bot plays each level N times with a sample design.
 // Usage: node tools/simulate.mjs [runs]
 import { readFileSync } from 'node:fs';
-import { createMission, tick, assign, calcChance, unavailableReason } from '../js/missionEngine.js';
+import { createMission, tick, assign, calcChance, unavailableReason, resolveRepair } from '../js/missionEngine.js';
 import { computeShipStats } from '../js/ship.js';
 import { computeReport } from '../js/report.js';
 
@@ -10,8 +10,8 @@ const data = { levels: load('levels'), crew: load('crew'), components: load('com
 
 const SAMPLE_DESIGNS = {
   easy: {
-    selections: { structure: 'str_basic', propulsion: 'prop_basic', power: 'pwr_high', battery: 'bat_basic', life_support: 'ls_basic', comms: 'com_hga', computer: 'cpu_basic', attitude: 'att_basic', shielding: null },
-    instruments: ['ins_camera', 'ins_spectro', 'ins_bio'], rocketId: 'quetzal', crew: { cmd: 'belka', eng: 'strelka' }
+    selections: { structure: 'str_basic', propulsion: 'prop_basic', power: 'pwr_high', battery: 'bat_basic', life_support: 'ls_std', comms: 'com_hga', computer: 'cpu_basic', attitude: 'att_basic', shielding: null },
+    instruments: ['ins_camera', 'ins_spectro', 'ins_bio'], rocketId: 'condor', crew: { cmd: 'belka', plt: 'ham', spc: 'missbaker' }
   },
   medium: {
     selections: { structure: 'str_basic', propulsion: 'prop_medium', power: 'pwr_high', battery: 'bat_basic', life_support: 'ls_std', comms: 'com_hga', computer: 'cpu_basic', attitude: 'att_basic', shielding: 'shd_thermal' },
@@ -26,6 +26,7 @@ const SAMPLE_DESIGNS = {
 const runs = Number(process.argv[2] || 200);
 const DT = 0.1;
 const REACTION = Number(process.env.REACTION || 1.5); // seconds the bot waits before acting on an event
+const REPAIR = Number(process.env.REPAIR || 0.75); // chance the player wins a repair minigame
 
 for (const level of data.levels) {
   const design = { levelId: level.id, ...structuredClone(SAMPLE_DESIGNS[level.id]) };
@@ -41,6 +42,7 @@ for (const level of data.levels) {
     while (!s.over) {
       tick(s, DT);
       for (const ev of s.events.filter(e => e.status === 'pending' && s.time - e.spawnedAt > REACTION)) {
+        if (ev.def.minigame || ev.def.sts125) { resolveRepair(s, ev.uid, { success: Math.random() < REPAIR }); continue; }
         let best = null;
         const free = s.crew.filter(x => !unavailableReason(s, x));
         for (const m of free) {

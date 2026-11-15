@@ -1,0 +1,301 @@
+/* Ajustes de interfaz (se carga después de style.css y retro.css).
+   1) Mínimos en las barras de la nave · 2) Tripulación en una sola pantalla
+   3) Misión: tripulación en la esquina, Laika habla, avisos pequeños y parpadeo rojo suave
+   4) Reporte en una sola pantalla */
+
+/* ---------- 1) Barras de la nave con su mínimo (o máximo) ---------- */
+.h-stats .hs-bar { overflow: visible !important; }
+.h-stats .hs-bar > span { max-width: 100%; }
+.hs-bar > i.mk {
+  position: absolute;
+  z-index: 2;
+  width: 4px !important;
+  margin-left: -2px;
+  top: -8px !important;
+  bottom: -8px !important;
+  background: var(--p-yellow) !important;
+  box-shadow: -2px 0 0 #000, 2px 0 0 #000 !important;
+}
+.hs-bar > i.mk::after {
+  content: attr(data-l);
+  position: absolute;
+  top: calc(100% + 1px);
+  left: 50%;
+  transform: translateX(-50%);
+  font: 7px/1 var(--pixel);
+  font-style: normal;
+  color: #000;
+  background: var(--p-yellow);
+  padding: 2px 3px;
+  white-space: nowrap;
+}
+.h-stats .hs-row { padding-bottom: 12px; }
+
+/* ---------- 2) Elegir tripulación: todo cabe sin bajar ---------- */
+#screen-crew { padding-top: 60px !important; padding-bottom: 8px; max-width: 1480px; }
+.crewstep { height: calc(100vh - 70px); display: grid; grid-template-rows: auto auto minmax(0, 1fr); gap: 10px; }
+.cs-top { gap: 14px; }
+.cs-top .btn { padding: 8px 14px; }
+.cs-seats { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+.seat {
+  display: grid !important;
+  grid-template-columns: 58px 1fr;
+  grid-template-areas: 'av label' 'av name';
+  align-items: center;
+  justify-items: start;
+  gap: 2px 12px;
+  padding: 8px 12px !important;
+  text-align: left;
+}
+.seat-label { grid-area: label; }
+.seat .avatar.seat-av, .seat-empty { grid-area: av; width: 58px !important; height: 58px !important; }
+.seat-empty .ico, .seat-empty svg { width: 30px; height: 30px; }
+.seat b { grid-area: name; }
+.cs-body { grid-template-columns: minmax(0, 1fr) 250px; min-height: 0; align-items: stretch; gap: 12px; }
+.cs-cands { min-height: 0; overflow-y: auto; display: flex; flex-direction: column; }
+.cs-cands-head { margin-bottom: 6px; }
+.cand-grid { grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 10px; }
+.cand { grid-template-columns: 84px 1fr; gap: 12px; padding: 10px !important; }
+.cand .avatar.cand-av { width: 84px !important; height: 84px !important; }
+.cand-info { gap: 3px; }
+.cand .kstats { gap: 3px; }
+.cand-bio { font-size: 17px !important; line-height: 1.05; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.cs-side { position: static !important; padding: 10px !important; gap: 8px !important; justify-content: space-between; min-height: 0; }
+.cs-radar svg { width: 130px; height: 130px; }
+.cs-legend { gap: 2px 6px; font-size: 16px !important; }
+.cs-side .btn.big { padding: 12px 10px; }
+@media (max-height: 760px) {
+  .cand .avatar.cand-av { width: 64px !important; height: 64px !important; }
+  .cand { grid-template-columns: 64px 1fr; }
+  .cand-bio { -webkit-line-clamp: 1; }
+  .cs-radar svg { width: 100px; height: 100px; }
+}
+
+/* ---------- 3) Misión ---------- */
+/* tripulación: abajo a la izquierda, sin recuadro */
+.hud-crew {
+  left: 12px !important;
+  bottom: 12px !important;
+  transform: none !important;
+  background: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  gap: 10px !important;
+  z-index: 3;
+}
+.hc { width: 66px !important; gap: 1px !important; }
+.hc-av, .hc-av .avatar { width: 46px !important; height: 46px !important; }
+.hc-av .avatar { border: 3px solid var(--p-white) !important; }
+.hc.busy .hc-av .avatar { border-color: var(--p-blue) !important; }
+.hc.tired .hc-av .avatar { border-color: var(--p-yellow) !important; }
+.hc.out .hc-av .avatar { border-color: var(--p-pink) !important; }
+.hc-fat { width: 46px !important; height: 7px !important; }
+.hc b { font-size: 7px !important; text-shadow: 2px 2px 0 #000; white-space: nowrap; }
+.hc-state { font-size: 15px !important; text-shadow: 2px 2px 0 #000; }
+
+/* Laika habla (abajo a la derecha del mapa) */
+.m-laika {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  width: min(380px, 40%);
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  z-index: 5;
+  cursor: pointer;
+}
+.m-laika.pop { animation: f-pop .25s steps(3); }
+.m-laika .hl-face .avatar.lg { width: 58px; height: 58px; }
+.m-laika .hl-bubble::before { top: auto; bottom: 18px; }
+.m-laika .hl-bubble p { font-size: 19px; margin: 2px 0 0; }
+
+/* avisos pequeños con icono, arriba al centro; se van solos */
+.m-alerts {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  z-index: 6;
+  pointer-events: none;
+}
+.m-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  background: #000;
+  border: 3px solid var(--p-blue);
+  font: 9px/1.4 var(--pixel);
+  color: var(--p-white);
+  box-shadow: 3px 3px 0 var(--p-navy);
+  animation: chip-in .2s steps(2), chip-out .4s steps(2) 2.8s forwards;
+}
+.m-chip.success { border-color: var(--p-green); color: var(--p-green); }
+.m-chip.fail, .m-chip.bad { border-color: var(--p-red); color: #ff8fa8; }
+@keyframes chip-in { from { transform: translateY(-8px); opacity: 0; } }
+@keyframes chip-out { to { opacity: 0; } }
+
+/* parpadeo rojo suave en el borde al fallar: 2 pulsos lentos y tenues (seguro para fotosensibilidad) */
+.m-redflash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+  opacity: 0;
+  box-shadow: inset 0 0 70px 18px rgba(255, 0, 77, 0.55);
+}
+.m-redflash.on { animation: redpulse 1.4s ease-in-out; }
+@keyframes redpulse {
+  0%, 100% { opacity: 0; }
+  25% { opacity: 0.8; }
+  50% { opacity: 0.15; }
+  75% { opacity: 0.6; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .m-redflash.on { animation: none; opacity: 0.5; transition: opacity 1s; }
+}
+#screen-mission ~ #toasts, .mission-full ~ #toasts { display: none; }
+
+/* ---------- 4) Reporte: todo en una pantalla ---------- */
+#screen-report { padding-top: 60px !important; padding-bottom: 8px; max-width: 1480px; }
+.kid-report.fit { height: calc(100vh - 70px); max-width: none; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 12px; }
+.kid-report.fit .kr-head { padding: 14px 20px; gap: 20px; }
+.kid-report.fit .grade { width: 92px; height: 92px; font-size: 54px; flex: none; }
+.kid-report.fit .kr-head h1 { margin: 2px 0; }
+.kid-report.fit .kr-head p { font-size: 20px; margin: 0; }
+.kr-grid3 { display: grid; grid-template-columns: 1fr 1fr 1.25fr; gap: 12px; min-height: 0; }
+.kr-col { display: flex; flex-direction: column; gap: 12px; min-height: 0; }
+.kid-report.fit .kr-card { padding: 14px; gap: 10px; min-height: 0; overflow: hidden; }
+.kr-reasons { flex: 1; }
+.kid-report.fit .kr-reason, .kid-report.fit .kr-laika p { font-size: 19px; }
+.kid-report.fit .kr-real { flex-direction: column; }
+.kid-report.fit .kr-real b { display: flex; gap: 6px; align-items: center; }
+.kid-report.fit .kr-real p { font-size: 17px; line-height: 1.1; }
+.kid-report.fit .kr-photo { margin: 0; }
+.kid-report.fit .kr-photo img { max-height: 30vh; }
+.kid-report.fit .kr-photo figcaption { font-size: 14px; }
+.kid-report.fit .actions { margin: 0; justify-content: center; }
+@media (max-width: 900px) {
+  .kid-report.fit { height: auto; }
+  .kr-grid3 { grid-template-columns: 1fr; }
+}
+/* el reporte se centra y cada tarjeta mide lo que su contenido */
+.kid-report.fit { height: auto; min-height: calc(100vh - 70px); grid-template-rows: auto auto auto; align-content: center; }
+.kr-grid3 { align-items: start; }
+.kid-report.fit .kr-bars { gap: 16px; padding: 18px; }
+.kid-report.fit .kr-photo img { max-height: 26vh; }
+/* tarjetas de candidatos más compactas: 4 por fila, todas visibles sin bajar */
+.cand-grid { grid-template-columns: repeat(auto-fill, minmax(255px, 1fr)) !important; gap: 8px !important; }
+.cand { grid-template-columns: 64px 1fr !important; gap: 10px !important; padding: 8px !important; }
+.cand .avatar.cand-av { width: 64px !important; height: 64px !important; }
+.cand .kbar { height: 12px !important; border-width: 2px !important; }
+.cand .kstat .ico svg, .cand .kstat > svg { width: 13px; height: 13px; }
+.cand-info b { font-size: 10px !important; }
+.cand-bio { -webkit-line-clamp: 2 !important; font-size: 16px !important; }
+.cs-cands { overflow: visible; }
+
+/* ===================== Ronda 2: simplificar y que nada se encime ===================== */
+/* Panel de la nave: filas compactas que caben arriba de la barra de acción */
+.h-stats { padding: 12px 14px !important; gap: 4px !important; max-height: calc(100% - 340px) !important; overflow: hidden !important; width: min(320px, 28vw) !important; }
+.h-stats .hs-row { padding-bottom: 12px; gap: 8px; align-items: center; }
+.h-stats .hs-ico { width: 28px !important; height: 28px !important; border-width: 2px !important; }
+.h-stats .hs-ico svg { width: 16px; height: 16px; }
+.h-stats .hs-label { font-size: 9px; margin-bottom: 3px; }
+.h-stats .hs-label .q { width: 18px; height: 18px; font-size: 9px; padding: 0; margin-left: 6px; }
+.h-stats .hs-bar { height: 14px !important; border-width: 2px !important; }
+
+/* Laika (taller y despegue): sin caja negra, solo su cara y el globo */
+.h-laika, .f-laika { background: none !important; border: 0 !important; box-shadow: none !important; padding: 0 !important; }
+.h-laika .hl-face small, .f-laika .hl-face small { text-shadow: 2px 2px 0 #000; }
+
+/* Minijuego dentro de la misión: "Salir" es una X pequeña que se abre al pasar el ratón */
+.sts-exit {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 2;
+  height: 36px;
+  max-width: 36px;
+  padding: 0 9px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  overflow: hidden;
+  white-space: nowrap;
+  background: #000;
+  color: var(--p-white);
+  border: 3px solid var(--p-white);
+  font: 9px/1 var(--pixel);
+  cursor: pointer;
+  opacity: 0.8;
+  transition: max-width 0.25s steps(5);
+}
+.sts-exit:hover, .sts-exit:focus-visible { max-width: 280px; opacity: 1; border-color: var(--p-yellow); }
+.sts-exit svg { flex: none; }
+
+/* Astronautas en la misión: solo la cara; el nombre y el estado aparecen al pasar el ratón */
+.hc b, .hc-state { display: none !important; }
+.hc:hover b, .hc:hover .hc-state { display: block !important; }
+.hc { width: auto !important; min-width: 50px; }
+.hc:hover { background: rgba(0, 0, 0, 0.85); outline: 3px solid var(--p-white); padding: 4px 6px; }
+
+/* Ventana de evento simplificada: problema + gráfica | a quién mandas */
+.modal-box.dsp.lite { max-width: 1020px; height: auto; max-height: calc(100vh - 20px); margin: auto; grid-template-rows: auto auto; }
+.modal.dsp-mode:has(.lite) { align-items: center; }
+.lite-body { display: grid; grid-template-columns: 1.1fr 1fr; gap: 14px; min-height: 0; }
+.lite-left { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.lite-left .case-text { font-size: 22px; line-height: 1.2; margin: 4px 0 0; text-align: center; }
+.lite-left .dsp-radar svg { width: min(300px, 34vh); height: min(300px, 34vh); }
+.lite-line { margin: 0; font-size: 19px; text-align: center; }
+.lite-line.ok { color: var(--p-green); } .lite-line.miss { color: #ff8fa8; }
+.lite-right { display: flex; flex-direction: column; gap: 8px; min-height: 0; }
+.lite-right .crew-list { gap: 6px; overflow-y: auto; min-height: 0; }
+.crew-pick.lite { grid-template-columns: 52px 1fr; padding: 6px 10px; gap: 10px; }
+.crew-pick.lite .avatar { width: 52px !important; height: 52px !important; }
+.crew-pick.lite .cp-info { display: flex; flex-direction: column; gap: 2px; }
+.crew-pick.lite .cp-info b { font-family: var(--pixel); font-size: 11px; }
+.crew-pick.lite small { font-size: 17px; }
+.lite-right .btn.go.big { margin-top: auto; }
+
+/* ===================== Ronda 3 ===================== */
+/* Despegue: el título y el botón a la izquierda, para no tapar el cohete */
+.f-center { left: 24% !important; max-width: 40vw; }
+.f-center.end { left: 24% !important; }
+/* Velocidad de la nave en vivo (abajo al centro del mapa) */
+.m-speed { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 4px; pointer-events: none; text-shadow: 2px 2px 0 #000; }
+.m-speed span { font: 7px/1 var(--pixel); color: var(--p-grey); }
+.m-speed b { font: 14px/1 var(--pixel); color: var(--p-yellow); }
+.m-speed b::after { content: ''; display: inline-block; width: 0; height: 0; margin-left: 8px; border: 5px solid transparent; vertical-align: 2px; }
+.m-speed b.up::after { border-bottom: 7px solid var(--p-green); border-top-width: 0; }
+.m-speed b.down::after { border-top: 7px solid var(--p-red); border-bottom-width: 0; }
+/* Ficha de la misión real antes del despegue */
+.f-brief {
+  position: absolute; inset: 0; z-index: 20; margin: auto;
+  width: min(1040px, 92vw); height: fit-content; max-height: 90vh;
+  display: grid; grid-template-columns: 1.1fr 1fr; gap: 22px; align-items: center;
+  padding: 20px; background: #000; border: 4px solid var(--p-white); box-shadow: 8px 8px 0 var(--p-navy);
+  animation: f-pop .25s steps(3);
+}
+.f-brief figure { margin: 0; }
+.f-brief img { display: block; width: 100%; max-height: 56vh; object-fit: cover; border: 4px solid var(--p-white); image-rendering: auto; }
+.f-brief figcaption { font-size: 15px; color: var(--p-grey); margin-top: 6px; line-height: 1.1; }
+.f-brief .kicker { color: var(--p-blue); margin: 0 0 6px; }
+.f-brief h2 { font-family: var(--pixel); font-size: 17px; line-height: 1.5; color: var(--p-yellow); margin: 0 0 12px; }
+.f-brief dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; margin: 0 0 10px; font-size: 20px; }
+.f-brief dt { color: var(--p-grey); } .f-brief dd { margin: 0; color: var(--p-green); }
+.f-brief p { font-size: 20px; margin: 0 0 14px; }
+@media (max-width: 800px) { .f-brief { grid-template-columns: 1fr; overflow: auto; } }
+/* Botón de idioma EN | ES (junto al sonido) */
+#lang-toggle { position: fixed; top: 10px; left: 64px; z-index: 200; display: flex; border: 3px solid var(--p-white); background: #000; box-shadow: 3px 3px 0 var(--p-navy); }
+#lang-toggle button { font: 10px/1 var(--pixel); padding: 0 10px; height: 40px; background: #000; color: var(--p-grey); border: 0; cursor: pointer; }
+#lang-toggle button.on { background: var(--p-yellow); color: #000; }
+#lang-toggle button:hover:not(.on) { color: var(--p-white); }
+body.rg-open #lang-toggle { display: none; }
+/* el botón de idioma solo aparece al inicio (pantalla del menú) */
+body:not(:has(#screen-menu:not(.hidden))) #lang-toggle { display: none; }

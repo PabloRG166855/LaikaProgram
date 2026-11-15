@@ -1,7 +1,7 @@
 // Full-screen hangar: the ship fills the screen, you tap a part (or a tab) and pick a piece.
 // Stats are bars without numbers; each has a small "?" that explains it when tapped.
 import { computeShipStats, isAvailable, getSelectedComponents } from '../ship.js';
-import { esc } from '../ui.js';
+import { esc, avatar } from '../ui.js';
 import { sfx } from '../sfx.js';
 import { icon, drawIcon } from '../icons.js';
 import { drawShip, shipModel, shipSize } from './shipRenderer.js';
@@ -16,44 +16,48 @@ const HOTSPOTS = [
 ];
 
 const STAT_HELP = {
-  money: ['Presupuesto', 'Cada pieza cuesta. Lo que te queda se ve en los bloques: elige con cuidado, ¡no alcanza para todo!'],
-  weight: ['Peso', 'El cohete solo puede levantar cierto peso. Si la barra se llena, la nave no despega.'],
-  energy: ['Energía', 'Los paneles dan electricidad y cada pieza consume un poco. Si gastas más de lo que generas, la nave se apaga.'],
-  engine: ['Motor', 'Para llegar a la Luna el motor necesita suficiente fuerza. La rayita marca lo mínimo.'],
-  shield: ['Protección', 'Lejos de la Tierra hay más radiación. El escudo protege a la tripulación. La rayita marca lo mínimo.'],
-  science: ['Ciencia', 'Lo que descubrirás y enviarás a la Tierra. Más instrumentos y una buena antena llenan la barra.'],
+  weight: ['Peso', 'El cohete solo puede levantar cierto peso. La rayita MÁX es el límite: si la barra la pasa, la nave no despega.'],
+  energy: ['Energía', 'Los paneles dan electricidad y cada pieza consume un poco. La barra debe pasar la rayita MÍN: ahí generas justo lo que gastas.'],
+  engine: ['Motor', 'Para llegar a tu destino el motor necesita suficiente fuerza. La rayita MÍN marca lo mínimo.'],
+  shield: ['Protección', 'En el espacio hay mucho calor y frío, y lejos de la Tierra más radiación. El escudo protege a la tripulación. La rayita MÍN marca lo mínimo.'],
+  science: ['Ciencia', 'Lo que descubrirás y enviarás a la Tierra. Para despegar debes pasar la rayita MÍN; la barra llena es la meta de la misión.'],
   signal: ['Señal', 'Qué tanto de tu ciencia llega a la Tierra. Muchos instrumentos con una antena débil = ciencia perdida.']
 };
 
 /** Price as a coin icon + 4 rising bars (no numbers). */
-const coins = cost => {
-  const n = cost < 50 ? 1 : cost < 150 ? 2 : cost < 300 ? 3 : 4;
-  return `<span class="price" title="Precio">${icon('coins', 16)}<span class="price-bars">${[1, 2, 3, 4].map(i => `<i class="${i <= n ? 'on' : ''}" style="height:${4 + i * 3}px"></i>`).join('')}</span></span>`;
-};
-const BUDGET_BLOCKS = 12;
 
-function tagsFor(c, level) {
+const MASS_RANGE = {};
+function tagList(c, level) {
   const t = [];
-  if (c.propulsion) t.push(c.propulsion >= level.minPropulsion ? ['flame', 'up', 'Llega a la Luna'] : ['lock', 'down', 'No llega a la Luna']);
+  const to = level.goTo || `a ${level.destinationName}`;
+  if (c.propulsion) t.push(c.propulsion >= level.minPropulsion ? ['flame', 'up', `Llega ${to}`] : ['lock', 'down', `No llega ${to}`]);
   if (c.powerGen) t.push(['battery-charging', 'up', 'Más energía']);
   if (c.science) t.push(['flask-conical', 'up', 'Más ciencia']);
   if (c.comms) t.push(['satellite-dish', c.comms >= 5 ? 'up' : 'mid', c.comms >= 5 ? 'Señal fuerte' : 'Señal débil']);
   if (c.shielding) t.push(['shield', 'up', 'Más protección']);
   if (c.crewMax) t.push(['users', 'mid', `${c.crewMax} asientos`]);
-  if (c.mass >= 1000) t.push(['weight', 'down', 'Pesado']);
-  else if (c.category !== 'structure') t.push(['weight', 'up', 'Ligero']);
-  return t.slice(0, 3).map(([ic, dir, label]) => `<span class="tag ${dir}">${icon(ic, 14)}${esc(label)}</span>`).join('');
+  // weight compared with the other pieces of the same kind
+  const same = MASS_RANGE[c.category];
+  if (same && same.max > same.min) {
+    if (c.mass === same.max) t.push(['weight', 'down', 'Pesado']);
+    else if (c.mass === same.min) t.push(['weight', 'up', 'Ligero']);
+  }
+  return t.slice(0, 3);
+}
+function tagsFor(c, level) {
+  return tagList(c, level).map(([ic, dir, label]) => `<span class="tag ${dir}">${icon(ic, 14)}${esc(label)}</span>`).join('');
 }
 
 function blockers(st, level, design) {
   const out = [];
   if (!design.rocketId) out.push(['rocket', 'Elige un cohete para despegar.', 'rocket']);
-  else if (st.totalMass > st.rocketCapacity) out.push(['weight', 'Tu nave pesa demasiado para este cohete. Quita piezas o elige un cohete más fuerte.', 'rocket']);
-  if (st.propulsionLevel < level.minPropulsion) out.push(['flame', 'Este motor no llega a la Luna. Elige uno más fuerte.', 'propulsion']);
-  if (st.shielding < level.minShielding) out.push(['shield', 'Necesitas un escudo para ir a la Luna.', 'shielding']);
+  else if (st.totalMass > st.rocketCapacity) out.push(['weight', 'Tu nave pesa demasiado para el cohete de esta misión. Cambia piezas por otras más ligeras.', 'structure']);
+  const to = level.goTo || `a ${level.destinationName}`;
+  if (st.propulsionLevel < level.minPropulsion) out.push(['flame', `Este motor no llega ${to}. Elige uno más fuerte.`, 'propulsion']);
+  if (st.shielding < level.minShielding) out.push(['shield', `Necesitas un escudo para ir ${to}.`, 'shielding']);
   if (st.instruments.length === 0) out.push(['microscope', 'Agrega al menos un instrumento de ciencia.', 'instruments']);
+  else if (st.projectedScience < level.scienceGoal * (level.minScience || 0)) out.push(['flask-conical', 'Tu nave hace muy poca ciencia: agrega instrumentos o una antena más fuerte.', 'instruments']);
   if (st.powerUse > st.powerGen) out.push(['battery-low', 'No hay suficiente energía. Pon mejores paneles o quita instrumentos.', 'power']);
-  if (st.budgetLeft < 0) out.push(['coins', 'No te alcanza el presupuesto. Cambia alguna pieza cara.', null]);
   return out;
 }
 
@@ -61,9 +65,19 @@ export function renderHangar(root, ctx) {
   const { data, level, design } = ctx;
   const cats = data.components.categories.filter(c => !c.auto);
   const comps = data.components.components;
+  for (const c of comps) {
+    if (!isAvailable(c, level)) continue;
+    const r = MASS_RANGE[c.category] || (MASS_RANGE[c.category] = { min: Infinity, max: -Infinity });
+    r.min = Math.min(r.min, c.mass);
+    r.max = Math.max(r.max, c.mass);
+  }
   let active = 'structure';
   let help = null;
   let flash = null;
+  let laikaPiece = null; // piece Laika is explaining (hover / last pick)
+  let laikaHelp = null; // stat that Laika explains after tapping its "?"
+  let laikaIntro = true; // first visit: Laika says hello until a tab is touched
+  const guide = data.components.guide || {};
 
   root.innerHTML = `
     <div class="hangar">
@@ -72,7 +86,7 @@ export function renderHangar(root, ctx) {
         <span class="h-step">1/2</span>
         <div><b>Arma tu nave</b><small>Toca una parte de la nave para cambiarla</small></div>
       </div>
-      <div class="h-budget glass" id="h-budget"></div>
+      <div class="h-laika glass" id="h-laika"></div>
       <aside class="h-stats glass" id="h-stats"></aside>
       <div class="h-actionbar">
         <div class="h-alert" id="h-alert"></div>
@@ -80,7 +94,6 @@ export function renderHangar(root, ctx) {
       </div>
       <div class="h-tray glass">
         <div class="h-tabs" id="h-tabs"></div>
-        <div class="h-cat-help" id="h-cat-help"></div>
         <div class="h-options" id="h-options"></div>
       </div>
       <button class="h-back btn ghost" data-act="back">${icon('house', 18)}</button>
@@ -97,7 +110,7 @@ export function renderHangar(root, ctx) {
     return {
       propulsion: st.propulsionLevel < level.minPropulsion,
       shielding: st.shielding < level.minShielding,
-      instruments: st.instruments.length === 0,
+      instruments: st.instruments.length === 0 || st.projectedScience < level.scienceGoal * (level.minScience || 0),
       power: st.powerUse > st.powerGen,
       rocket: !design.rocketId || st.totalMass > st.rocketCapacity
     };
@@ -126,7 +139,7 @@ export function renderHangar(root, ctx) {
     c2d.fillStyle = '#1D2B53';
     for (let y = h - 240; y < h; y += 18) c2d.fillRect(0, y, w, PX);
     // ship area: between the title (top), the stats panel (right) and the tray + action bar (bottom)
-    // ship area: right of the title/budget column, left of the stats panel, above the action bar
+    // ship area: right of the title/Laika column, left of the stats panel, above the action bar
     const left = Math.min(440, w * 0.33);
     const right = w - Math.min(380, w * 0.3);
     const top = 20;
@@ -195,33 +208,23 @@ export function renderHangar(root, ctx) {
   function renderTray() {
     const st = computeShipStats(design, level, data);
     const need = needsAttention(st);
-    const tabs = [...cats.map(c => ({ id: c.id, ico: c.ico, label: c.short })), { id: 'rocket', ico: 'rocket', label: 'Cohete' }];
+    // no rocket tab: each mission has its own rocket, so the challenge is weight and energy
+    const tabs = cats.map(c => ({ id: c.id, ico: c.ico, label: c.short }));
     el('h-tabs').innerHTML = tabs.map(t => `
       <button class="h-tab ${active === t.id ? 'active' : ''} ${need[t.id] ? 'warn' : ''}" data-act="tab" data-id="${t.id}">
         ${icon(t.ico, 22)}<span>${esc(t.label)}</span>
       </button>`).join('');
     const cat = cats.find(c => c.id === active);
-    el('h-cat-help').innerHTML = active === 'rocket'
-      ? `${icon('rocket', 16)} El cohete lanza tu nave. Los más fuertes cargan más peso, pero cuestan más.`
-      : `${icon(cat.ico, 16)} ${esc(cat.kid)}`;
-    const left = st.budgetLeft;
-    const currentCost = id => {
-      const c = comps.find(x => x.id === id);
-      return c ? c.cost : 0;
-    };
-    const tooExpensive = (price, replacing) => price - replacing > left;
+    renderLaika();
     if (active === 'rocket') {
-      const curRocket = data.rockets.find(r => r.id === design.rocketId);
       const maxCap = Math.max(...data.rockets.map(r => r.capacityKg[level.destination] || 0));
       el('h-options').innerHTML = data.rockets.filter(r => r.capacityKg[level.destination]).map(r => {
         const cap = r.capacityKg[level.destination];
         const sel = design.rocketId === r.id;
-        const locked = !sel && tooExpensive(r.cost, curRocket ? curRocket.cost : 0);
         return `
-          <button class="h-opt ${sel ? 'selected' : ''} ${locked ? 'locked' : ''}" data-act="rocket" data-id="${r.id}" ${locked ? 'disabled' : ''}>
-            <span class="h-opt-top">${coins(r.cost)}${locked ? `<span class="lock-tag">${icon('lock', 14)} Muy caro</span>` : ''}</span>
+          <button class="h-opt ${sel ? 'selected' : ''}" data-act="rocket" data-id="${r.id}">
             <span class="h-opt-name">${sel ? icon('check', 16) : ''}${esc(r.name)}</span>
-            <span class="h-opt-desc">Fuerza para cargar</span>
+            <span class="h-opt-desc">Carga</span>
             <span class="mini-bar"><span style="width:${(cap / maxCap) * 100}%"></span></span>
           </button>`;
       }).join('');
@@ -229,61 +232,115 @@ export function renderHangar(root, ctx) {
     }
     el('h-options').innerHTML = comps.filter(c => c.category === active && isAvailable(c, level)).map(c => {
       const sel = c.category === 'instruments' ? design.instruments.includes(c.id) : design.selections[c.category] === c.id;
-      const replacing = c.category === 'instruments' ? 0 : currentCost(design.selections[c.category]);
-      const locked = !sel && tooExpensive(c.cost, replacing);
       return `
-        <button class="h-opt ${sel ? 'selected' : ''} ${locked ? 'locked' : ''}" data-act="comp" data-id="${c.id}" title="${esc(c.desc)}" ${locked ? 'disabled' : ''}>
-          <span class="h-opt-top">${coins(c.cost)}${locked ? `<span class="lock-tag">${icon('lock', 14)} Muy caro</span>` : ''}</span>
+        <button class="h-opt ${sel ? 'selected' : ''}" data-act="comp" data-id="${c.id}" title="${esc(c.desc)}">
           <span class="h-opt-name">${sel ? icon('check', 16) : ''}${esc(c.name)}</span>
           <span class="h-opt-desc">${esc(c.desc)}</span>
           <span class="h-opt-tags">${tagsFor(c, level)}</span>
         </button>`;
     }).join('') + (cat.required || cat.multi ? '' : `
         <button class="h-opt ${design.selections[cat.id] ? '' : 'selected'}" data-act="none" data-id="${cat.id}">
-          <span class="h-opt-top"><span class="price free">Gratis</span></span>
           <span class="h-opt-name">${design.selections[cat.id] ? '' : icon('check', 16)}Sin ${esc(cat.short.toLowerCase())}</span>
-          <span class="h-opt-desc">Ahorras peso y presupuesto.</span>
+          <span class="h-opt-desc">Ahorras peso y energía.</span>
         </button>`);
   }
 
   // ---------- Stats (bars, no numbers) ----------
-  function bar(key, ic, frac, cls, marker) {
+  function bar(key, ic, frac, cls, marker, markLabel = 'MÍN') {
     const [label, text] = STAT_HELP[key];
     return `
       <div class="hs-row">
         <span class="hs-ico ${cls}">${icon(ic, 20)}</span>
         <div class="hs-main">
-          <div class="hs-label">${esc(label)}<button class="q ${help === key ? 'on' : ''}" data-act="help" data-id="${key}" aria-label="¿Qué es ${esc(label)}?">?</button></div>
-          <div class="hs-bar ${cls}"><span style="width:${Math.max(0, Math.min(1, frac)) * 100}%"></span>${marker != null ? `<i style="left:${marker * 100}%"></i>` : ''}</div>
-          ${help === key ? `<p class="hs-help">${esc(text)}</p>` : ''}
+          <div class="hs-label">${esc(label)}<button class="q" data-act="help" data-id="${key}" aria-label="¿Qué es ${esc(label)}?">?</button></div>
+          <div class="hs-bar ${cls}"><span style="width:${Math.max(0, Math.min(1, frac)) * 100}%"></span>${marker != null ? `<i class="mk" style="left:${marker * 100}%" data-l="${markLabel}"></i>` : ''}</div>
         </div>
       </div>`;
   }
 
   function renderStats() {
     const st = computeShipStats(design, level, data);
-    const money = st.budgetLeft / level.budget;
+    // Cada barra marca lo que hace falta para despegar:
+    //  peso: la rayita MÁX es la capacidad del cohete (la barra llega hasta 125 %)
+    //  energía: la rayita MÍN es generar lo mismo que se gasta (la barra llega hasta el doble)
+    //  motor / protección: nivel mínimo del destino · ciencia: MÍN = minScience de la meta, barra llena = meta
     const weight = st.rocketCapacity ? st.totalMass / st.rocketCapacity : 0;
     const energyRatio = st.powerUse ? st.powerGen / st.powerUse : 2;
+    const sci = st.projectedScience / level.scienceGoal;
+    const minSci = level.minScience || 0;
     el('h-stats').innerHTML = `
-      ${bar('weight', 'weight', weight, !st.rocketCapacity ? 'off' : weight > 1 ? 'bad' : weight > 0.85 ? 'warn' : 'good')}
-      ${bar('energy', 'battery-charging', Math.min(1, energyRatio / 2), energyRatio < 1 ? 'bad' : energyRatio < 1.15 ? 'warn' : 'good')}
+      ${bar('weight', 'weight', weight / 1.25, !st.rocketCapacity ? 'off' : weight > 1 ? 'bad' : weight > 0.85 ? 'warn' : 'good', 0.8, 'MÁX')}
+      ${bar('energy', 'battery-charging', Math.min(1, energyRatio / 2), energyRatio < 1 ? 'bad' : energyRatio < 1.15 ? 'warn' : 'good', 0.5)}
       ${bar('engine', 'flame', st.propulsionLevel / 3, st.propulsionLevel < level.minPropulsion ? 'bad' : 'good', level.minPropulsion / 3)}
-      ${bar('shield', 'shield', st.shielding / 3, st.shielding < level.minShielding ? 'bad' : 'good', level.minShielding / 3)}
-      ${bar('science', 'flask-conical', st.projectedScience / level.scienceGoal, st.projectedScience >= level.scienceGoal ? 'good' : 'warn')}`;
-    const on = Math.max(0, Math.ceil(money * BUDGET_BLOCKS - 0.001));
-    const bcls = money < 0 ? 'bad' : money < 0.2 ? 'warn' : 'good';
-    el('h-budget').innerHTML = `
-      <span class="hb-ico ${bcls}">${icon('coins', 22)}</span>
-      <div><div class="hb-label">Presupuesto<button class="q ${help === 'money' ? 'on' : ''}" data-act="help" data-id="money">?</button></div>
-      <div class="blocks big ${bcls}">${Array.from({ length: BUDGET_BLOCKS }, (_, i) => `<i class="${i < on ? 'on' : ''}"></i>`).join('')}</div>
-      ${help === 'money' ? `<p class="hs-help">${esc(STAT_HELP.money[1])}</p>` : ''}</div>`;
+      ${bar('shield', 'shield', st.shielding / 3, st.shielding < level.minShielding ? 'bad' : 'good', level.minShielding ? level.minShielding / 3 : null)}
+      ${bar('science', 'flask-conical', sci, sci < minSci ? 'bad' : sci >= 1 ? 'good' : 'warn', minSci || null)}`;
     const b = blockers(st, level, design);
     el('h-alert').innerHTML = b.length
       ? `<button class="alert-pill" data-act="tab" data-id="${b[0][2] || active}">${icon(b[0][0], 20)}<span>${esc(b[0][1])}</span></button>`
       : `<div class="alert-pill ok">${icon('check', 20)}<span>¡Tu nave está lista! Ahora elige a tu tripulación.</span></div>`;
     el('h-next').disabled = b.length > 0;
   }
+
+  // ---------- Laika, the tutorial guide ----------
+  function pieceText(piece) {
+    if (piece.kind === 'rocket') {
+      const r = data.rockets.find(x => x.id === piece.id);
+      return r && [r.name, r.desc];
+    }
+    const c = comps.find(x => x.id === piece.id);
+    if (!c) return null;
+    const words = tagList(c, level).map(t => t[2].toLowerCase());
+    return [c.name, `${c.desc}${words.length ? ` Con esta pieza: ${words.join(', ')}.` : ''}`];
+  }
+  function renderLaika() {
+    const cat = cats.find(c => c.id === active);
+    let title;
+    let text;
+    let ico;
+    const piece = laikaPiece && pieceText(laikaPiece);
+    if (laikaHelp) {
+      [title, text] = STAT_HELP[laikaHelp];
+      ico = 'circle-help';
+    } else if (laikaIntro) {
+      title = '¡Hola!';
+      text = guide.intro;
+      ico = 'sparkles';
+    } else if (piece) {
+      [title, text] = piece;
+      ico = active === 'rocket' ? 'rocket' : cat.ico;
+    } else if (active === 'rocket') {
+      title = 'El cohete';
+      text = guide.rocket;
+      ico = 'rocket';
+    } else {
+      title = cat.short === 'Cabina' ? 'La cabina' : cat.name;
+      text = cat.laika || cat.kid;
+      ico = cat.ico;
+    }
+    el('h-laika').innerHTML = `
+      <span class="hl-face">${avatar(data.crew.director, 'lg')}<small>Laika</small></span>
+      <div class="hl-bubble">
+        <b>${icon(ico, 18)} ${esc(title)}</b>
+        <p>${esc(text || '')}</p>
+      </div>`;
+  }
+  function bubblePop() {
+    const b = el('h-laika');
+    b.classList.remove('pop');
+    void b.offsetWidth;
+    b.classList.add('pop');
+  }
+  // hovering a card makes Laika explain it (on touch, picking does the same)
+  el('h-options').addEventListener('pointerover', e => {
+    const t = e.target.closest('[data-act="comp"], [data-act="rocket"]');
+    if (!t || e.pointerType === 'touch') return;
+    const next = { kind: t.dataset.act === 'rocket' ? 'rocket' : 'comp', id: t.dataset.id };
+    if (laikaPiece && laikaPiece.id === next.id) return;
+    laikaPiece = next;
+    laikaIntro = false;
+    laikaHelp = null;
+    renderLaika();
+  });
 
   function refresh() {
     model = shipModel(getSelectedComponents(design, data));
@@ -297,13 +354,17 @@ export function renderHangar(root, ctx) {
     const { act, id } = t.dataset;
     if (act === 'back') return ctx.onBack();
     if (act === 'next') { if (!t.disabled) ctx.onNext(); return; }
-    if (act === 'help') { help = help === id ? null : id; return renderStats(); }
-    if (act === 'tab') { active = id; return renderTray(); }
-    if (act === 'rocket') design.rocketId = id;
+    if (act === 'help') { laikaHelp = id; laikaIntro = false; laikaPiece = null; bubblePop(); renderLaika(); return; }
+    laikaHelp = null;
+    if (act === 'tab') { active = id; laikaIntro = false; laikaPiece = null; bubblePop(); return renderTray(); }
+    if (act === 'rocket') { design.rocketId = id; laikaPiece = { kind: 'rocket', id }; laikaIntro = false; bubblePop(); }
     if (act === 'none') design.selections[id] = null;
     if (act === 'comp' || act === 'rocket' || act === 'pick') sfx('select');
     if (act === 'comp') {
       const c = comps.find(x => x.id === id);
+      laikaPiece = { kind: 'comp', id };
+      laikaIntro = false;
+      bubblePop();
       const cat = cats.find(k => k.id === c.category);
       if (cat.multi) {
         if (design.instruments.includes(id)) design.instruments = design.instruments.filter(x => x !== id);

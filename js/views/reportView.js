@@ -36,17 +36,17 @@ export function renderReport(root, { state: s, onRedesign, onMenu }) {
   ];
 
   root.innerHTML = `
-    <div class="kid-report">
+    <div class="kid-report fit">
       <div class="kr-head" style="background-image:linear-gradient(90deg, rgba(0,0,0,.96) 35%, rgba(0,0,0,.5)), url('${level.image}')">
         <div class="grade ${r.grade}">${r.grade}</div>
-        <div>
-          <div class="kr-stars">${[1, 2, 3].map(i => `<span class="${i <= stars ? 'on' : ''}">${icon('star', 34)}</span>`).join('')}</div>
+        <div class="kr-head-text">
+          <div class="kr-stars">${[1, 2, 3].map(i => `<span class="${i <= stars ? 'on' : ''}">${icon('star', 28)}</span>`).join('')}</div>
           <h1>${esc(r.title)}</h1>
           <p>${esc(r.subtitle)}</p>
         </div>
       </div>
-      <div class="kr-grid">
-        <div class="glass kr-card">
+      <div class="kr-grid3">
+        <div class="glass kr-card kr-bars">
           ${bars.map(([ic, label, f]) => `
             <div class="hs-row">
               <span class="hs-ico ${f >= 0.7 ? 'good' : f >= 0.4 ? 'warn' : 'bad'}">${icon(ic, 20)}</span>
@@ -54,16 +54,18 @@ export function renderReport(root, { state: s, onRedesign, onMenu }) {
               <div class="hs-bar ${f >= 0.7 ? 'good' : f >= 0.4 ? 'warn' : 'bad'}"><span style="width:${Math.min(1, f) * 100}%"></span></div></div>
             </div>`).join('')}
         </div>
-        <div class="glass kr-card">
-          ${shown.map(([ic, cls, text]) => `<div class="kr-reason ${cls}">${icon(ic, 20)}<span>${esc(text)}</span></div>`).join('')}
-        </div>
-        <div class="glass kr-card kr-laika">
-          ${avatar(s.data.crew.director, 'lg')}
-          <div><b>Laika dice:</b><p>${esc(tip)}</p></div>
+        <div class="kr-col">
+          <div class="glass kr-card kr-reasons">
+            ${shown.map(([ic, cls, text]) => `<div class="kr-reason ${cls}">${icon(ic, 20)}<span>${esc(text)}</span></div>`).join('')}
+          </div>
+          <div class="glass kr-card kr-laika">
+            ${avatar(s.data.crew.director, 'lg')}
+            <div><b>Laika dice:</b><p>${esc(tip)}</p></div>
+          </div>
         </div>
         <div class="glass kr-card kr-real">
-          ${icon('satellite', 22)}
-          <div><b>Misión real parecida</b><p>${esc(level.realMission.name)}: ${esc(level.realMission.text)}</p></div>
+          ${level.realMission.photo ? `<figure class="kr-photo"><img src="${esc(level.realMission.photo)}" alt=""><figcaption>FOTO REAL · ${esc(level.realMission.caption || 'NASA')}</figcaption></figure>` : ''}
+          <div><b>${icon('satellite', 18)} Misión real parecida</b><p>${esc(level.realMission.name)}: ${esc(level.realMission.text)}</p></div>
         </div>
       </div>
       <div class="actions">

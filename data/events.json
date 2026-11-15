@@ -145,7 +145,13 @@
    "type": "ship",
    "part": "power"
   },
-  "ico": "zap"
+  "ico": "zap",
+  "minigame": {
+   "game": "charge",
+   "theme": "battery",
+   "option": 1,
+   "how": "Mantén presionado para cargar la batería. ¡Suelta en la zona VERDE!"
+  }
  },
  {
   "id": "comms_loss",
@@ -219,7 +225,13 @@
    "type": "ship",
    "part": "comms"
   },
-  "ico": "wifi-off"
+  "ico": "wifi-off",
+  "minigame": {
+   "game": "aim",
+   "theme": "antenna",
+   "option": 0,
+   "how": "Toca cuando la antena apunte a la TIERRA."
+  }
  },
  {
   "id": "debris",
@@ -429,7 +441,13 @@
    "type": "ship",
    "part": "life_support"
   },
-  "ico": "wind"
+  "ico": "wind",
+  "minigame": {
+   "game": "tap",
+   "theme": "filter",
+   "option": 0,
+   "how": "¡Toca muy rápido para sacar el filtro viejo!"
+  }
  },
  {
   "id": "software_error",
@@ -501,7 +519,13 @@
    "type": "ship",
    "part": "computer"
   },
-  "ico": "cpu"
+  "ico": "cpu",
+  "minigame": {
+   "game": "aim",
+   "theme": "computer",
+   "option": 1,
+   "how": "Toca cuando la flecha esté en el bloque VERDE para reiniciar."
+  }
  },
  {
   "id": "overheating",
@@ -570,7 +594,13 @@
    "type": "ship",
    "part": "battery"
   },
-  "ico": "thermometer"
+  "ico": "thermometer",
+  "minigame": {
+   "game": "charge",
+   "theme": "cool",
+   "option": 0,
+   "how": "Mantén presionado para enfriar. ¡Suelta cuando la temperatura esté en VERDE!"
+  }
  },
  {
   "id": "observation_window",
@@ -701,7 +731,13 @@
    "type": "ship",
    "part": "hull"
   },
-  "ico": "sparkles"
+  "ico": "sparkles",
+  "minigame": {
+   "game": "patch",
+   "theme": "hull",
+   "option": 0,
+   "how": "Toca para soltar el parche justo encima del AGUJERO."
+  }
  },
  {
   "id": "sample_collection",
@@ -984,7 +1020,13 @@
    "type": "ship",
    "part": "instruments"
   },
-  "ico": "cog"
+  "ico": "cog",
+  "minigame": {
+   "game": "tap",
+   "theme": "bolt",
+   "option": 1,
+   "how": "¡Tornillo atascado! Toca muy rápido para aflojarlo."
+  }
  },
  {
   "id": "ground_pass",
@@ -1248,7 +1290,13 @@
    },
    "text": "La fuga siguió y se perdió combustible valioso."
   },
-  "ico": "fuel"
+  "ico": "fuel",
+  "minigame": {
+   "game": "tap",
+   "theme": "valve",
+   "option": 1,
+   "how": "¡Toca muy rápido para cerrar la válvula!"
+  }
  },
  {
   "id": "eclipse_battery",
@@ -1315,7 +1363,13 @@
    },
    "text": "Nadie gestionó el eclipse: APAGÓN total, la consola queda bloqueada."
   },
-  "ico": "battery-low"
+  "ico": "battery-low",
+  "minigame": {
+   "game": "charge",
+   "theme": "battery",
+   "option": 0,
+   "how": "Mantén presionado para pasar energía a la batería nueva. ¡Suelta en la zona VERDE!"
+  }
  },
  {
   "id": "star_tracker",
@@ -1381,6 +1435,12 @@
    },
    "text": "La nave quedó girando sin control y perdió la comunicación."
   },
-  "ico": "compass"
+  "ico": "compass",
+  "minigame": {
+   "game": "aim",
+   "theme": "star",
+   "option": 0,
+   "how": "Toca cuando la cámara apunte a la ESTRELLA guía."
+  }
  }
 ]

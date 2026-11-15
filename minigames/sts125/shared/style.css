@@ -1,0 +1,949 @@
+:root {
+  --bg: #05060f;
+  --ink: #f4f1de;
+  --dim: #8b8fb3;
+  --accent: #ffcc33;
+  --good: #5cff8a;
+  --bad: #ff4d6d;
+  --blue: #4cc9f0;
+  --panel: rgba(8, 10, 28, 0.82);
+  --pixel: 'Press Start 2P', ui-monospace, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--pixel);
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+/* Escenario 16:9 que siempre cabe en la pantalla */
+#stage {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: min(100vw, calc(100dvh * 16 / 9));
+  height: min(100dvh, calc(100vw * 9 / 16));
+  container-type: size;
+  cursor: pointer;
+}
+
+#screen {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+#ui {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  font-size: 2.1cqw;
+  line-height: 1.6;
+}
+
+#ui button,
+#ui a {
+  pointer-events: auto;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Barra de fases */
+#topbar {
+  position: absolute;
+  top: 2.2cqh;
+  left: 2cqw;
+  right: 2cqw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#steps {
+  display: flex;
+  gap: 1cqw;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#steps li {
+  width: 4.6cqw;
+  height: 4.6cqw;
+  display: grid;
+  place-items: center;
+  font-size: 2.2cqw;
+  background: rgba(255, 255, 255, 0.06);
+  border: 0.35cqw solid rgba(255, 255, 255, 0.15);
+  filter: grayscale(1) opacity(0.5);
+  transition: all 0.25s;
+}
+
+#steps li.active {
+  filter: none;
+  border-color: var(--accent);
+  background: rgba(255, 204, 51, 0.18);
+  transform: scale(1.15);
+}
+
+#steps li.done {
+  filter: none;
+  border-color: var(--good);
+  background: rgba(92, 255, 138, 0.12);
+}
+
+#mute {
+  font-size: 2.2cqw;
+  background: rgba(255, 255, 255, 0.06);
+  border: 0.35cqw solid rgba(255, 255, 255, 0.15);
+  color: var(--ink);
+  width: 5cqw;
+  height: 5cqw;
+  cursor: pointer;
+}
+
+/* Paneles */
+.panel {
+  position: absolute;
+  background: var(--panel);
+  border: 0.5cqw solid var(--ink);
+  box-shadow: 0 0 0 0.5cqw var(--bg), 0.8cqw 0.8cqw 0 0.5cqw rgba(0, 0, 0, 0.6);
+  padding: 2.5cqw 3cqw;
+}
+
+.center {
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+#title {
+  position: absolute;
+  right: 4cqw;
+  top: 15cqh;
+  width: 44cqw;
+  text-align: center;
+}
+
+#title h1 {
+  font-size: 9cqw;
+}
+
+#start {
+  margin-top: 1.5cqw;
+  font-size: 2.4cqw !important;
+  padding: 1.6cqw 4cqw !important;
+}
+
+h1 {
+  font-size: 11cqw;
+  margin: 0;
+  color: var(--accent);
+  text-shadow: 0.6cqw 0.6cqw 0 #b5179e, 1.2cqw 1.2cqw 0 #3a0ca3;
+  letter-spacing: 0.5cqw;
+}
+
+h2 {
+  font-size: 3.4cqw;
+  margin: 0.6cqw 0 1.6cqw;
+  color: var(--accent);
+}
+
+h3 {
+  font-size: 2.4cqw;
+  margin: 0 0 1.5cqw;
+  color: var(--accent);
+}
+
+.kicker {
+  color: var(--blue);
+  margin: 0 0 1cqw;
+  font-size: 1.8cqw;
+}
+
+.subtitle {
+  font-size: 3cqw;
+  margin: 1.2cqw 0 2cqw;
+}
+
+.lead {
+  font-size: 1.7cqw;
+  color: var(--dim);
+  margin: 0 0 3cqw;
+  line-height: 1.9;
+}
+
+.prompt {
+  font-size: 2.2cqw;
+  color: var(--ink);
+}
+
+.blink {
+  animation: blink 1s steps(2, start) infinite;
+}
+
+@keyframes blink {
+  to {
+    visibility: hidden;
+  }
+}
+
+/* Indicación de acción */
+#action {
+  position: absolute;
+  left: 50%;
+  bottom: 17cqh;
+  transform: translateX(-50%);
+  text-align: center;
+  width: 80cqw;
+}
+
+#action-text {
+  margin: 0 0 1.4cqw;
+  font-size: 2.4cqw;
+  color: var(--ink);
+  text-shadow: 0.35cqw 0.35cqw 0 #000;
+  animation: pop 0.35s steps(4);
+}
+
+#meter {
+  margin: 0 auto;
+  width: 40cqw;
+  height: 2.4cqw;
+  border: 0.4cqw solid var(--ink);
+  background: #000;
+}
+
+#meter-fill {
+  height: 100%;
+  width: 0%;
+  background: repeating-linear-gradient(90deg, var(--accent) 0 1.2cqw, #ff8c42 1.2cqw 2.4cqw);
+}
+
+@keyframes pop {
+  from {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+}
+
+/* Dato NASA */
+#fact {
+  position: absolute;
+  left: 50%;
+  bottom: 3.5cqh;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 90cqw;
+  display: flex;
+  align-items: center;
+  gap: 1.4cqw;
+  background: var(--panel);
+  border: 0.35cqw solid var(--blue);
+  padding: 1.1cqw 1.6cqw;
+  font-size: 1.5cqw;
+  line-height: 1.7;
+  animation: slideup 0.4s steps(5);
+}
+
+.badge {
+  background: #0b3d91;
+  color: #fff;
+  padding: 0.5cqw 0.8cqw;
+  border: 0.25cqw solid #fc3d21;
+  flex-shrink: 0;
+}
+
+@keyframes slideup {
+  from {
+    transform: translate(-50%, 6cqh);
+    opacity: 0;
+  }
+}
+
+/* Resultado */
+#result {
+  width: 78cqw;
+  padding: 1.8cqw 2.5cqw;
+  top: 54%;
+}
+
+#result h2 {
+  font-size: 2.8cqw;
+  margin: 0.4cqw 0 1.4cqw;
+}
+
+#result .kicker {
+  margin-bottom: 0.4cqw;
+}
+
+.orbit-change {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2.5cqw;
+}
+
+.orbit-change .label {
+  display: block;
+  font-size: 1.3cqw;
+  color: var(--dim);
+  margin-bottom: 0.8cqw;
+}
+
+.orbit-change .big {
+  display: block;
+  font-size: 2.4cqw;
+  white-space: nowrap;
+}
+
+.accent {
+  color: var(--good);
+}
+
+.arrow {
+  font-size: 3cqw;
+  color: var(--accent);
+}
+
+.delta {
+  font-size: 4.2cqw;
+  color: var(--good);
+  margin: 1.2cqw 0;
+  text-shadow: 0.5cqw 0.5cqw 0 #0a5c2b;
+  animation: pop 0.5s steps(5);
+}
+
+.small {
+  font-size: 1.25cqw;
+  margin: 0.6cqw 0;
+  line-height: 1.8;
+}
+
+.dim {
+  color: var(--dim);
+}
+
+.time {
+  color: var(--accent);
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 2cqw;
+  margin-top: 1.4cqw;
+}
+
+#ui button:not(#mute) {
+  font-family: var(--pixel);
+  font-size: 1.6cqw;
+  padding: 1.4cqw 2cqw;
+  color: var(--bg);
+  background: var(--accent);
+  border: 0.4cqw solid var(--ink);
+  box-shadow: 0.5cqw 0.5cqw 0 #000;
+  cursor: pointer;
+}
+
+#ui button:not(#mute):active {
+  transform: translate(0.4cqw, 0.4cqw);
+  box-shadow: 0.1cqw 0.1cqw 0 #000;
+}
+
+#sources-btn,
+#sources-close {
+  background: var(--blue) !important;
+}
+
+#sources {
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 76cqw;
+  pointer-events: auto;
+}
+
+#sources ul {
+  margin: 0 0 1.5cqw;
+  padding-left: 2.5cqw;
+  font-size: 1.4cqw;
+  line-height: 2.2;
+}
+
+#sources a {
+  color: var(--blue);
+}
+
+#flash {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+}
+
+#flash.on {
+  animation: flash 0.6s ease-out;
+}
+
+@keyframes flash {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Celular en vertical: sugerir girarlo */
+#rotate-hint {
+  display: none;
+}
+
+@media (orientation: portrait) and (max-width: 760px) {
+  #rotate-hint {
+    display: block;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: calc(50% - 30vw - 64px);
+    text-align: center;
+    font-size: 11px;
+    line-height: 1.8;
+    color: var(--accent);
+    padding: 0 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blink,
+  #action-text,
+  #fact,
+  .delta {
+    animation: none;
+  }
+}
+
+/* Marcador */
+#score {
+  margin-left: auto;
+  margin-right: 1.5cqw;
+  font-size: 2cqw;
+  color: var(--accent);
+  background: rgba(0, 0, 0, 0.5);
+  border: 0.35cqw solid var(--accent);
+  padding: 0.8cqw 1.4cqw;
+}
+
+#score.bump {
+  animation: pop 0.3s steps(3);
+}
+
+/* Leyenda del radar */
+#radar-caption {
+  position: absolute;
+  left: 2cqw;
+  bottom: 3cqh;
+  max-width: 50cqw;
+  display: flex;
+  align-items: center;
+  gap: 1.2cqw;
+  font-size: 1.25cqw;
+  line-height: 1.8;
+  background: var(--panel);
+  border: 0.35cqw solid var(--good);
+  padding: 1cqw 1.4cqw;
+}
+
+#radar-caption .badge {
+  background: #0a5c2b;
+  border-color: var(--good);
+}
+
+/* Tarjeta */
+#card {
+  left: 50%;
+  top: 52%;
+  transform: translate(-50%, -50%);
+  width: 58cqw;
+  pointer-events: auto;
+  animation: pop 0.3s steps(4);
+}
+
+#card.side {
+  left: auto;
+  right: 3cqw;
+  transform: translate(0, -50%);
+  width: 40cqw;
+}
+
+#card dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.8cqw 2cqw;
+  margin: 0 0 1.4cqw;
+  font-size: 1.35cqw;
+}
+
+#card dt {
+  color: var(--dim);
+}
+
+#card dd {
+  margin: 0;
+  color: var(--ink);
+}
+
+#card-btn {
+  margin-top: 0.6cqw;
+}
+
+/* Estrellas del resultado */
+#stars {
+  font-size: 3cqw;
+  letter-spacing: 0.6cqw;
+  margin: 1cqw 0 0;
+  color: var(--accent);
+}
+
+#stars .off {
+  color: #2c2f4a;
+}
+
+/* Epílogo */
+#epilogue {
+  right: 2.5cqw;
+  top: 13cqh;
+  bottom: 3cqh;
+  width: 46cqw;
+  overflow: hidden;
+  pointer-events: auto;
+}
+
+#epilogue h3 {
+  font-size: 2cqw;
+}
+
+.epi-box {
+  border-top: 0.3cqw dashed var(--dim);
+  margin-top: 1cqw;
+  padding-top: 0.6cqw;
+}
+
+#epilogue .buttons {
+  justify-content: flex-start;
+}
+
+/* Ficha de asteroide real (radar) */
+#neo-tip {
+  position: absolute;
+  width: 30cqw;
+  background: rgba(5, 6, 15, 0.94);
+  border: 0.35cqw solid var(--accent);
+  padding: 1cqw 1.3cqw;
+  font-size: 1.15cqw;
+  line-height: 1.75;
+  pointer-events: none;
+}
+
+#neo-tip b {
+  display: block;
+  color: var(--accent);
+  font-size: 1.4cqw;
+  margin-bottom: 0.4cqw;
+}
+
+#neo-tip .dim {
+  color: var(--dim);
+}
+
+/* Compactar tarjetas */
+#card {
+  width: 62cqw;
+  padding: 2cqw 2.6cqw;
+}
+
+#card h3 {
+  font-size: 2.2cqw;
+  margin-bottom: 1.2cqw;
+}
+
+#card dl {
+  font-size: 1.2cqw;
+  gap: 0.6cqw 1.6cqw;
+}
+
+#card .small {
+  font-size: 1.1cqw;
+}
+
+#result {
+  top: 56%;
+}
+
+#result .delta {
+  font-size: 3.6cqw;
+  margin: 0.8cqw 0;
+}
+
+#epilogue {
+  padding: 1.8cqw 2.2cqw;
+}
+
+#epilogue .kicker {
+  font-size: 1.4cqw;
+}
+
+#epilogue h3 {
+  font-size: 1.7cqw;
+  margin-bottom: 1cqw;
+}
+
+#epilogue .small {
+  font-size: 1.1cqw;
+  line-height: 1.75;
+}
+
+/* ===== Añadidos para los minijuegos ===== */
+#title.left {
+  left: 4cqw;
+  right: auto;
+}
+
+#result .stat {
+  font-size: 3.4cqw;
+  color: var(--good);
+  margin: 1cqw 0;
+  text-shadow: 0.5cqw 0.5cqw 0 #0a5c2b;
+  animation: pop 0.5s steps(5);
+}
+
+#result-stars {
+  font-size: 3cqw;
+  letter-spacing: 0.6cqw;
+  margin: 1cqw 0 0;
+  color: var(--accent);
+}
+
+#result-stars .off {
+  color: #2c2f4a;
+}
+
+#result .learn {
+  text-align: left;
+  border-top: 0.3cqw dashed var(--dim);
+  margin-top: 1.2cqw;
+  padding-top: 0.8cqw;
+}
+
+#menu-link {
+  font-size: 1.4cqw;
+  color: var(--dim);
+  text-decoration: none;
+  margin-left: 1.5cqw;
+}
+
+#menu-link:hover {
+  color: var(--accent);
+}
+
+/* HUD lateral de instrumentos */
+.hud {
+  position: absolute;
+  font-size: 1.2cqw;
+  line-height: 1.8;
+  background: rgba(5, 6, 15, 0.75);
+  border: 0.3cqw solid var(--blue);
+  padding: 0.8cqw 1.2cqw;
+}
+
+/* Portada compacta de los minijuegos STS-125 */
+#title.sts {
+  left: 4cqw;
+  right: auto;
+  top: 13cqh;
+  width: 50cqw;
+  text-align: left;
+  background: rgba(5, 6, 15, 0.72);
+  border: 0.4cqw solid var(--ink);
+  padding: 1.6cqw 2cqw;
+}
+#title.sts .kicker { font-size: 1.3cqw; margin-bottom: 0.8cqw; }
+#title.sts h1 { font-size: 4cqw; text-shadow: 0.4cqw 0.4cqw 0 #b5179e, 0.8cqw 0.8cqw 0 #3a0ca3; }
+#title.sts .subtitle { font-size: 1.7cqw; margin: 1.2cqw 0 1cqw; }
+#title.sts .lead { font-size: 1.15cqw; margin: 0 0 1.4cqw; line-height: 1.8; }
+#title.sts .prompt { font-size: 1.3cqw; margin: 0 0 0.6cqw; }
+#title.sts #start { font-size: 1.8cqw !important; padding: 1.2cqw 3cqw !important; margin-top: 0.4cqw; }
+#result .stat { font-size: 2.6cqw; }
+
+/* ===== STS-125: ficha NASA con foto real ===== */
+#brief {
+  left: 50%;
+  top: 53%;
+  transform: translate(-50%, -50%);
+  width: 88cqw;
+  display: grid;
+  grid-template-columns: 40cqw 1fr;
+  gap: 2.4cqw;
+  align-items: center;
+  padding: 2cqw 2.4cqw;
+  pointer-events: auto;
+  animation: briefin 0.45s steps(6);
+}
+@keyframes briefin {
+  from { transform: translate(-50%, -38%); opacity: 0; }
+}
+.brief-pair { display: flex; gap: 1cqw; }
+.brief-pair figure { margin: 0; flex: 1; position: relative; }
+.brief-pair .mine { display: none; }
+#brief.with-mine .brief-pair .mine { display: block; }
+.brief-pair img,
+.brief-pair canvas {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  border: 0.45cqw solid var(--ink);
+  box-shadow: 0.5cqw 0.5cqw 0 #000;
+  background: #000;
+  image-rendering: auto;
+}
+.brief-pair canvas { image-rendering: pixelated; }
+#brief:not(.with-mine) .brief-pair img { aspect-ratio: 4 / 3; animation: develop 1.4s ease-out; }
+#brief.with-mine .brief-pair .real img { animation: develop 1.4s ease-out; }
+@keyframes develop {
+  from { filter: brightness(2.5) saturate(0) blur(0.6cqw); }
+}
+.brief-pair figcaption {
+  position: absolute;
+  left: 0.6cqw;
+  top: 0.6cqw;
+  font-size: 0.95cqw;
+  padding: 0.4cqw 0.6cqw;
+  background: #0b3d91;
+  border: 0.2cqw solid #fc3d21;
+  color: #fff;
+}
+.brief-pair .mine figcaption { background: #22243a; border-color: var(--accent); color: var(--accent); }
+#brief .cap { font-size: 1cqw; color: var(--dim); margin: 0.8cqw 0 0; line-height: 1.7; }
+#brief .kicker { font-size: 1.35cqw; margin-bottom: 0.4cqw; }
+#brief h2 { font-size: 2.3cqw; margin: 0 0 1.2cqw; line-height: 1.4; }
+#brief dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.7cqw 1.4cqw;
+  margin: 0 0 1cqw;
+  font-size: 1.25cqw;
+  line-height: 1.6;
+}
+#brief dt { color: var(--dim); }
+#brief dd { margin: 0; color: var(--good); }
+#brief .small { font-size: 1.2cqw; }
+#brief .small b { color: var(--accent); font-weight: normal; }
+#brief-btn { margin-top: 0.8cqw; animation: nudge 1.2s steps(2) infinite; }
+@keyframes nudge { 50% { transform: translateX(0.5cqw); } }
+
+/* ===== Pregunta de Control de Misión ===== */
+#quiz { width: 66cqw; pointer-events: auto; padding: 2.2cqw 2.6cqw; }
+#quiz h3 { font-size: 1.9cqw; line-height: 1.6; color: var(--ink); }
+#quiz-opts { display: grid; gap: 1cqw; margin: 1.4cqw 0 0.6cqw; }
+#ui #quiz-opts .opt {
+  text-align: left;
+  font-size: 1.5cqw;
+  padding: 1.2cqw 1.6cqw;
+  background: #1b2040;
+  color: var(--ink);
+  border-color: var(--dim);
+}
+#quiz-opts .opt span { color: var(--accent); margin-right: 1cqw; }
+#ui #quiz-opts .opt.sel { border-color: var(--accent); background: #2c2f5a; transform: translateX(0.6cqw); }
+#ui #quiz-opts .opt.ok { background: #1f7a3a; border-color: var(--good); }
+#ui #quiz-opts .opt.bad { background: #5a0a1a; border-color: var(--bad); opacity: 0.7; }
+#quiz-fb { min-height: 2cqw; font-size: 1.3cqw; }
+#quiz-next { background: var(--good) !important; }
+
+/* ===== Álbum ===== */
+#album { width: 84cqw; pointer-events: auto; z-index: 5; padding: 1.8cqw 2.4cqw; }
+#album-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.2cqw;
+  max-height: 34cqw;
+  overflow: auto;
+  margin: 1cqw 0 1.4cqw;
+  text-align: left;
+}
+#album figure { margin: 0; }
+#album img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border: 0.3cqw solid var(--ink); display: block; }
+#album figcaption { font-size: 0.95cqw; line-height: 1.6; color: var(--dim); margin-top: 0.5cqw; }
+#album-btn { background: var(--good) !important; }
+
+/* Resultado STS-125: dato de hoy */
+#result .today {
+  border: 0.3cqw solid var(--blue);
+  background: rgba(11, 61, 145, 0.35);
+  padding: 0.8cqw 1.2cqw;
+  margin: 1cqw 0 0;
+  text-align: left;
+}
+#result .today b { color: var(--accent); font-weight: normal; }
+#result-stars { font-size: 2.2cqw; letter-spacing: 0.3cqw; }
+
+/* --- Ajustes de tamaño: que todo quepa en 16:9 --- */
+#brief { top: 55%; width: 86cqw; grid-template-columns: 38cqw 1fr; gap: 2cqw; padding: 1.6cqw 2cqw; max-height: 47cqw; }
+#brief .kicker { font-size: 1.1cqw; }
+#brief h2 { font-size: 1.9cqw; margin: 0 0 1cqw; }
+#brief dl { grid-template-columns: minmax(0, 13cqw) 1fr; gap: 0.5cqw 1.2cqw; font-size: 1.05cqw; margin-bottom: 0.8cqw; }
+#brief .small { font-size: 1.05cqw; margin: 0.4cqw 0; }
+#brief .cap { font-size: 0.9cqw; }
+#ui #brief-btn { font-size: 1.4cqw; padding: 1cqw 1.8cqw; margin-top: 0.6cqw; }
+#result { width: 80cqw; padding: 1.3cqw 2.4cqw; top: 55%; }
+#result .kicker { font-size: 1.3cqw; }
+#result h2 { font-size: 2.2cqw; margin: 0.2cqw 0 0.6cqw; }
+#result .stat { font-size: 1.9cqw; margin: 0.4cqw 0; }
+#result-stars { font-size: 1.8cqw; margin: 0.4cqw 0 0; }
+#result .small { font-size: 1.05cqw; margin: 0.3cqw 0; }
+#result .learn { margin-top: 0.6cqw; padding-top: 0.4cqw; }
+#result .today { padding: 0.6cqw 1cqw; margin-top: 0.6cqw; }
+#result .buttons { margin-top: 1cqw; }
+#ui #result .buttons button { font-size: 1.3cqw; padding: 1cqw 1.5cqw; }
+#album { background: #080a1c; }
+
+/* ===================================================================
+   Estilo pixel de nave espacial (sin emojis): iconos, paneles y botones
+   =================================================================== */
+.pxi { display: block; width: 100%; height: 100%; image-rendering: pixelated; }
+.ico { display: inline-block; width: 1.15em; height: 1.15em; vertical-align: -0.2em; }
+.ico .pxi { width: 100%; height: 100%; }
+
+/* Pantalla con líneas de escaneo suaves (como un monitor antiguo) */
+#stage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.13) 0 1px, transparent 1px 3px);
+  mix-blend-mode: multiply;
+}
+
+/* Barra de fases con iconos pixel */
+#steps { gap: 0.8cqw; }
+#steps li { width: 4.4cqw; height: 4.4cqw; padding: 0.7cqw; background: rgba(5, 6, 15, 0.8); border: 0.3cqw solid #3a3d5c; filter: grayscale(1) brightness(0.55); box-shadow: 0.3cqw 0.3cqw 0 #000; }
+#steps li.active { filter: none; border-color: var(--accent); background: #2a2410; transform: none; animation: stepblink 0.8s steps(2) infinite; }
+#steps li.done { filter: none; border-color: var(--good); background: #0d2a18; }
+@keyframes stepblink { 50% { border-color: #fff3b0; } }
+#mute { padding: 0.8cqw; background: rgba(5, 6, 15, 0.8); border: 0.3cqw solid #3a3d5c; box-shadow: 0.3cqw 0.3cqw 0 #000; }
+#score { display: flex; align-items: center; gap: 0.8cqw; }
+#score .ico { width: 2cqw; height: 2cqw; }
+
+/* Paneles con esquinas recortadas en pixel */
+.panel {
+  border: 0;
+  background: #080a1c;
+  box-shadow:
+    0 -0.5cqw 0 0 var(--ink), 0 0.5cqw 0 0 var(--ink), -0.5cqw 0 0 0 var(--ink), 0.5cqw 0 0 0 var(--ink),
+    inset 0 0 0 0.3cqw #1b2040,
+    1cqw 1cqw 0 0.2cqw rgba(0, 0, 0, 0.55);
+}
+.panel-head {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 0.6cqw;
+  margin: -0.4cqw -0.6cqw 0.4cqw;
+  padding: 0.6cqw 0.8cqw;
+  background: #0b3d91;
+  font-size: 1cqw;
+  color: #fff;
+  letter-spacing: 0.1cqw;
+  text-align: left;
+}
+.panel-head i { width: 0.8cqw; height: 0.8cqw; background: var(--good); display: inline-block; }
+.panel-head i:nth-child(2) { background: var(--accent); }
+.panel-head i:nth-child(3) { background: var(--bad); animation: blink 1s steps(2, start) infinite; }
+.panel-head span { flex: 1; margin-left: 0.6cqw; }
+.panel-head b { font-weight: normal; background: #fc3d21; padding: 0.2cqw 0.6cqw; }
+#quiz .panel-head { margin: -0.6cqw -1cqw 1.2cqw; }
+
+/* Botones pixel con relieve */
+#ui button:not(#mute) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8cqw;
+  border: 0;
+  box-shadow:
+    0 -0.35cqw 0 0 #000, 0 0.35cqw 0 0 #000, -0.35cqw 0 0 0 #000, 0.35cqw 0 0 0 #000,
+    inset -0.35cqw -0.35cqw 0 rgba(0, 0, 0, 0.3), inset 0.35cqw 0.35cqw 0 rgba(255, 255, 255, 0.5),
+    0.6cqw 0.6cqw 0 0.1cqw #000;
+}
+#ui button:not(#mute):active {
+  transform: translate(0.3cqw, 0.3cqw);
+  box-shadow: 0 -0.35cqw 0 0 #000, 0 0.35cqw 0 0 #000, -0.35cqw 0 0 0 #000, 0.35cqw 0 0 0 #000, inset 0.35cqw 0.35cqw 0 rgba(0, 0, 0, 0.3);
+}
+#ui button .ico { width: 1.2em; height: 1.2em; vertical-align: 0; }
+#ui #quiz-opts .opt { justify-content: flex-start; box-shadow: 0 -0.3cqw 0 0 var(--dim), 0 0.3cqw 0 0 var(--dim), -0.3cqw 0 0 0 var(--dim), 0.3cqw 0 0 0 var(--dim); }
+#ui #quiz-opts .opt.sel { box-shadow: 0 -0.3cqw 0 0 var(--accent), 0 0.3cqw 0 0 var(--accent), -0.3cqw 0 0 0 var(--accent), 0.3cqw 0 0 0 var(--accent); }
+#ui #quiz-opts .opt.ok { box-shadow: 0 -0.3cqw 0 0 var(--good), 0 0.3cqw 0 0 var(--good), -0.3cqw 0 0 0 var(--good), 0.3cqw 0 0 0 var(--good); }
+#ui #quiz-opts .opt.bad { box-shadow: 0 -0.3cqw 0 0 var(--bad), 0 0.3cqw 0 0 var(--bad), -0.3cqw 0 0 0 var(--bad), 0.3cqw 0 0 0 var(--bad); }
+#quiz-opts .opt span { background: #05060f; padding: 0.3cqw 0.6cqw; }
+#quiz-fb .ico { width: 1.6cqw; height: 1.6cqw; }
+
+/* Ficha NASA */
+#brief { row-gap: 0.8cqw; padding-top: 1cqw; }
+.brief-pair img, .brief-pair canvas { border: 0; box-shadow: 0 0 0 0.35cqw var(--ink), 0.6cqw 0.6cqw 0 0.35cqw #000; }
+.brief-pair figcaption { border: 0; box-shadow: 0 0 0 0.2cqw #fc3d21; }
+#brief dl { border-left: 0.3cqw solid #1b2040; padding-left: 1cqw; }
+
+/* Dato NASA */
+#fact { border: 0; background: #080a1c; box-shadow: 0 -0.35cqw 0 0 var(--blue), 0 0.35cqw 0 0 var(--blue), -0.35cqw 0 0 0 var(--blue), 0.35cqw 0 0 0 var(--blue), 0.6cqw 0.6cqw 0 0.2cqw rgba(0, 0, 0, 0.6); }
+.badge { border: 0; box-shadow: 0 0 0 0.2cqw #fc3d21; }
+
+/* Portada: el título siempre cabe en su recuadro */
+#title.sts { border: 0; background: rgba(8, 10, 28, 0.9); box-shadow: 0 -0.45cqw 0 0 var(--ink), 0 0.45cqw 0 0 var(--ink), -0.45cqw 0 0 0 var(--ink), 0.45cqw 0 0 0 var(--ink), 0.9cqw 0.9cqw 0 0.2cqw rgba(0, 0, 0, 0.55); width: 52cqw; }
+#title.sts h1 { font-size: 3.3cqw; letter-spacing: 0.2cqw; overflow-wrap: anywhere; }
+#title.sts .prompt { color: var(--accent); }
+
+/* Resultado */
+#result-stars { display: flex; justify-content: center; flex-wrap: wrap; gap: 1.2cqw; }
+#result-stars .grp { display: inline-flex; gap: 0.2cqw; padding: 0.4cqw 0.5cqw; background: #05060f; box-shadow: 0 0 0 0.2cqw #1b2040; }
+#result-stars .pxi { width: 1.9cqw; height: 1.9cqw; }
+#result .learn .ico { width: 1.6cqw; height: 1.6cqw; margin-right: 0.4cqw; }
+#result .today { border: 0; box-shadow: 0 0 0 0.3cqw var(--blue); }
+#menu-link { display: inline-flex; align-items: center; gap: 0.6cqw; }
+#album h3 .ico { width: 2.2cqw; height: 2.2cqw; }
+#album img { border: 0; box-shadow: 0 0 0 0.3cqw var(--ink); }
+#rotate-hint .ico { width: 1.4em; height: 1.4em; }
+#ui #quiz-opts .opt { line-height: 1.7; }
+
+/* ===== Resumen final simple: solo 3 estrellas (promedio) ===== */
+#result .stat, #result-rank, #result .learn, #result .today { display: none !important; }
+#result h2 { margin-bottom: 1.4cqw; }
+#result-stars .avg { display: inline-flex; gap: 1.2cqw; animation: pop 0.5s steps(5); }
+#result-stars .avg .pxi { width: 6cqw; height: 6cqw; }
+#result .buttons { margin-top: 2.4cqw; }
+#result { width: 64cqw; }
+/* sin insignias tipo logo: el dato y la foto se ven neutros */
+#fact .badge { display: none; }
+.brief-pair .real figcaption { background: #22243a; box-shadow: 0 0 0 0.2cqw var(--ink); }
+#result { width: 76cqw; }
+#ui #result .buttons button, #result #menu-link { white-space: nowrap; }

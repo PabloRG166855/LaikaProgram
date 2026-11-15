@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <link rel="icon" href="../shared/img/favicon.svg" />
+  <title>Reparar el espectrógrafo</title>
+  <meta name="description" content="Minijuego de la misión STS-125 al telescopio Hubble: Reparar el espectrógrafo." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../shared/style.css" />
+</head>
+<body>
+  <p id="rotate-hint"><span class="ico" data-icon="phone"></span> Gira el teléfono para jugar en grande</p>
+  <main id="stage" aria-label="Minijuego: Reparar el espectrógrafo">
+    <canvas id="screen" width="320" height="180" aria-hidden="true"></canvas>
+    <div id="ui">
+      <header id="topbar">
+        <ol id="steps" aria-label="Pasos">
+          <li title="Pasamanos" data-icon="wrench"></li>
+          <li title="111 tornillos" data-icon="screw"></li>
+          <li title="Tarjeta" data-icon="chip"></li>
+          <li title="Encender" data-icon="bulb"></li>
+          <li title="Elementos" data-icon="search"></li>
+          <li title="Pregunta" data-icon="question"></li>
+        </ol>
+        <div id="score" class="hidden"><span class="ico" data-icon="star"></span> <span id="score-val">0</span></div>
+        <button id="mute" type="button" aria-label="Silenciar sonido" data-icon="sound"></button>
+      </header>
+
+      <section id="title" class="sts">
+        <p class="kicker">STS-125 · Misión al Hubble · 2009</p>
+        <h1>ESPECTRÓGRAFO</h1>
+        <p class="subtitle">¡Una reparación nunca vista!</p>
+        <p class="lead">17 de mayo de 2009: el espectrógrafo STIS del Hubble estaba roto. Quita el pasamanos y 111 tornillos, cambia la tarjeta y descubre de qué está hecha una estrella.</p>
+        <p class="prompt blink">Pulsa ESPACIO o toca START</p>
+        <button id="start" type="button">START</button>
+      </section>
+
+      <div id="action" class="hidden">
+        <p id="action-text"></p>
+        <div id="meter" class="hidden"><div id="meter-fill"></div></div>
+      </div>
+
+      <aside id="fact" class="hidden" aria-live="polite">
+        <span id="fact-text"></span>
+      </aside>
+
+      <section id="result" class="panel center hidden">
+        <p class="kicker">¡STIS funciona otra vez!</p>
+        <h2>¡Reparación histórica!</h2>
+        <p class="stat" id="result-stat"></p>
+        <div id="result-stars"></div>
+        <p class="small time" id="result-rank"></p>
+        <div class="learn">
+          <p class="small"><span class="ico" data-icon="screw"></span> Un plato transparente atrapó los 111 tornillos para que no flotaran.</p>
+          <p class="small"><span class="ico" data-icon="rainbow"></span> Cada elemento deja sus líneas en la luz, como un código de barras.</p>
+        </div>
+        <p class="small today" id="result-today"></p>
+        <div class="buttons">
+          <button id="again" type="button"><span class="ico" data-icon="retry"></span> Otra vez</button>
+          <button id="album-btn" type="button"><span class="ico" data-icon="album"></span> Álbum</button>
+          <button id="sources-btn" type="button">Fuentes</button>
+          <a id="menu-link" href="../index.html"><span class="ico" data-icon="back"></span> Menú</a>
+        </div>
+      </section>
+
+      <section id="sources" class="panel hidden" aria-label="Fuentes">
+        <h3>Datos reales</h3>
+        <ul>
+          <li><a href="https://www.space.com/6709-spacewalkers-tackle-daunting-hubble-telescope-repair.html" target="_blank" rel="noreferrer">Space.com — Una reparación difícil del Hubble</a></li>
+          <li><a href="https://www.space.com/6712-astronauts-repair-key-hubble-device-tough-spacewalk.html" target="_blank" rel="noreferrer">Space.com — Reparan el STIS en una caminata difícil</a></li>
+          <li><a href="https://www.nbcnews.com/news/amp/wbna30791239" target="_blank" rel="noreferrer">NBC News — El pasamanos atascado</a></li>
+          <li><a href="https://spaceflightnow.com/shuttle/sts125/090517fd7/index2.html" target="_blank" rel="noreferrer">Spaceflight Now — Cuarta caminata (17 may 2009)</a></li>
+          <li><a href="https://esahubble.org/news/heic0910/" target="_blank" rel="noreferrer">ESA/Hubble — Primeras fotos tras la reparación (9 sep 2009)</a></li>
+          <li><a href="https://www.nasa.gov/mission/sts-125/" target="_blank" rel="noreferrer">NASA — Misión STS-125</a></li>
+          <li><a href="https://science.nasa.gov/mission/hubble/observatory/missions-to-hubble/servicing-mission-4/" target="_blank" rel="noreferrer">NASA — Servicing Mission 4 (SM4)</a></li>
+          <li><a href="https://images.nasa.gov/" target="_blank" rel="noreferrer">NASA Image and Video Library — fotos S125-E y STS125-S</a></li>
+        </ul>
+        <p class="small dim">Fotos: NASA (dominio público) y NASA/ESA Hubble. Fuerzas, tiempos y movimientos están simplificados para el juego; la misión, las fechas, los nombres y los datos son reales.</p>
+        <button id="sources-close" type="button">Cerrar</button>
+      </section>
+
+      <div id="flash" aria-hidden="true"></div>
+    </div>
+  </main>
+
+  <script src="../../../js/i18n-en.js"></script>
+  <script src="../../../js/i18n.js"></script>
+  <script src="../shared/icons.js"></script>
+  <script src="../shared/engine.js"></script>
+  <script src="../shared/sts125.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
