@@ -1393,7 +1393,22 @@ window.LAIKA_EN = {
 "Cámara nueva para el Hubble": "A new camera for the Hubble",
 "Reparar el espectrógrafo": "Fix the spectrograph",
 "Giroscopios y baterías": "Gyroscopes and batteries",
-"STS-125: Salva el Hubble": "STS-125: Save the Hubble"
+"STS-125: Salva el Hubble": "STS-125: Save the Hubble",
+"ENFOCANDO...": "FOCUSING...",
+"CARGANDO...": "LOADING...",
+"REINICIANDO...": "REBOOTING...",
+"UFF...": "OOPS...",
+"UFF…": "OOPS…",
+"Agotado": "Exhausted",
+"aire": "air",
+"antena": "antenna",
+"cabina": "cabin",
+"casco": "hull",
+"computadora": "computer",
+"instrumentos": "instruments",
+"motor": "engine",
+"fuera": "outside",
+"Especialista": "Specialist"
 },
 "patterns": [
 [
@@ -1457,6 +1472,10 @@ window.LAIKA_EN = {
 "The sensors were degraded for {0} s: no science was generated during that time."
 ],
 [
+"Al equipo le faltó {0}. Mira la gráfica: busca a alguien que cubra esa punta.",
+"The team was missing {0}. Look at the chart: find someone who covers that point."
+],
+[
 "Consumes {0} kW pero solo generas {1} kW. Mejora la energía o quita equipos.",
 "You use {0} kW but only generate {1} kW. Improve power or remove equipment."
 ],
@@ -1501,6 +1520,10 @@ window.LAIKA_EN = {
 "Couldn't load data/{0}.json ({1})"
 ],
 [
+"Para \"{0}\" conviene un(a) {1} (+{2} %).",
+"For \"{0}\" the best choice is a {1} (+{2} %)."
+],
+[
 "Faltan {0} punto(s) de habilidad",
 "{0} skill point(s) short"
 ],
@@ -1517,8 +1540,16 @@ window.LAIKA_EN = {
 "{0} is only enough for {1} people."
 ],
 [
+"Probabilidad de éxito: {0} % ({1})",
+"Chance of success: {0} % ({1})"
+],
+[
 "Probabilidad de éxito: {0} % (",
 "Chance of success: {0} % ("
+],
+[
+"Equipo que ayuda con \"{0}\": {1}.",
+"Team helping with \"{0}\": {1}."
 ],
 [
 "Equipo que ayuda con \"{0}\":",
@@ -1569,12 +1600,20 @@ window.LAIKA_EN = {
 "{0} can't reach {1}."
 ],
 [
+"{0} vuelve al servicio.",
+"{0} is back on duty."
+],
+[
 "STIS reparado en {0} s",
 "STIS repaired in {0} s"
 ],
 [
 "Hubble listo en {0} s",
 "Hubble ready in {0} s"
+],
+[
+"Puesto vacío: {0} ({1}).",
+"Empty seat: {0} ({1})."
 ],
 [
 "Ahora sí: rumbo {0}.",
@@ -1645,6 +1684,10 @@ window.LAIKA_EN = {
 "FIX IT! {0}"
 ],
 [
+"¿Qué es {0}?",
+"What is {0}?"
+],
+[
 "Faltan {0}.",
 "{0} missing."
 ],
@@ -1677,14 +1720,6 @@ window.LAIKA_EN = {
 "No {0}"
 ],
 [
-"¿Qué es {0}?",
-"What is {0}?"
-],
-[
-"{0} vuelve al servicio.",
-"{0} is back on duty."
-],
-[
 "{0} — {1}",
 "{0} — {1}"
 ],
@@ -1695,6 +1730,18 @@ window.LAIKA_EN = {
 [
 "{0} · {1}",
 "{0} · {1}"
+],
+[
+"{0}, {1}",
+"{0}, {1}"
+],
+[
+"{0} y {1}",
+"{0} and {1}"
+],
+[
+"{0} o {1}",
+"{0} or {1}"
 ]
 ]
 };
