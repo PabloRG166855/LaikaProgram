@@ -7,6 +7,8 @@ import { icon, drawIcon } from '../icons.js';
 import { shipModel, shipSize } from './shipRenderer.js';
 import { drawShipPixel } from './pixelShip.js';
 
+const tr = s => (window.T ? window.T(s) : s);
+
 const HOTSPOTS = [
   { cat: 'structure', anchor: 'hull' },
   { cat: 'propulsion', anchor: 'engine' },
@@ -241,7 +243,7 @@ export function renderHangar(root, ctx) {
         </button>`;
     }).join('') + (cat.required || cat.multi ? '' : `
         <button class="h-opt ${design.selections[cat.id] ? '' : 'selected'}" data-act="none" data-id="${cat.id}">
-          <span class="h-opt-name">${design.selections[cat.id] ? '' : icon('check', 16)}Sin ${esc(cat.short.toLowerCase())}</span>
+          <span class="h-opt-name">${design.selections[cat.id] ? '' : icon('check', 16)}${esc(tr(`Sin ${cat.short.toLowerCase()}`))}</span>
           <span class="h-opt-desc">Ahorras peso y energía.</span>
         </button>`);
   }
@@ -290,8 +292,9 @@ export function renderHangar(root, ctx) {
     }
     const c = comps.find(x => x.id === piece.id);
     if (!c) return null;
-    const words = tagList(c, level).map(t => t[2].toLowerCase());
-    return [c.name, `${c.desc}${words.length ? ` Con esta pieza: ${words.join(', ')}.` : ''}`];
+    // se traduce cada trozo por separado (el texto final se arma juntándolos)
+    const words = tagList(c, level).map(t => tr(t[2]).toLowerCase());
+    return [tr(c.name), `${tr(c.desc)}${words.length ? ` ${tr('Con esta pieza:')} ${words.join(', ')}.` : ''}`];
   }
   function renderLaika() {
     const cat = cats.find(c => c.id === active);

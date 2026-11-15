@@ -417,7 +417,8 @@ export function startMission(root, ctx) {
 
   function showNotice(n) {
     sfx(n.kind === 'main' ? 'objective' : n.kind === 'success' ? 'success' : n.kind === 'status' ? 'blip' : 'fail');
-    if (n.kind === 'main') return laikaSay('target', '¡Nuevo objetivo!', `${n.title.replace(/^🎯\s*Objetivo principal:\s*/, '')}. ${n.text || ''}`, 5000);
+    const tr = x => (window.T ? window.T(x) : x);
+    if (n.kind === 'main') return laikaSay('target', '¡Nuevo objetivo!', `${tr(n.title.replace(/^🎯\s*Objetivo principal:\s*/, ''))}. ${tr(n.text || '')}`, 5000);
     if (n.kind === 'status') return kidToast('status', 'check', n.title.replace(/^[^\wÁÉÍÓÚáéíóúñ¡]+/, ''));
     const name = n.eventName || '';
     if (n.kind === 'success') return kidToast('success', 'check', n.repair ? `Reparado · ${name}` : `¡Bien! · ${name}`);

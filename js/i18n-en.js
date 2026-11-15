@@ -1372,7 +1372,28 @@ window.LAIKA_EN = {
 "Geólogo(a) planetario(a)": "Planetary geologist",
 "Ingeniero(a) de soporte vital": "Life support engineer",
 "Ingeniero(a) de vuelo": "Flight engineer",
-"Velocidad de tu nave": "Your ship speed"
+"Velocidad de tu nave": "Your ship speed",
+"Sin escudo": "No shield",
+"Requisitos del problema contra las habilidades del equipo": "The problem's requirements against the team's skills",
+"Energía del tripulante": "Crew member's energy",
+"¿Qué significan las barras?": "What do the bars mean?",
+"Gráfica radar de habilidades": "Skills radar chart",
+"Enlace con la Tierra recuperado.": "Link with Earth restored.",
+"Sensores recalibrados: la ciencia vuelve a fluir.": "Sensors recalibrated: science is flowing again.",
+"Energía restablecida: la consola vuelve a funcionar.": "Power restored: the console works again.",
+"azul": "blue",
+"amarilla": "yellow",
+"ROJO": "RED",
+"VERDE": "GREEN",
+"AZUL": "BLUE",
+"Hoy:": "Today:",
+"¡HIDRÓGENO!": "HYDROGEN!",
+"¡SODIO!": "SODIUM!",
+"Adiós, Hubble": "Goodbye, Hubble",
+"Cámara nueva para el Hubble": "A new camera for the Hubble",
+"Reparar el espectrógrafo": "Fix the spectrograph",
+"Giroscopios y baterías": "Gyroscopes and batteries",
+"STS-125: Salva el Hubble": "STS-125: Save the Hubble"
 },
 "patterns": [
 [
@@ -1654,6 +1675,18 @@ window.LAIKA_EN = {
 [
 "Sin {0}",
 "No {0}"
+],
+[
+"¿Qué es {0}?",
+"What is {0}?"
+],
+[
+"{0} vuelve al servicio.",
+"{0} is back on duty."
+],
+[
+"{0} — {1}",
+"{0} — {1}"
 ],
 [
 "{0}: {1}",
